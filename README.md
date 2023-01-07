@@ -93,6 +93,47 @@
 }
 ```
 
+### --- Refresh Access Token ---
+
+- Method: `POST`
+- Endpoint: `/auth/refresh/`
+- Header:
+
+  - Content-Type: `application/json`
+  - Authorization: `Bearer <refresh_token>`
+
+- Response:
+
+```json
+{
+  "code": 200,
+  "status": "OK",
+  "errors": null,
+  "data": {
+    "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+    "expires_in": 3600,
+    "refresh_token": "IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk"
+  }
+}
+```
+
+- Error Response
+
+```json
+{
+  "code": 400,
+  "status": "BAD_REQUEST",
+  "errors": {
+    "message": "invalid refresh token header"
+  },
+  "data": null
+}
+```
+
+### Users
+
+---
+
 ### --- Change password ---
 
 - Method: `PUT`
