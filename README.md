@@ -1,8 +1,16 @@
 # UD Rio Backend
 
-### Backend service for UD Rio (prototype) website.
+Backend service for UD Rio (prototype) website.
 
-## API Specification
+## Get Started
+
+---
+
+You need to have `docker-compose` to simplify development, update the `udrio.yml` config and run the following command to setup your local db & run dev server
+
+```bash
+docker-compose up -d
+```
 
 ### Authentication
 
