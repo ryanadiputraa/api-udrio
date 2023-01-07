@@ -5,10 +5,13 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/ryanadiputraa/api-udrio/pkg/database"
 	"github.com/spf13/viper"
 )
 
 func serveHTTP() {
+	_ = database.GetConnection()
+
 	// router
 	router := mux.NewRouter().StrictSlash(false)
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

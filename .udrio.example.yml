@@ -1,1 +1,8 @@
+database:
+  driver: "postgres"
+  max_conns: 100
+  max_idle: 4
+  idle_time: "5m" # minute(s)
+  idle_time: "60m" # minute(s)
+  dsn: "host=127.0.0.1 user=postgres password=postgres dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Makassar"
 PORT: 8080
