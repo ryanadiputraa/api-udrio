@@ -3,11 +3,13 @@ package cmd
 import (
 	"log"
 
+	"github.com/ryanadiputraa/api-udrio/migrations"
 	"github.com/spf13/viper"
 )
 
 func init() {
 	loadConfig()
+	migrations.Migrate()
 }
 
 func loadConfig() {

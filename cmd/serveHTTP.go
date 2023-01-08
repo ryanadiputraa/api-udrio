@@ -19,7 +19,7 @@ func serveHTTP() {
 		})
 	})
 
-	// setup server port & handler
+	// Setup server port & handler
 	port := viper.GetString("PORT")
 	if len(port) == 0 {
 		port = "8080"
