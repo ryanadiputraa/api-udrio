@@ -1,5 +1,4 @@
 FROM golang:1.19
-RUN apk update && apk add --no-cache git
 
 WORKDIR /app
 

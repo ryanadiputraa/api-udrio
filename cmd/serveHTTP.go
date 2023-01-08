@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"github.com/ryanadiputraa/api-udrio/pkg/database"
 	"github.com/spf13/viper"
 )
@@ -12,10 +12,11 @@ import (
 func serveHTTP() {
 	_ = database.GetConnection()
 
-	// router
-	router := mux.NewRouter().StrictSlash(false)
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "ok")
+	r := gin.Default()
+	r.GET("/test", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": "ok",
+		})
 	})
 
 	// setup server port & handler
@@ -23,13 +24,5 @@ func serveHTTP() {
 	if len(port) == 0 {
 		port = "8080"
 	}
-	server := http.Server{
-		Addr:    fmt.Sprintf(":%s", port),
-		Handler: router,
-	}
-	fmt.Printf("server running on port %s", port)
-	err := server.ListenAndServe()
-	if err != nil {
-		panic(err)
-	}
+	r.Run(fmt.Sprintf(":%s", port))
 }
