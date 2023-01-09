@@ -3,12 +3,15 @@ package database
 import (
 	"fmt"
 
+	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func GetConnection() *gorm.DB {
+var DB *gorm.DB
+
+func GetConnection() {
 	dsn := viper.GetString("POSTGRES_DSN")
 	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -24,5 +27,11 @@ func GetConnection() *gorm.DB {
 	db.SetConnMaxIdleTime(viper.GetDuration("IDLE_TIME"))
 	db.SetConnMaxLifetime(viper.GetDuration("LIFE_TIME"))
 
-	return conn
+	DB = conn
+
+	makeMigration()
+}
+
+func makeMigration() {
+	DB.AutoMigrate(&domain.Product{}, &domain.ProductImage{}, &domain.ProductCategory{})
 }

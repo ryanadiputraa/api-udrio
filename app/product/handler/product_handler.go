@@ -13,8 +13,8 @@ type ProductHandler struct {
 	productService domain.IProductService
 }
 
-func NewProductHandler(rg *gin.RouterGroup) {
-	handler := &ProductHandler{}
+func NewProductHandler(rg *gin.RouterGroup, service domain.IProductService) {
+	handler := &ProductHandler{productService: service}
 	router := rg.Group("/products")
 
 	router.GET("/", handler.GetProductList)
@@ -22,7 +22,7 @@ func NewProductHandler(rg *gin.RouterGroup) {
 
 func (h *ProductHandler) GetProductList(c *gin.Context) {
 	pageParam := c.Query("page")
-	_ = c.Query("category")
+	category := c.Query("category")
 
 	// Validate page param
 	page, err := strconv.Atoi(pageParam)
@@ -37,5 +37,24 @@ func (h *ProductHandler) GetProductList(c *gin.Context) {
 		page = 1
 	}
 
-	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, page))
+	// Get list of products
+	products, err := h.productService.GetProductList(c, page, category)
+	if err != nil {
+		errMsg := map[string]string{
+			"message": err.Error(),
+		}
+		c.JSON(http.StatusInternalServerError, utils.HttpResponse(http.StatusInternalServerError, errMsg, nil))
+		return
+	}
+
+	// Handle empty product
+	if len(products) == 0 {
+		errMsg := map[string]string{
+			"message": "no product found",
+		}
+		c.JSON(http.StatusNotFound, utils.HttpResponse(http.StatusNotFound, errMsg, []domain.ProductDTO{}))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, products))
 }
