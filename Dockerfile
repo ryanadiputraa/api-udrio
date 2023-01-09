@@ -8,7 +8,6 @@ COPY go.sum ./
 RUN go mod download
 
 COPY . .
-COPY .udrio.yml ./
 
 #Setup hot-reload for dev stage
 RUN go install -mod=mod github.com/githubnemo/CompileDaemon

@@ -14,8 +14,7 @@ func init() {
 
 func loadConfig() {
 	viper.AddConfigPath(".")
-	viper.SetConfigName(".udrio")
-	viper.SetConfigType("yml")
+	viper.SetConfigFile(".env")
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {

@@ -9,7 +9,7 @@ import (
 )
 
 func GetConnection() *gorm.DB {
-	dsn := viper.GetString("database.dsn")
+	dsn := viper.GetString("POSTGRES_DSN")
 	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(fmt.Sprintf("db connection: %s", err))
@@ -19,10 +19,10 @@ func GetConnection() *gorm.DB {
 	if err != nil {
 		panic(fmt.Sprintf("db connection: %s", err))
 	}
-	db.SetMaxIdleConns(viper.GetInt("database.max_idle"))
-	db.SetMaxOpenConns(viper.GetInt("database.max_conns"))
-	db.SetConnMaxIdleTime(viper.GetDuration("database.idle_time"))
-	db.SetConnMaxLifetime(viper.GetDuration("database.life_time"))
+	db.SetMaxIdleConns(viper.GetInt("MAX_IDLE"))
+	db.SetMaxOpenConns(viper.GetInt("MAX_CONNS"))
+	db.SetConnMaxIdleTime(viper.GetDuration("IDLE_TIME"))
+	db.SetConnMaxLifetime(viper.GetDuration("LIFE_TIME"))
 
 	return conn
 }

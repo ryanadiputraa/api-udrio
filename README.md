@@ -6,10 +6,17 @@ Backend service for UD Rio (prototype) website.
 
 ---
 
-You need to have `docker-compose` to simplify development, update the `udrio.yml` config and run the following command to setup your local db & run dev server
+You need to have `docker-compose` to simplify development, config your `.env` file and run the following command to setup your local db & run dev server
 
 ```bash
 docker-compose up -d
+```
+
+it has `Hot Reload` setup, so you don't need to restart server to make changes in development.
+To stop dev server simply run
+
+```bash
+docker-compose down
 ```
 
 ### Authentication

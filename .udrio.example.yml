@@ -1,8 +1,0 @@
-database:
-  driver: "postgres"
-  max_conns: 100
-  max_idle: 4
-  idle_time: "5m" # minute(s)
-  life_time: "60m" # minute(s)
-  dsn: "host=udrio_postgres user=postgres password=postgres dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Makassar"
-PORT: 8080
