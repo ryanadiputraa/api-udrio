@@ -45,7 +45,7 @@ docker-compose down
 {
   "code": 201,
   "status": "CREATED",
-  "errors": null,
+  "error": null,
   "data": null
 }
 ```
@@ -56,7 +56,8 @@ docker-compose down
 {
   "code": 400,
   "status": "BAD_REQUEST",
-  "errors": {
+  "error": {
+    "message": "invalid param",
     "username": ["must not be null", "must be greater than 3 character"],
     "email": ["invalid email format"],
     "passowrd": ["must not be null", "must be greater than 3 character"]
@@ -86,7 +87,7 @@ docker-compose down
 {
   "code": 200,
   "status": "OK",
-  "errors": null,
+  "error": null,
   "data": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "expires_in": 3600,
@@ -101,7 +102,7 @@ docker-compose down
 {
   "code": 400,
   "status": "BAD_REQUEST",
-  "errors": {
+  "error": {
     "message": "invalid password"
   },
   "data": null
@@ -123,7 +124,7 @@ docker-compose down
 {
   "code": 200,
   "status": "OK",
-  "errors": null,
+  "error": null,
   "data": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "expires_in": 3600,
@@ -138,7 +139,7 @@ docker-compose down
 {
   "code": 400,
   "status": "BAD_REQUEST",
-  "errors": {
+  "error": {
     "message": "invalid refresh token header"
   },
   "data": null
@@ -171,7 +172,7 @@ docker-compose down
 {
   "code": 200,
   "status": "OK",
-  "errors": null,
+  "error": null,
   "data": null
 }
 ```
@@ -182,7 +183,8 @@ docker-compose down
 {
   "code": 400,
   "status": "BAD_REQUEST",
-  "errors": {
+  "error": {
+    "message": "invalid param",
     "password": "invalid old password"
   },
   "data": null
@@ -207,7 +209,7 @@ docker-compose down
 {
   "code": 200,
   "status": "OK",
-  "errors": null,
+  "error": null,
   "data": [
     {
       "label": "Spanduk & Banner",
@@ -235,7 +237,7 @@ docker-compose down
 {
   "code": 404,
   "status": "NOT_FOUND",
-  "errors": {
+  "error": {
     "message": "categories empty"
   },
   "data": null
@@ -259,7 +261,7 @@ docker-compose down
 {
   "code": 200,
   "status": "OK",
-  "errors": null,
+  "error": null,
   "data": [
     {
       "id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
@@ -292,7 +294,8 @@ docker-compose down
 {
   "code": 400,
   "status": "BAD_REQUEST",
-  "errors": {
+  "error": {
+    "message": "invalid param",
     "category": "invaild category"
   },
   "data": null

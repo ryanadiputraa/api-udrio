@@ -1,8 +1,19 @@
 package domain
 
 import (
+	"context"
 	"time"
+
+	"gorm.io/gorm"
 )
+
+type IProductRepository interface {
+	GetProductList(ctx context.Context, db *gorm.DB, page int) ([]Product, error)
+}
+
+type IProductService interface {
+	GetProductList(ctx context.Context, page int) ([]Product, error)
+}
 
 type Product struct {
 	ID          string `gorm:"primaryKey"`
@@ -24,7 +35,7 @@ type ProductImage struct {
 }
 
 type ProductCategory struct {
-	ID       string `gorm:"primaryKey"`
+	ID       int    `gorm:"primaryKey;type:serial"`
 	Category string `gorm:"not null;type:varchar(100)"`
 	Icon     string `gorm:"not null;type:varchar(256)"`
 }
