@@ -10,8 +10,7 @@ RUN go mod download
 COPY . .
 COPY .udrio.yml ./
 
-RUN go build -o /api-udrio
+#Setup hot-reload for dev stage
+RUN go install -mod=mod github.com/githubnemo/CompileDaemon
 
-EXPOSE 8080
-
-CMD ["/api-udrio"]
+ENTRYPOINT CompileDaemon --build="go build main.go" --command="./main"

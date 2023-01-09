@@ -1,11 +1,17 @@
 version: "3.9"
 services:
-  api:
+  server:
+    container_name: golang_server
     build:
       context: .
       dockerfile: Dockerfile
+    depends_on:
+      - postgres
     ports:
       - "8080:8080"
+    restart: always
+    volumes:
+      - .:/app
   postgres:
     container_name: udrio_postgres
     image: postgres:15.1-alpine
@@ -17,6 +23,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres-db:/data/udrio
+    healthcheck:
+      test: "exit 0"
 volumes:
   postgres-db:
     driver: local
