@@ -7,6 +7,7 @@ import (
 
 type IProductRepository interface {
 	GetProductList(ctx context.Context, page int, categoryID int) ([]ProductDTO, error)
+	GetProductImages(ctx context.Context, productID string) ([]string, error)
 }
 
 type IProductService interface {
@@ -27,14 +28,14 @@ type Product struct {
 }
 
 type ProductDTO struct {
-	ID          string         `json:"id"`
-	ProductName string         `json:"product_name"`
-	CategoryID  int            `json:"category_id"`
-	Price       int            `json:"price"`
-	Available   bool           `json:"available"`
-	Description string         `json:"description"`
-	MinOrder    int            `json:"min_order"`
-	Images      []ProductImage `json:"images" gorm:"foreignKey:ProductID"`
+	ID          string   `json:"id"`
+	ProductName string   `json:"product_name"`
+	CategoryID  int      `json:"category_id"`
+	Price       int      `json:"price"`
+	Available   bool     `json:"available"`
+	Description string   `json:"description"`
+	MinOrder    int      `json:"min_order"`
+	Images      []string `json:"images"`
 }
 
 type ProductImage struct {
