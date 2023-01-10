@@ -212,19 +212,19 @@ docker-compose down
   "error": null,
   "data": [
     {
-      "label": "Spanduk & Banner",
+      "category": "Spanduk & Banner",
       "icon": "https://domain.com/ico.png"
     },
     {
-      "label": "Cetak Kalender & Kartu Nama",
+      "category": "Cetak Kalender & Kartu Nama",
       "icon": "https://domain.com/ico.png"
     },
     {
-      "label": "Undangan, Karcis/Tiket & Foto",
+      "category": "Undangan, Karcis/Tiket & Foto",
       "icon": "https://domain.com/ico.png"
     },
     {
-      "label": "Perkantoran",
+      "category": "Perkantoran",
       "icon": "https://domain.com/ico.png"
     }
   ]
@@ -266,6 +266,7 @@ docker-compose down
     {
       "id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
       "product_name": "Kop Surat",
+      "category_id": 1,
       "price": 7500,
       "available": true,
       "images": [
@@ -278,6 +279,7 @@ docker-compose down
     {
       "id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI6",
       "product_name": "Nama Dada / Namepin Gravir Hitam Standar Uk. 2x8cm",
+      "category_id": 2,
       "price": 30000,
       "available": false,
       "images": ["https://domain.com/image.png"],

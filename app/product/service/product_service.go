@@ -14,7 +14,7 @@ func NewProductService(repository domain.IProductRepository) domain.IProductServ
 	return &ProductService{productRepository: repository}
 }
 
-func (s *ProductService) GetProductList(ctx context.Context, page int, category string) ([]domain.ProductDTO, error) {
+func (s *ProductService) GetProductList(ctx context.Context, page int, category int) ([]domain.ProductDTO, error) {
 	products, err := s.productRepository.GetProductList(ctx, page, category)
 	if err != nil {
 		return nil, err

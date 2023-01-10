@@ -22,7 +22,7 @@ func NewProductHandler(rg *gin.RouterGroup, service domain.IProductService) {
 
 func (h *ProductHandler) GetProductList(c *gin.Context) {
 	pageParam := c.Query("page")
-	category := c.Query("category")
+	categoryParam := c.Query("category_id")
 
 	// Validate page param
 	page, err := strconv.Atoi(pageParam)
@@ -35,6 +35,16 @@ func (h *ProductHandler) GetProductList(c *gin.Context) {
 	}
 	if pageParam == "" {
 		page = 1
+	}
+
+	// Validate category_id param
+	category, err := strconv.Atoi(categoryParam)
+	if err != nil && categoryParam != "" {
+		errMsg := map[string]string{
+			"message": "invalid category_id param type, expected int",
+		}
+		c.JSON(http.StatusBadRequest, utils.HttpResponse(http.StatusBadRequest, errMsg, nil))
+		return
 	}
 
 	// Get list of products

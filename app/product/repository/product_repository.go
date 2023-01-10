@@ -15,15 +15,15 @@ func NewProductRepository(conn *gorm.DB) domain.IProductRepository {
 	return &ProductRepository{db: conn}
 }
 
-func (r *ProductRepository) GetProductList(ctx context.Context, page int, category string) ([]domain.ProductDTO, error) {
+func (r *ProductRepository) GetProductList(ctx context.Context, page int, category int) ([]domain.ProductDTO, error) {
 	var products []domain.ProductDTO
 
-	modelQuery := r.db.Limit(50).Model(&domain.Product{}).Preload("ProductImage").Where("product_categories.category = ?", category)
-	if len(category) == 0 {
-		modelQuery = r.db.Limit(50).Model(&domain.Product{}).Preload("ProductImage")
+	modelQuery := r.db.Limit(50).Model(&domain.Product{}).Where("products.category_id = ?", category)
+	if category == 0 {
+		modelQuery = r.db.Limit(50).Model(&domain.Product{})
 	}
 
-	modelQuery.Select("products.id, products.product_name, product_categories.category, products.price, products.available, products.description, products.min_order").Joins("left join product_categories on product_categories.id = products.category_id").Scan(&products)
+	modelQuery.Select("products.id, products.product_name, products.category_id, products.price, products.available, products.description, products.min_order").Scan(&products)
 
 	return products, nil
 }
