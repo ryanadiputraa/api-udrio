@@ -23,8 +23,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres-db:/data/udrio
-    healthcheck:
-      test: "exit 0"
 volumes:
   postgres-db:
     driver: local

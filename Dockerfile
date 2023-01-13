@@ -12,4 +12,4 @@ COPY . .
 #Setup hot-reload for dev stage
 RUN go install -mod=mod github.com/githubnemo/CompileDaemon
 
-ENTRYPOINT CompileDaemon --build="go build main.go" --command="./main"
+ENTRYPOINT CompileDaemon --build="go build -o /api-udrio" --command="/api-udrio"
