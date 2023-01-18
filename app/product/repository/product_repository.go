@@ -23,7 +23,7 @@ func (r *ProductRepository) GetProductList(ctx context.Context, page int, catego
 		modelQuery = r.db.Model(&domain.Product{})
 	}
 
-	rows, err := modelQuery.Limit(50).Order("available desc, updated_at desc, created_at desc").Select("products.id, products.product_name, products.category_id, products.price, products.available, products.description, products.min_order").Rows()
+	rows, err := modelQuery.Limit(50).Order("available desc, updated_at desc, created_at desc").Select("products.id, products.product_name, products.category_id, product_categories.category, products.price, products.available, products.description, products.min_order").Joins("left join product_categories on product_categories.category_id = products.category_id").Rows()
 
 	if err != nil {
 		return nil, err
@@ -31,21 +31,13 @@ func (r *ProductRepository) GetProductList(ctx context.Context, page int, catego
 	defer rows.Close()
 
 	for rows.Next() {
-		var product domain.Product
 		var productDTO domain.ProductDTO
-		r.db.ScanRows(rows, &product)
+		r.db.ScanRows(rows, &productDTO)
 
-		productImages, err := r.GetProductImages(ctx, product.ID)
+		productImages, err := r.GetProductImages(ctx, productDTO.ID)
 		if err != nil {
 			return nil, err
 		}
-		productDTO.ID = product.ID
-		productDTO.ProductName = product.ProductName
-		productDTO.CategoryID = product.CategoryID
-		productDTO.Price = product.Price
-		productDTO.Available = product.Available
-		productDTO.Description = product.Description
-		productDTO.MinOrder = product.MinOrder
 		productDTO.Images = productImages
 		products = append(products, productDTO)
 	}
