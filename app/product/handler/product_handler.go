@@ -62,7 +62,7 @@ func (h *ProductHandler) GetProductList(c *gin.Context) {
 		errMsg := map[string]string{
 			"message": "no product found",
 		}
-		c.JSON(http.StatusNotFound, utils.HttpResponse(http.StatusNotFound, errMsg, []domain.ProductDTO{}))
+		c.JSON(http.StatusNotFound, utils.HttpResponse(http.StatusNotFound, errMsg, []domain.Product{}))
 		return
 	}
 

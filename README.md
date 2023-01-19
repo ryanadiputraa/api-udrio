@@ -270,8 +270,11 @@ docker-compose down
     {
       "id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
       "product_name": "Kop Surat",
-      "category_id": 1,
-      "category": "ATK",
+      "product_category": {
+        "category_id": 1,
+        "category": "ATK",
+        "icon": "https://domain.com/image.png"
+      },
       "price": 7500,
       "available": true,
       "images": [
@@ -279,18 +282,25 @@ docker-compose down
         "https://domain.com/image2.png"
       ],
       "description": "Menggunakan kertas  NCR, ukuran 1/8 Folio 1 blok 1 Ply isi 100 lbr, 1 blok 2-4 Ply isi 50 set, Urutan warna pertama selalu putih",
-      "min_order": 24
+      "min_order": 24,
+      "created_at": "2023-01-18T12:03:56.595459Z",
+      "updated_at": "2023-01-18T12:03:56.595459Z"
     },
     {
       "id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI6",
       "product_name": "Nama Dada / Namepin Gravir Hitam Standar Uk. 2x8cm",
-      "category_id": 2,
-      "category": "Spanduk",
+      "product_category": {
+        "category_id": 2,
+        "category": "Aksesoris",
+        "icon": "https://domain.com/image.png"
+      },
       "price": 30000,
       "available": false,
       "images": ["https://domain.com/image.png"],
       "description": "Nama dada berbahan PVC Warna Hitam digravir dengan mesin Laser Uk. 2x8 cm pakai Peniti. Bisa juga pakai magnet atau paku",
-      "min_order": 1
+      "min_order": 1,
+      "created_at": "2023-01-18T12:03:56.595459Z",
+      "updated_at": "2023-01-18T12:03:56.595459Z"
     }
   ]
 }
