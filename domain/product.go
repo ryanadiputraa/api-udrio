@@ -22,9 +22,9 @@ type Product struct {
 	IsAvailable       bool            `gorm:"not null" json:"is_available"`
 	Description       string          `json:"description"`
 	MinOrder          int             `gorm:"not null" json:"min_order"`
-	// Images          []ProductImage `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	CreatedAt time.Time `gorm:"not null" json:"created_at"`
-	UpdatedAt time.Time `gorm:"not null" json:"updated_at"`
+	ProductImages     []ProductImage  `json:"images"`
+	CreatedAt         time.Time       `gorm:"not null" json:"created_at"`
+	UpdatedAt         time.Time       `gorm:"not null" json:"updated_at"`
 }
 
 type ProductCategory struct {
@@ -34,8 +34,9 @@ type ProductCategory struct {
 	Products []Product `json:"-"`
 }
 
-// type ProductImage struct {
-// 	ID       string `gorm:"primaryKey"`
-// 	Image    string `gorm:"not null;type:varchar(256)"`
-// 	Products []Product
-// }
+type ProductImage struct {
+	ID        string  `gorm:"primaryKey" json:"image_id"`
+	Image     string  `gorm:"not null;type:varchar(256)" json:"url"`
+	ProductID string  `json:"-"`
+	Product   Product `json:"-"`
+}

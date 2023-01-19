@@ -23,7 +23,7 @@ func (r *ProductRepository) GetProductList(ctx context.Context, page int, catego
 		modelQuery = r.db.Model(&domain.Product{}).Joins("ProductCategory")
 	}
 
-	err := modelQuery.Limit(50).Order("is_available desc, updated_at desc, created_at desc").Find(&products).Error
+	err := modelQuery.Preload("ProductImages").Limit(50).Order("is_available desc, updated_at desc, created_at desc").Find(&products).Error
 	if err != nil {
 		return nil, err
 	}

@@ -278,8 +278,14 @@ docker-compose down
       "price": 7500,
       "available": true,
       "images": [
-        "https://domain.com/image.png",
-        "https://domain.com/image2.png"
+        {
+          "image_id": "jkl",
+          "url": "product_image"
+        },
+        {
+          "image_id": "ijkl",
+          "url": "image2"
+        }
       ],
       "description": "Menggunakan kertas  NCR, ukuran 1/8 Folio 1 blok 1 Ply isi 100 lbr, 1 blok 2-4 Ply isi 50 set, Urutan warna pertama selalu putih",
       "min_order": 24,
@@ -296,7 +302,16 @@ docker-compose down
       },
       "price": 30000,
       "available": false,
-      "images": ["https://domain.com/image.png"],
+      "images": [
+        {
+          "image_id": "jkl",
+          "url": "product_image"
+        },
+        {
+          "image_id": "ijkl",
+          "url": "image2"
+        }
+      ],
       "description": "Nama dada berbahan PVC Warna Hitam digravir dengan mesin Laser Uk. 2x8 cm pakai Peniti. Bisa juga pakai magnet atau paku",
       "min_order": 1,
       "created_at": "2023-01-18T12:03:56.595459Z",
