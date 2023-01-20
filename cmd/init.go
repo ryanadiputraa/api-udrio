@@ -23,5 +23,12 @@ func loadConfig() {
 }
 
 func Execute() {
+	env := viper.GetString("ENV")
+	if env == "dev" {
+		err := database.DBSeed(database.DB)
+		if err != nil {
+			log.Fatalf("db seed: %s", err.Error())
+		}
+	}
 	serveHTTP()
 }
