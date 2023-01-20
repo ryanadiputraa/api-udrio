@@ -17,6 +17,7 @@ func NewProductHandler(rg *gin.RouterGroup, service domain.IProductService) {
 	handler := &ProductHandler{productService: service}
 	router := rg.Group("/products")
 
+	rg.GET("/categories/", handler.GetProductCategoryList)
 	router.GET("/", handler.GetProductList)
 }
 
@@ -67,4 +68,26 @@ func (h *ProductHandler) GetProductList(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, products))
+}
+
+func (h *ProductHandler) GetProductCategoryList(c *gin.Context) {
+	categories, err := h.productService.GetProductCategoryList(c)
+	if err != nil {
+		errMsg := map[string]string{
+			"message": err.Error(),
+		}
+		c.JSON(http.StatusInternalServerError, utils.HttpResponse(http.StatusInternalServerError, errMsg, nil))
+		return
+	}
+
+	// Handle empty categories
+	if len(categories) == 0 {
+		errMsg := map[string]string{
+			"message": "no product categories found",
+		}
+		c.JSON(http.StatusNotFound, utils.HttpResponse(http.StatusNotFound, errMsg, []domain.ProductCategory{}))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, categories))
 }

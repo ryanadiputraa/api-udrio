@@ -7,10 +7,12 @@ import (
 
 type IProductRepository interface {
 	GetProductList(ctx context.Context, page int, categoryID int) ([]Product, error)
+	GetProductCategoryList(ctx context.Context) ([]ProductCategory, error)
 }
 
 type IProductService interface {
 	GetProductList(ctx context.Context, page int, categoryID int) ([]Product, error)
+	GetProductCategoryList(ctx context.Context) ([]ProductCategory, error)
 }
 
 type Product struct {

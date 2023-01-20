@@ -30,3 +30,14 @@ func (r *ProductRepository) GetProductList(ctx context.Context, page int, catego
 
 	return products, nil
 }
+
+func (r *ProductRepository) GetProductCategoryList(ctx context.Context) ([]domain.ProductCategory, error) {
+	var categories []domain.ProductCategory
+
+	err := r.db.Model(&domain.ProductCategory{}).Find(&categories).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return categories, nil
+}

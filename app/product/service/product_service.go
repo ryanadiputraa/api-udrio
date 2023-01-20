@@ -21,3 +21,11 @@ func (s *ProductService) GetProductList(ctx context.Context, page int, category 
 	}
 	return products, nil
 }
+
+func (s *ProductService) GetProductCategoryList(ctx context.Context) ([]domain.ProductCategory, error) {
+	categories, err := s.productRepository.GetProductCategoryList(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return categories, nil
+}
