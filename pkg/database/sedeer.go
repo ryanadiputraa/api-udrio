@@ -49,7 +49,7 @@ func getCategorySedeers() []Sedeer {
 }
 
 func getProductSedeers() []Sedeer {
-	productIDs := []string{"uuidp1", "uuidp2"}
+	productIDs := []string{"uuidp1", "uuidp2", "uuidp3"}
 
 	return []Sedeer{
 		// product 1
@@ -90,6 +90,23 @@ func getProductSedeers() []Sedeer {
 			ID:        "img1p2",
 			Image:     "https://www.riodigitalprint.com/liteprint/application/liteprint/rio/assets/product_image/1584693200182-ROLLBANNER-KOSONGAN.jpg",
 			ProductID: productIDs[1],
+		}},
+		// product 3
+		{Sedeer: &domain.Product{
+			ID:                productIDs[2],
+			ProductName:       "X-Banner",
+			ProductCategoryID: 1,
+			Price:             50000,
+			IsAvailable:       true,
+			Description:       "Kaki X Banner Tanpa Cetak",
+			MinOrder:          1,
+			CreatedAt:         time.Now(),
+			UpdatedAt:         time.Now(),
+		}},
+		{Sedeer: &domain.ProductImage{
+			ID:        "img1p3",
+			Image:     "https://www.riodigitalprint.com/liteprint/application/liteprint/rio/assets/product_image/1584692482173-xbanner-kosongan.jpg",
+			ProductID: productIDs[2],
 		}},
 	}
 }

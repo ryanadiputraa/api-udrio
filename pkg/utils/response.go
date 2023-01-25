@@ -26,3 +26,17 @@ func HttpResponse(code int, errors interface{}, data interface{}) gin.H {
 		"data":   data,
 	}
 }
+
+func HttpResponseWithMetaData(code int, errors interface{}, data interface{}, meta interface{}) gin.H {
+	if errors == nil {
+		errors = ""
+	}
+
+	return gin.H{
+		"code":   code,
+		"status": status[code],
+		"error":  errors,
+		"data":   data,
+		"meta":   meta,
+	}
+}

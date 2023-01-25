@@ -15,20 +15,20 @@ func NewProductRepository(conn *gorm.DB) domain.IProductRepository {
 	return &ProductRepository{db: conn}
 }
 
-func (r *ProductRepository) GetProductList(ctx context.Context, page int, category int) ([]domain.Product, error) {
-	var products []domain.Product
+func (r *ProductRepository) GetProductList(ctx context.Context, size int, offset int, category int) (products []domain.Product, count int64, err error) {
+	r.db.Model(&domain.Product{}).Count(&count)
 
 	modelQuery := r.db.Model(&domain.Product{}).Joins("ProductCategory", r.db.Where(&domain.ProductCategory{ID: category}))
 	if category == 0 {
 		modelQuery = r.db.Model(&domain.Product{}).Joins("ProductCategory")
 	}
 
-	err := modelQuery.Preload("ProductImages").Limit(50).Order("is_available desc, updated_at desc, created_at desc").Find(&products).Error
+	err = modelQuery.Preload("ProductImages").Limit(size).Offset(offset).Order("is_available desc, updated_at desc, created_at desc").Find(&products).Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return products, nil
+	return products, count, nil
 }
 
 func (r *ProductRepository) GetProductCategoryList(ctx context.Context) ([]domain.ProductCategory, error) {

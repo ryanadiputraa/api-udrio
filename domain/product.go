@@ -3,15 +3,17 @@ package domain
 import (
 	"context"
 	"time"
+
+	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
 )
 
 type IProductRepository interface {
-	GetProductList(ctx context.Context, page int, categoryID int) ([]Product, error)
+	GetProductList(ctx context.Context, limit int, offset int, categoryID int) (products []Product, count int64, err error)
 	GetProductCategoryList(ctx context.Context) ([]ProductCategory, error)
 }
 
 type IProductService interface {
-	GetProductList(ctx context.Context, page int, categoryID int) ([]Product, error)
+	GetProductList(ctx context.Context, size int, page int, categoryID int) (products []Product, meta pagination.Page, err error)
 	GetProductCategoryList(ctx context.Context) ([]ProductCategory, error)
 }
 

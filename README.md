@@ -253,6 +253,7 @@ docker-compose down
 - Method: `GET`
 - Endpoint: `/api/products/`
 - Params:
+  - size: `20`
   - page: `1`
   - category_id: `1` (optional)
 - Header:
@@ -317,7 +318,14 @@ docker-compose down
       "created_at": "2023-01-18T12:03:56.595459Z",
       "updated_at": "2023-01-18T12:03:56.595459Z"
     }
-  ]
+  ],
+  "meta": {
+    "current_page": 1,
+    "total_page": 10,
+    "total_data": 200,
+    "next_page": 2,
+    "previous_page": 1
+  }
 }
 ```
 
