@@ -19,6 +19,12 @@ To stop dev server simply run
 docker-compose down
 ```
 
+or for momentary stop so you don't need to create a new container
+
+```bash
+docker-compose stop
+```
+
 ### Authentication
 
 ---
