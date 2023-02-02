@@ -41,6 +41,14 @@ func (s *ProductService) GetProductList(ctx context.Context, size int, page int,
 	return products, meta, nil
 }
 
+func (s *ProductService) GetProductDetail(ctx context.Context, productID string) (domain.Product, error) {
+	product, err := s.productRepository.GetProduct(ctx, productID)
+	if err != nil {
+		return product, err
+	}
+	return product, nil
+}
+
 func (s *ProductService) GetProductCategoryList(ctx context.Context) ([]domain.ProductCategory, error) {
 	categories, err := s.productRepository.GetProductCategoryList(ctx)
 	if err != nil {

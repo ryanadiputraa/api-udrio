@@ -31,6 +31,17 @@ func (r *ProductRepository) GetProductList(ctx context.Context, size int, offset
 	return products, count, nil
 }
 
+func (r *ProductRepository) GetProduct(ctx context.Context, productID string) (domain.Product, error) {
+	var product domain.Product
+
+	err := r.db.Model(&domain.Product{}).Joins("ProductCategory").Where(&domain.Product{ID: productID}).Preload("ProductImages").First(&product).Error
+	if err != nil {
+		return product, err
+	}
+
+	return product, nil
+}
+
 func (r *ProductRepository) GetProductCategoryList(ctx context.Context) ([]domain.ProductCategory, error) {
 	var categories []domain.ProductCategory
 

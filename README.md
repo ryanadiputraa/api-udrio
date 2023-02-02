@@ -342,3 +342,59 @@ docker-compose down
   "data": null
 }
 ```
+
+### --- Product Detail ---
+
+- Method: `GET`
+- Endpoint: `/api/products/{product_id}`
+- Header:
+
+  - Content-Type: `application/json`
+
+- Response:
+
+```json
+{
+  "code": 200,
+  "status": "OK",
+  "error": null,
+  "data": {
+    "id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+    "product_name": "Kop Surat",
+    "product_category": {
+      "category_id": 1,
+      "category": "ATK",
+      "icon": "https://domain.com/image.png"
+    },
+    "price": 7500,
+    "available": true,
+    "images": [
+      {
+        "image_id": "jkl",
+        "url": "product_image"
+      },
+      {
+        "image_id": "ijkl",
+        "url": "image2"
+      }
+    ],
+    "description": "Menggunakan kertas  NCR, ukuran 1/8 Folio 1 blok 1 Ply isi 100 lbr, 1 blok 2-4 Ply isi 50 set, Urutan warna pertama selalu putih",
+    "min_order": 24,
+    "created_at": "2023-01-18T12:03:56.595459Z",
+    "updated_at": "2023-01-18T12:03:56.595459Z"
+  }
+}
+```
+
+- Error Response
+
+```json
+{
+  "code": 400,
+  "status": "BAD_REQUEST",
+  "error": {
+    "message": "record not found"
+  },
+  "data": null
+}
+```

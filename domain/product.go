@@ -9,11 +9,13 @@ import (
 
 type IProductRepository interface {
 	GetProductList(ctx context.Context, limit int, offset int, categoryID int) (products []Product, count int64, err error)
+	GetProduct(ctx context.Context, productID string) (Product, error)
 	GetProductCategoryList(ctx context.Context) ([]ProductCategory, error)
 }
 
 type IProductService interface {
 	GetProductList(ctx context.Context, size int, page int, categoryID int) (products []Product, meta pagination.Page, err error)
+	GetProductDetail(ctx context.Context, productID string) (Product, error)
 	GetProductCategoryList(ctx context.Context) ([]ProductCategory, error)
 }
 
@@ -41,6 +43,6 @@ type ProductCategory struct {
 type ProductImage struct {
 	ID        string  `gorm:"primaryKey" json:"image_id"`
 	Image     string  `gorm:"not null;type:varchar(256)" json:"url"`
-	ProductID string  `json:"-"`
+	ProductID string  `gorm:"index" json:"-"`
 	Product   Product `json:"-"`
 }

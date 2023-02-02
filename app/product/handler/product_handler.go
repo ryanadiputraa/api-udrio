@@ -19,6 +19,7 @@ func NewProductHandler(rg *gin.RouterGroup, service domain.IProductService) {
 
 	rg.GET("/categories/", handler.GetProductCategoryList)
 	router.GET("/", handler.GetProductList)
+	router.GET("/:product_id", handler.GetProductDetail)
 }
 
 func (h *ProductHandler) GetProductList(c *gin.Context) {
@@ -46,6 +47,21 @@ func (h *ProductHandler) GetProductList(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, utils.HttpResponseWithMetaData(http.StatusOK, nil, products, meta))
+}
+
+func (h *ProductHandler) GetProductDetail(c *gin.Context) {
+	productID := c.Param("product_id")
+
+	product, err := h.productService.GetProductDetail(c, productID)
+	if err != nil {
+		errMsg := map[string]string{
+			"message": err.Error(),
+		}
+		c.JSON(http.StatusBadRequest, utils.HttpResponse(http.StatusBadRequest, errMsg, nil))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, product))
 }
 
 func (h *ProductHandler) GetProductCategoryList(c *gin.Context) {
