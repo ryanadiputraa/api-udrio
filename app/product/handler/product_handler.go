@@ -17,7 +17,7 @@ func NewProductHandler(rg *gin.RouterGroup, service domain.IProductService) {
 	handler := &ProductHandler{productService: service}
 	router := rg.Group("/products")
 
-	rg.GET("/categories/", handler.GetProductCategoryList)
+	rg.GET("/categories", handler.GetProductCategoryList)
 	router.GET("/", handler.GetProductList)
 	router.GET("/:product_id", handler.GetProductDetail)
 }

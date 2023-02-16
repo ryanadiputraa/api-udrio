@@ -40,7 +40,7 @@ func getCategorySedeers() []Sedeer {
 		{Sedeer: &domain.ProductCategory{
 			ID:       3,
 			Category: "Aksesoris Merchandise",
-			Icon:     "https://www.riodigitalprint.com/liteprint/applicat…uct_category/e5ccd28a1b37fc4523864fcda30149d5.png"}},
+			Icon:     "https://www.riodigitalprint.com/liteprint/application/liteprint/rio/assets/product_category/e5ccd28a1b37fc4523864fcda30149d5.png"}},
 		{Sedeer: &domain.ProductCategory{
 			ID:       4,
 			Category: "Fotak & Frame",
