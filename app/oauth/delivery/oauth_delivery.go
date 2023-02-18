@@ -12,12 +12,14 @@ import (
 )
 
 type oAuthDevlivery struct {
-	handler domain.IOAuthHandler
+	handler     domain.IOAuthHandler
+	userHandler domain.IUserHandler
 }
 
-func NewOAuthDelivery(rg *gin.RouterGroup, handler domain.IOAuthHandler) {
+func NewOAuthDelivery(rg *gin.RouterGroup, handler domain.IOAuthHandler, userHandler domain.IUserHandler) {
 	delivery := &oAuthDevlivery{
-		handler: handler,
+		handler:     handler,
+		userHandler: userHandler,
 	}
 	rg.GET("/login/google", delivery.LoginGoogle)
 	rg.GET("/callback", delivery.Callback)
@@ -44,6 +46,21 @@ func (d *oAuthDevlivery) Callback(c *gin.Context) {
 		return
 	}
 
+	// save or update user
+	userData := domain.User{
+		ID:      user.ID,
+		Name:    user.Name,
+		Email:   user.Email,
+		Picture: user.Picture,
+		Locale:  user.Locale,
+	}
+	err = d.userHandler.CreateOrUpdateIfExist(c, userData)
+
+	if err != nil {
+		oauth.RedirectWithError(c, err.Error())
+		return
+	}
+
 	// generate access token
 	tokens, err := d.handler.GenerateAccessToken(c, user.ID)
 	if err != nil {
@@ -51,6 +68,5 @@ func (d *oAuthDevlivery) Callback(c *gin.Context) {
 		return
 	}
 
-	// c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, user))
 	oauth.RedirectWithAccessToken(c, tokens)
 }

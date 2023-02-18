@@ -39,5 +39,9 @@ func (h *oAuthHandler) HandleCallback(ctx context.Context, code string) (user do
 }
 
 func (h *oAuthHandler) GenerateAccessToken(ctx context.Context, userID interface{}) (domain.Tokens, error) {
-	return domain.Tokens{}, nil
+	return domain.Tokens{
+		AccessToken:  "access_token",
+		ExpiresIn:    3600,
+		RefreshToken: "refresh_token",
+	}, nil
 }
