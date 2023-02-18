@@ -22,10 +22,10 @@ func GetGoogleOauthConfig() *oauth2.Config {
 
 func RedirectWithError(c *gin.Context, err string) {
 	redirectURL := viper.GetString("OAUTH_REDIRECT_URL")
-	http.Redirect(c.Writer, c.Request, fmt.Sprintf("%s?err=%s", redirectURL, err), http.StatusTemporaryRedirect)
+	c.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf("%s?err=%s", redirectURL, err))
 }
 
 func RedirectWithAccessToken(c *gin.Context, accessToken string) {
 	redirectURL := viper.GetString("OAUTH_REDIRECT_URL")
-	http.Redirect(c.Writer, c.Request, fmt.Sprintf("%s?access_token=%s", redirectURL, accessToken), http.StatusTemporaryRedirect)
+	c.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf("%s?access_token=%s", redirectURL, accessToken))
 }

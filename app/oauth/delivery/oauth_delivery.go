@@ -26,7 +26,7 @@ func NewOAuthDelivery(rg *gin.RouterGroup, handler domain.IOAuthHandler) {
 
 func (d *oAuthDevlivery) LoginGoogle(c *gin.Context) {
 	url := oauth.GetGoogleOauthConfig().AuthCodeURL(viper.GetString("OAUTH_STATE"))
-	http.Redirect(c.Writer, c.Request, url, http.StatusTemporaryRedirect)
+	c.Redirect(http.StatusTemporaryRedirect, url)
 }
 
 func (d *oAuthDevlivery) Callback(c *gin.Context) {

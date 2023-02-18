@@ -22,6 +22,8 @@ func serveHTTP() {
 	r.SetTrustedProxies(nil)
 
 	// Middlewares
+	r.Use(gin.Recovery())
+	r.Use(gin.Logger())
 	r.Use(cors.CORSMiddleware())
 
 	oauth2 := r.Group("/oauth2")
