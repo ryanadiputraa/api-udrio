@@ -3,6 +3,8 @@ package delivery
 import (
 	"net/http"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/oauth"
@@ -32,6 +34,7 @@ func (d *oAuthDevlivery) Callback(c *gin.Context) {
 	code := c.Query("code")
 
 	if state != viper.GetString("OAUTH_STATE") {
+		log.Error("state is not valid")
 		oauth.RedirectWithError(c, "state is not valid")
 		return
 	}

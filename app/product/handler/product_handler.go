@@ -5,6 +5,7 @@ import (
 
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
+	log "github.com/sirupsen/logrus"
 )
 
 type productHandler struct {
@@ -26,6 +27,7 @@ func (h *productHandler) GetProductList(ctx context.Context, size int, page int,
 	offset := pagination.Offset(size, page)
 	products, count, err := h.productRepository.Fetch(ctx, size, offset, category)
 	if err != nil {
+		log.Error("failed to fetch products: ", err.Error())
 		return nil, pagination.Page{}, err
 	}
 
@@ -44,6 +46,7 @@ func (h *productHandler) GetProductList(ctx context.Context, size int, page int,
 func (h *productHandler) GetProductDetail(ctx context.Context, productID string) (domain.Product, error) {
 	product, err := h.productRepository.FindByID(ctx, productID)
 	if err != nil {
+		log.Error("failed to find product: ", err.Error())
 		return product, err
 	}
 	return product, nil
@@ -52,6 +55,7 @@ func (h *productHandler) GetProductDetail(ctx context.Context, productID string)
 func (h *productHandler) GetProductCategoryList(ctx context.Context) ([]domain.ProductCategory, error) {
 	categories, err := h.productRepository.FetchCategory(ctx)
 	if err != nil {
+		log.Error("failed to fetch categories: ", err.Error())
 		return nil, err
 	}
 	return categories, nil
