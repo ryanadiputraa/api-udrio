@@ -7,15 +7,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type ProductRepository struct {
+type productRepository struct {
 	db *gorm.DB
 }
 
 func NewProductRepository(conn *gorm.DB) domain.IProductRepository {
-	return &ProductRepository{db: conn}
+	return &productRepository{db: conn}
 }
 
-func (r *ProductRepository) GetProductList(ctx context.Context, size int, offset int, category int) (products []domain.Product, count int64, err error) {
+func (r *productRepository) Fetch(ctx context.Context, size int, offset int, category int) (products []domain.Product, count int64, err error) {
 	r.db.Model(&domain.Product{}).Count(&count)
 
 	modelQuery := r.db.Model(&domain.Product{}).Joins("ProductCategory", r.db.Where(&domain.ProductCategory{ID: category}))
@@ -31,7 +31,7 @@ func (r *ProductRepository) GetProductList(ctx context.Context, size int, offset
 	return products, count, nil
 }
 
-func (r *ProductRepository) GetProduct(ctx context.Context, productID string) (domain.Product, error) {
+func (r *productRepository) FindByID(ctx context.Context, productID string) (domain.Product, error) {
 	var product domain.Product
 
 	err := r.db.Model(&domain.Product{}).Joins("ProductCategory").Where(&domain.Product{ID: productID}).Preload("ProductImages").First(&product).Error
@@ -42,7 +42,7 @@ func (r *ProductRepository) GetProduct(ctx context.Context, productID string) (d
 	return product, nil
 }
 
-func (r *ProductRepository) GetProductCategoryList(ctx context.Context) ([]domain.ProductCategory, error) {
+func (r *productRepository) FetchCategory(ctx context.Context) ([]domain.ProductCategory, error) {
 	var categories []domain.ProductCategory
 
 	err := r.db.Model(&domain.ProductCategory{}).Find(&categories).Error

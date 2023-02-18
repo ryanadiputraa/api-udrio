@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-type IOAuthService interface {
+type IOAuthHandler interface {
 	HandleCallback(ctx context.Context, code string) (user GoogleProfile, err error)
 }
 

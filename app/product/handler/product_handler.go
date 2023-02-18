@@ -1,87 +1,58 @@
 package handler
 
 import (
-	"net/http"
-	"strconv"
+	"context"
 
-	"github.com/gin-gonic/gin"
 	"github.com/ryanadiputraa/api-udrio/domain"
-	"github.com/ryanadiputraa/api-udrio/pkg/utils"
+	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
 )
 
-type ProductHandler struct {
-	productService domain.IProductService
+type productHandler struct {
+	productRepository domain.IProductRepository
 }
 
-func NewProductHandler(rg *gin.RouterGroup, service domain.IProductService) {
-	handler := &ProductHandler{productService: service}
-	router := rg.Group("/products")
-
-	rg.GET("/categories", handler.GetProductCategoryList)
-	router.GET("/", handler.GetProductList)
-	router.GET("/:product_id", handler.GetProductDetail)
+func NewProductHandler(repository domain.IProductRepository) domain.IProductHandler {
+	return &productHandler{productRepository: repository}
 }
 
-func (h *ProductHandler) GetProductList(c *gin.Context) {
-	size, _ := strconv.Atoi(c.Query("size"))
-	page, _ := strconv.Atoi(c.Query("page"))
-	category, _ := strconv.Atoi(c.Query("category_id"))
+func (h *productHandler) GetProductList(ctx context.Context, size int, page int, category int) (products []domain.Product, meta pagination.Page, err error) {
+	if size <= 0 {
+		size = 20
+	}
+	if page <= 0 {
+		page = 1
+	}
 
-	// Get list of products
-	products, meta, err := h.productService.GetProductList(c, size, page, category)
+	offset := pagination.Offset(size, page)
+	products, count, err := h.productRepository.Fetch(ctx, size, offset, category)
 	if err != nil {
-		errMsg := map[string]string{
-			"message": err.Error(),
-		}
-		c.JSON(http.StatusInternalServerError, utils.HttpResponse(http.StatusInternalServerError, errMsg, nil))
-		return
+		return nil, pagination.Page{}, err
 	}
 
-	// Handle empty product
-	if len(products) == 0 {
-		errMsg := map[string]string{
-			"message": "no product found",
-		}
-		c.JSON(http.StatusNotFound, utils.HttpResponse(http.StatusNotFound, errMsg, []domain.Product{}))
-		return
+	pages := *pagination.NewPagination(size, page, int(count))
+	meta = pagination.Page{
+		CurrentPage:  pages.Page,
+		TotalPage:    pages.TotalPage,
+		TotalData:    pages.TotalData,
+		NextPage:     pages.NextPage(),
+		PreviousPage: pages.PreviousPage(),
 	}
 
-	c.JSON(http.StatusOK, utils.HttpResponseWithMetaData(http.StatusOK, nil, products, meta))
+	return products, meta, nil
 }
 
-func (h *ProductHandler) GetProductDetail(c *gin.Context) {
-	productID := c.Param("product_id")
-
-	product, err := h.productService.GetProductDetail(c, productID)
+func (h *productHandler) GetProductDetail(ctx context.Context, productID string) (domain.Product, error) {
+	product, err := h.productRepository.FindByID(ctx, productID)
 	if err != nil {
-		errMsg := map[string]string{
-			"message": err.Error(),
-		}
-		c.JSON(http.StatusBadRequest, utils.HttpResponse(http.StatusBadRequest, errMsg, nil))
-		return
+		return product, err
 	}
-
-	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, product))
+	return product, nil
 }
 
-func (h *ProductHandler) GetProductCategoryList(c *gin.Context) {
-	categories, err := h.productService.GetProductCategoryList(c)
+func (h *productHandler) GetProductCategoryList(ctx context.Context) ([]domain.ProductCategory, error) {
+	categories, err := h.productRepository.FetchCategory(ctx)
 	if err != nil {
-		errMsg := map[string]string{
-			"message": err.Error(),
-		}
-		c.JSON(http.StatusInternalServerError, utils.HttpResponse(http.StatusInternalServerError, errMsg, nil))
-		return
+		return nil, err
 	}
-
-	// Handle empty categories
-	if len(categories) == 0 {
-		errMsg := map[string]string{
-			"message": "no product categories found",
-		}
-		c.JSON(http.StatusNotFound, utils.HttpResponse(http.StatusNotFound, errMsg, []domain.ProductCategory{}))
-		return
-	}
-
-	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, categories))
+	return categories, nil
 }

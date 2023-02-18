@@ -8,12 +8,12 @@ import (
 )
 
 type IProductRepository interface {
-	GetProductList(ctx context.Context, limit int, offset int, categoryID int) (products []Product, count int64, err error)
-	GetProduct(ctx context.Context, productID string) (Product, error)
-	GetProductCategoryList(ctx context.Context) ([]ProductCategory, error)
+	Fetch(ctx context.Context, limit int, offset int, categoryID int) (products []Product, count int64, err error)
+	FindByID(ctx context.Context, productID string) (Product, error)
+	FetchCategory(ctx context.Context) ([]ProductCategory, error)
 }
 
-type IProductService interface {
+type IProductHandler interface {
 	GetProductList(ctx context.Context, size int, page int, categoryID int) (products []Product, meta pagination.Page, err error)
 	GetProductDetail(ctx context.Context, productID string) (Product, error)
 	GetProductCategoryList(ctx context.Context) ([]ProductCategory, error)
