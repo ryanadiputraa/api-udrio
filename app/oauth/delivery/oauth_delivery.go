@@ -55,7 +55,6 @@ func (d *oAuthDevlivery) Callback(c *gin.Context) {
 		Locale:  user.Locale,
 	}
 	err = d.userHandler.CreateOrUpdateIfExist(c, userData)
-
 	if err != nil {
 		oauth.RedirectWithError(c, err.Error())
 		return

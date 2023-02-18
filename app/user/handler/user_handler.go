@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
+	"time"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
+	log "github.com/sirupsen/logrus"
 )
 
 type userHandler struct {
@@ -15,5 +17,14 @@ func NewUserHandler(repository domain.IUserRepository) domain.IUserHandler {
 }
 
 func (h *userHandler) CreateOrUpdateIfExist(ctx context.Context, user domain.User) error {
+	user.CreatedAt = time.Now().UTC()
+	user.UpdatedAt = time.Now().UTC()
+
+	err := h.repository.SaveOrUpdate(ctx, user)
+	if err != nil {
+		log.Error("failed to save or update user: ", err.Error())
+		return err
+	}
+
 	return nil
 }
