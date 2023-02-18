@@ -37,3 +37,7 @@ func (h *oAuthHandler) HandleCallback(ctx context.Context, code string) (user do
 
 	return userInfo, nil
 }
+
+func (h *oAuthHandler) GenerateAccessToken(ctx context.Context, userID interface{}) (domain.Tokens, error) {
+	return domain.Tokens{}, nil
+}

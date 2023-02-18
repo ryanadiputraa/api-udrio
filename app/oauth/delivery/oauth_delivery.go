@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/oauth"
-	"github.com/ryanadiputraa/api-udrio/pkg/utils"
 	"github.com/spf13/viper"
 )
 
@@ -45,5 +44,13 @@ func (d *oAuthDevlivery) Callback(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, user))
+	// generate access token
+	tokens, err := d.handler.GenerateAccessToken(c, user.ID)
+	if err != nil {
+		oauth.RedirectWithError(c, err.Error())
+		return
+	}
+
+	// c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, user))
+	oauth.RedirectWithAccessToken(c, tokens)
 }

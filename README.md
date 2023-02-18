@@ -25,100 +25,29 @@ or for momentary stop so you don't need to create a new container
 docker-compose stop
 ```
 
-### Authentication
+### Authentication (OAuth2)
 
 ---
 
-### --- Sign Up ---
-
-- Method: `POST`
-- Endpoint: `/auth/register/`
-- Header:
-  - Content-Type: `application/json`
-- Body:
-
-```json
-{
-  "username": "username",
-  "email": "user@mai.com",
-  "password": "password"
-}
-```
-
-- Response:
-
-```json
-{
-  "code": 201,
-  "status": "CREATED",
-  "error": null,
-  "data": null
-}
-```
-
-- Error Response
-
-```json
-{
-  "code": 400,
-  "status": "BAD_REQUEST",
-  "error": {
-    "message": "invalid param",
-    "username": ["must not be null", "must be greater than 3 character"],
-    "email": ["invalid email format"],
-    "passowrd": ["must not be null", "must be greater than 3 character"]
-  },
-  "data": null
-}
-```
-
 ### --- Sign In ---
 
-- Method: `POST`
-- Endpoint: `/auth/login/`
+- Method: `GET`
+- Endpoint: `/oauth/login/google`
 - Header:
-  - Content-Type: `application/json`
-- Body:
 
-```json
-{
-  "email": "user@mai.com",
-  "password": "password"
-}
-```
+  - Content-Type: `text/html`
 
 - Response:
 
-```json
-{
-  "code": 200,
-  "status": "OK",
-  "error": null,
-  "data": {
-    "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
-    "expires_in": 3600,
-    "refresh_token": "IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk"
-  }
-}
-```
+  - redirect -> `<FE_URL>?access_token=<access_token>&expires_in=<expires_in>&refresh_token=<refresh_token>`
 
-- Error Response
-
-```json
-{
-  "code": 400,
-  "status": "BAD_REQUEST",
-  "error": {
-    "message": "invalid password"
-  },
-  "data": null
-}
-```
+- Error Response:
+  - redirect -> `<FE_URL>?err=<err_msg>`
 
 ### --- Refresh Access Token ---
 
 - Method: `POST`
-- Endpoint: `/auth/refresh/`
+- Endpoint: `/oauth/refresh/`
 - Header:
 
   - Content-Type: `application/json`
@@ -147,51 +76,6 @@ docker-compose stop
   "status": "BAD_REQUEST",
   "error": {
     "message": "invalid refresh token header"
-  },
-  "data": null
-}
-```
-
-### Users
-
----
-
-### --- Change password ---
-
-- Method: `PUT`
-- Endpoint: `/api/users/`
-- Header:
-  - Content-Type: `application/json`
-  - Authorization: `Bearer <access_token>`
-- Body:
-
-```json
-{
-  "password": "password",
-  "new_password": "new_password"
-}
-```
-
-- Response:
-
-```json
-{
-  "code": 200,
-  "status": "OK",
-  "error": null,
-  "data": null
-}
-```
-
-- Error Response
-
-```json
-{
-  "code": 400,
-  "status": "BAD_REQUEST",
-  "error": {
-    "message": "invalid param",
-    "password": "invalid old password"
   },
   "data": null
 }

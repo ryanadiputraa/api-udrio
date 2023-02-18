@@ -26,7 +26,7 @@ func serveHTTP() {
 	r.Use(gin.Logger())
 	r.Use(cors.CORSMiddleware())
 
-	oauth2 := r.Group("/oauth2")
+	oauth2 := r.Group("/oauth")
 	api := r.Group("/api")
 
 	// Oauth2
