@@ -8,6 +8,8 @@ require (
 	golang.org/x/oauth2 v0.5.0
 )
 
+require github.com/golang-jwt/jwt/v4 v4.4.3
+
 require (
 	cloud.google.com/go/compute v1.12.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
@@ -29,7 +31,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/sirupsen/logrus v1.9.0
 	github.com/ugorji/go/codec v1.2.8 // indirect
-	golang.org/x/crypto v0.5.0 // indirect
+	golang.org/x/crypto v0.6.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect

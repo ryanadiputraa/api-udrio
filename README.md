@@ -62,7 +62,7 @@ docker-compose stop
   "error": null,
   "data": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
-    "expires_in": 3600,
+    "expires_in": 1676801048,
     "refresh_token": "IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk"
   }
 }

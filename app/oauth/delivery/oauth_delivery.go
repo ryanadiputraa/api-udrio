@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/pkg/jwt"
 	"github.com/ryanadiputraa/api-udrio/pkg/oauth"
 	"github.com/spf13/viper"
 )
@@ -61,7 +62,7 @@ func (d *oAuthDevlivery) Callback(c *gin.Context) {
 	}
 
 	// generate access token
-	tokens, err := d.handler.GenerateAccessToken(c, user.ID)
+	tokens, err := jwt.GenerateAccessToken(userData.ID)
 	if err != nil {
 		oauth.RedirectWithError(c, err.Error())
 		return
