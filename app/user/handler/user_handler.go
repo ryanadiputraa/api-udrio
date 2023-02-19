@@ -28,3 +28,7 @@ func (h *userHandler) CreateOrUpdateIfExist(ctx context.Context, user domain.Use
 
 	return nil
 }
+
+func (h *userHandler) GetUserInfo(ctx context.Context, userID interface{}) (domain.User, error) {
+	return domain.User{}, nil
+}

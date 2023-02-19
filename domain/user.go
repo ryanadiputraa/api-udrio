@@ -11,6 +11,7 @@ type IUserRepository interface {
 
 type IUserHandler interface {
 	CreateOrUpdateIfExist(ctx context.Context, user User) error
+	GetUserInfo(ctx context.Context, userID interface{}) (User, error)
 }
 
 type User struct {

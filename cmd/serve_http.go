@@ -11,6 +11,7 @@ import (
 	_oauthDelivery "github.com/ryanadiputraa/api-udrio/app/oauth/delivery"
 	_oauthHandler "github.com/ryanadiputraa/api-udrio/app/oauth/handler"
 
+	_userDelivery "github.com/ryanadiputraa/api-udrio/app/user/delivery"
 	_userHandler "github.com/ryanadiputraa/api-udrio/app/user/handler"
 	_userRepository "github.com/ryanadiputraa/api-udrio/app/user/repository"
 
@@ -35,6 +36,7 @@ func serveHTTP() {
 	// user
 	userRepository := _userRepository.NewUserRepository(database.DB)
 	userHandler := _userHandler.NewUserHandler(userRepository)
+	_userDelivery.NewUserDelivery(api, AuthMiddleware(), userHandler)
 
 	// Oauth2
 	oAuthHandler := _oauthHandler.NewOAuthHandler()
