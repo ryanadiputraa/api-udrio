@@ -8,14 +8,11 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	jwtUtils "github.com/ryanadiputraa/api-udrio/pkg/jwt"
 	"github.com/ryanadiputraa/api-udrio/pkg/utils"
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		log.Info("auth middleware")
-
 		tokenString, err := jwtUtils.ExtractTokenFromAuthorizationHeader(ctx)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.HttpResponse(http.StatusUnauthorized, err.Error(), nil))
