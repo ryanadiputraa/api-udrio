@@ -12,13 +12,13 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		tokenString, err := jwtUtils.ExtractTokenFromAuthorizationHeader(ctx)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.HttpResponse(http.StatusUnauthorized, err.Error(), nil))
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.HttpResponseError(http.StatusUnauthorized, err.Error()))
 			return
 		}
 
 		_, err = jwtUtils.ParseJWTClaims(tokenString, false)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.HttpResponse(http.StatusUnauthorized, err.Error(), nil))
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.HttpResponseError(http.StatusUnauthorized, err.Error()))
 			return
 		}
 

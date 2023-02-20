@@ -76,21 +76,15 @@ func (d *oAuthDevlivery) Callback(c *gin.Context) {
 func (d *oAuthDevlivery) RefreshToken(c *gin.Context) {
 	refreshToken, err := jwt.ExtractTokenFromAuthorizationHeader(c)
 	if err != nil {
-		errMsg := map[string]string{
-			"message": err.Error(),
-		}
-		c.JSON(http.StatusUnauthorized, utils.HttpResponse(http.StatusUnauthorized, errMsg, nil))
+		c.JSON(http.StatusUnauthorized, utils.HttpResponseError(http.StatusUnauthorized, err.Error()))
 		return
 	}
 
 	tokens, err := d.handler.RefreshAccessToken(c, refreshToken)
 	if err != nil {
-		errMsg := map[string]string{
-			"message": err.Error(),
-		}
-		c.JSON(http.StatusUnauthorized, utils.HttpResponse(http.StatusUnauthorized, errMsg, nil))
+		c.JSON(http.StatusUnauthorized, utils.HttpResponseError(http.StatusUnauthorized, err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, tokens))
+	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, tokens))
 }

@@ -14,28 +14,33 @@ var status = map[int]string{
 	500: "INTERNAL_SERVER_ERROR",
 }
 
-func HttpResponse(code int, errors interface{}, data interface{}) gin.H {
-	if errors == nil {
-		errors = ""
-	}
-
+func HttpResponse(code int, data interface{}) gin.H {
 	return gin.H{
 		"code":   code,
 		"status": status[code],
-		"error":  errors,
+		"error":  "",
 		"data":   data,
 	}
 }
 
-func HttpResponseWithMetaData(code int, errors interface{}, data interface{}, meta interface{}) gin.H {
-	if errors == nil {
-		errors = ""
+func HttpResponseError(code int, err string) gin.H {
+	errMsg := map[string]string{
+		"message": err,
 	}
 
 	return gin.H{
 		"code":   code,
 		"status": status[code],
-		"error":  errors,
+		"error":  errMsg,
+		"data":   nil,
+	}
+}
+
+func HttpResponseWithMetaData(code int, data interface{}, meta interface{}) gin.H {
+	return gin.H{
+		"code":   code,
+		"status": status[code],
+		"error":  "",
 		"data":   data,
 		"meta":   meta,
 	}

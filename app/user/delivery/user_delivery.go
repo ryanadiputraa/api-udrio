@@ -22,12 +22,9 @@ func NewUserDelivery(rg *gin.RouterGroup, authMiddleware gin.HandlerFunc, handle
 func (d *userDelivery) GetUserInfo(c *gin.Context) {
 	user, err := d.handler.GetUserInfo(c, "")
 	if err != nil {
-		errMsg := map[string]string{
-			"message": err.Error(),
-		}
-		c.JSON(http.StatusInternalServerError, utils.HttpResponse(http.StatusInternalServerError, errMsg, nil))
+		c.JSON(http.StatusInternalServerError, utils.HttpResponseError(http.StatusInternalServerError, err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, user))
+	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, user))
 }

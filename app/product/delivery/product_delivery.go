@@ -30,23 +30,17 @@ func (h *roductDelivery) GetProductList(c *gin.Context) {
 	// Get list of products
 	products, meta, err := h.productHandler.GetProductList(c, size, page, category)
 	if err != nil {
-		errMsg := map[string]string{
-			"message": err.Error(),
-		}
-		c.JSON(http.StatusInternalServerError, utils.HttpResponse(http.StatusInternalServerError, errMsg, nil))
+		c.JSON(http.StatusInternalServerError, utils.HttpResponseError(http.StatusInternalServerError, err.Error()))
 		return
 	}
 
 	// Handle empty product
 	if len(products) == 0 {
-		errMsg := map[string]string{
-			"message": "no product found",
-		}
-		c.JSON(http.StatusNotFound, utils.HttpResponse(http.StatusNotFound, errMsg, []domain.Product{}))
+		c.JSON(http.StatusNotFound, utils.HttpResponseError(http.StatusNotFound, "no product found"))
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.HttpResponseWithMetaData(http.StatusOK, nil, products, meta))
+	c.JSON(http.StatusOK, utils.HttpResponseWithMetaData(http.StatusOK, products, meta))
 }
 
 func (h *roductDelivery) GetProductDetail(c *gin.Context) {
@@ -54,34 +48,25 @@ func (h *roductDelivery) GetProductDetail(c *gin.Context) {
 
 	product, err := h.productHandler.GetProductDetail(c, productID)
 	if err != nil {
-		errMsg := map[string]string{
-			"message": err.Error(),
-		}
-		c.JSON(http.StatusBadRequest, utils.HttpResponse(http.StatusBadRequest, errMsg, nil))
+		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, product))
+	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, product))
 }
 
 func (h *roductDelivery) GetProductCategoryList(c *gin.Context) {
 	categories, err := h.productHandler.GetProductCategoryList(c)
 	if err != nil {
-		errMsg := map[string]string{
-			"message": err.Error(),
-		}
-		c.JSON(http.StatusInternalServerError, utils.HttpResponse(http.StatusInternalServerError, errMsg, nil))
+		c.JSON(http.StatusInternalServerError, utils.HttpResponseError(http.StatusInternalServerError, err.Error()))
 		return
 	}
 
 	// Handle empty categories
 	if len(categories) == 0 {
-		errMsg := map[string]string{
-			"message": "no product categories found",
-		}
-		c.JSON(http.StatusNotFound, utils.HttpResponse(http.StatusNotFound, errMsg, []domain.ProductCategory{}))
+		c.JSON(http.StatusNotFound, utils.HttpResponseError(http.StatusNotFound, "no product categories found"))
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, categories))
+	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, categories))
 }
