@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/pkg/jwt"
 	"github.com/ryanadiputraa/api-udrio/pkg/utils"
 )
 
@@ -20,7 +21,19 @@ func NewUserDelivery(rg *gin.RouterGroup, authMiddleware gin.HandlerFunc, handle
 }
 
 func (d *userDelivery) GetUserInfo(c *gin.Context) {
-	user, err := d.handler.GetUserInfo(c, "")
+	token, err := jwt.ExtractTokenFromAuthorizationHeader(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, utils.HttpResponseError(http.StatusUnauthorized, err.Error()))
+		return
+	}
+
+	claims, err := jwt.ParseJWTClaims(token, false)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, utils.HttpResponseError(http.StatusUnauthorized, err.Error()))
+		return
+	}
+
+	user, err := d.handler.GetUserInfo(c, claims["sub"])
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.HttpResponseError(http.StatusInternalServerError, err.Error()))
 		return

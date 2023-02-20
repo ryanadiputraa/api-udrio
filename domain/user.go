@@ -7,6 +7,7 @@ import (
 
 type IUserRepository interface {
 	SaveOrUpdate(ctx context.Context, user User) error
+	FindByID(ctx context.Context, userID interface{}) (User, error)
 }
 
 type IUserHandler interface {
