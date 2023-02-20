@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/pkg/jwt"
 	"github.com/ryanadiputraa/api-udrio/pkg/oauth"
 )
 
@@ -36,4 +37,12 @@ func (h *oAuthHandler) HandleCallback(ctx context.Context, code string) (user do
 	json.NewDecoder(resp.Body).Decode(&userInfo)
 
 	return userInfo, nil
+}
+
+func (h *oAuthHandler) GenerateAccessToken(ctx context.Context, userID interface{}) (domain.Tokens, error) {
+	tokens, err := jwt.GenerateAccessToken(userID)
+	if err != nil {
+		return tokens, err
+	}
+	return tokens, nil
 }
