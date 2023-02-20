@@ -46,3 +46,17 @@ func (h *oAuthHandler) GenerateAccessToken(ctx context.Context, userID interface
 	}
 	return tokens, nil
 }
+
+func (h *oAuthHandler) RefreshAccessToken(ctx context.Context, refreshToken string) (tokens domain.Tokens, err error) {
+	claims, err := jwt.ParseJWTClaims(refreshToken, true)
+	if err != nil {
+		return tokens, err
+	}
+
+	tokens, err = jwt.GenerateAccessToken(claims["sub"])
+	if err != nil {
+		log.Error("failed to generate access token: ", err.Error())
+		return tokens, err
+	}
+	return tokens, nil
+}

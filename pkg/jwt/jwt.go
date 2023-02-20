@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -57,4 +58,28 @@ func ExtractTokenFromAuthorizationHeader(c *gin.Context) (token string, err erro
 
 	token = h[1]
 	return token, nil
+}
+
+func ParseJWTClaims(tokenString string, isRefresh bool) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+
+		var secret string
+		if !isRefresh {
+			secret = viper.GetString("JWT_SECRET")
+		} else {
+			secret = viper.GetString("JWT_REFRESH_SECRET")
+		}
+
+		return []byte(secret), nil
+	})
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return nil, err
+	}
+
+	return claims, nil
 }

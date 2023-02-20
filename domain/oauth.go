@@ -7,6 +7,7 @@ import (
 type IOAuthHandler interface {
 	HandleCallback(ctx context.Context, code string) (user GoogleProfile, err error)
 	GenerateAccessToken(ctx context.Context, userID interface{}) (Tokens, error)
+	RefreshAccessToken(ctx context.Context, refreshToken string) (Tokens, error)
 }
 
 type Tokens struct {

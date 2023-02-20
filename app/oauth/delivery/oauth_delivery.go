@@ -7,7 +7,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/pkg/jwt"
 	"github.com/ryanadiputraa/api-udrio/pkg/oauth"
+	"github.com/ryanadiputraa/api-udrio/pkg/utils"
 	"github.com/spf13/viper"
 )
 
@@ -23,6 +25,7 @@ func NewOAuthDelivery(rg *gin.RouterGroup, handler domain.IOAuthHandler, userHan
 	}
 	rg.GET("/login/google", delivery.LoginGoogle)
 	rg.GET("/callback", delivery.Callback)
+	rg.POST("/refresh", delivery.RefreshToken)
 }
 
 func (d *oAuthDevlivery) LoginGoogle(c *gin.Context) {
@@ -68,4 +71,26 @@ func (d *oAuthDevlivery) Callback(c *gin.Context) {
 	}
 
 	oauth.RedirectWithAccessToken(c, tokens)
+}
+
+func (d *oAuthDevlivery) RefreshToken(c *gin.Context) {
+	refreshToken, err := jwt.ExtractTokenFromAuthorizationHeader(c)
+	if err != nil {
+		errMsg := map[string]string{
+			"message": err.Error(),
+		}
+		c.JSON(http.StatusUnauthorized, utils.HttpResponse(http.StatusUnauthorized, errMsg, nil))
+		return
+	}
+
+	tokens, err := d.handler.RefreshAccessToken(c, refreshToken)
+	if err != nil {
+		errMsg := map[string]string{
+			"message": err.Error(),
+		}
+		c.JSON(http.StatusUnauthorized, utils.HttpResponse(http.StatusUnauthorized, errMsg, nil))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil, tokens))
 }

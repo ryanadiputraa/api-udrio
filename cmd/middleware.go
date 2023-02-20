@@ -1,14 +1,11 @@
 package cmd
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 	jwtUtils "github.com/ryanadiputraa/api-udrio/pkg/jwt"
 	"github.com/ryanadiputraa/api-udrio/pkg/utils"
-	"github.com/spf13/viper"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -19,16 +16,8 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-			}
-
-			return []byte(viper.GetString("JWT_SECRET")), nil
-		})
-
-		_, ok := token.Claims.(jwt.MapClaims)
-		if !ok || !token.Valid {
+		_, err = jwtUtils.ParseJWTClaims(tokenString, false)
+		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.HttpResponse(http.StatusUnauthorized, err.Error(), nil))
 			return
 		}
