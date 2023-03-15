@@ -19,7 +19,7 @@ func NewUserRepository(conn *gorm.DB) domain.IUserRepository {
 func (r *userRepository) SaveOrUpdate(ctx context.Context, user domain.User) error {
 	err := r.db.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"name", "email", "picture", "locale", "updated_at"}),
+		DoUpdates: clause.AssignmentColumns([]string{"first_name", "last_name", "email", "picture", "locale", "updated_at"}),
 	}).Create(&user).Error
 	if err != nil {
 		return err

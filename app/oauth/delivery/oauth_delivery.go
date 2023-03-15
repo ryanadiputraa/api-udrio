@@ -51,11 +51,12 @@ func (d *oAuthDevlivery) Callback(c *gin.Context) {
 
 	// save or update user
 	userData := domain.User{
-		ID:      user.ID,
-		Name:    user.Name,
-		Email:   user.Email,
-		Picture: user.Picture,
-		Locale:  user.Locale,
+		ID:        user.ID,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
+		Picture:   user.Picture,
+		Locale:    user.Locale,
 	}
 	err = d.userHandler.CreateOrUpdateIfExist(c, userData)
 	if err != nil {

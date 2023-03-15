@@ -17,7 +17,8 @@ type IUserHandler interface {
 
 type User struct {
 	ID        string    `gorm:"primaryKey" json:"id"`
-	Name      string    `gorm:"not null;type:varchar(100)" json:"name"`
+	FirstName string    `gorm:"not null;type:varchar(50)" json:"first_name"`
+	LastName  string    `gorm:"not null;type:varchar(50)" json:"last_name"`
 	Email     string    `gorm:"unique;not null;type:varchar(100)" json:"email"`
 	Picture   string    `gorm:"type:varchar(256)" json:"picture"`
 	Locale    string    `gorm:"type:varchar(30)" json:"locale"`

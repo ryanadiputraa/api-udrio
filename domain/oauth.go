@@ -17,9 +17,10 @@ type Tokens struct {
 }
 
 type GoogleProfile struct {
-	ID      string `json:"id"`
-	Name    string `json:"name"`
-	Email   string `json:"email"`
-	Picture string `json:"picture"`
-	Locale  string `json:"locale"`
+	ID        string `json:"id"`
+	FirstName string `json:"given_name"`
+	LastName  string `json:"family_name"`
+	Email     string `json:"email"`
+	Picture   string `json:"picture"`
+	Locale    string `json:"locale"`
 }
