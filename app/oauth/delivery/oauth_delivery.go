@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/oauth2"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ryanadiputraa/api-udrio/domain"
@@ -29,7 +30,7 @@ func NewOAuthDelivery(rg *gin.RouterGroup, handler domain.IOAuthHandler, userHan
 }
 
 func (d *oAuthDevlivery) LoginGoogle(c *gin.Context) {
-	url := oauth.GetGoogleOauthConfig().AuthCodeURL(viper.GetString("OAUTH_STATE"))
+	url := oauth.GetGoogleOauthConfig().AuthCodeURL(viper.GetString("OAUTH_STATE"), oauth2.SetAuthURLParam("prompt", "select_account"))
 	c.Redirect(http.StatusTemporaryRedirect, url)
 }
 
