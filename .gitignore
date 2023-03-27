@@ -1,5 +1,5 @@
 # env & credentials
-.env
+.env.dev
 
 # build
 main
