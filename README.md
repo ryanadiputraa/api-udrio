@@ -6,26 +6,21 @@ Backend service for UD Rio (prototype) website.
 
 ---
 
-You need to have `docker-compose` to simplify development, config your `.env` file and run the following command to setup your local db & run dev server
+You need to have `docker-compose` to simplify development, config your `.env` and edit `Dockerfile` if you wish to use `hot reload` file and run the following command to setup your local db & run dev server
 
 ```bash
 docker-compose up -d
 ```
 
-it has `Hot Reload` setup, so you don't need to restart server to make changes in development.
 To stop dev server simply run
 
 ```bash
 docker-compose down
-```
-
-or for momentary stop so you don't need to create a new container
-
-```bash
+# or
 docker-compose stop
 ```
 
-### Authentication (OAuth2)
+## Authentication (OAuth2)
 
 ---
 
@@ -81,7 +76,51 @@ docker-compose stop
 }
 ```
 
-### Products
+## User
+
+---
+
+### --- User Profile ---
+
+- Method: `GET`
+- Endpoint: `/api/users/`
+- Header:
+
+  - Content-Type: `application/json`
+  - Authorization: `Bearer <access_token>`
+
+- Response:
+
+```json
+{
+  "code": 200,
+  "status": "OK",
+  "error": null,
+  "data": {
+    "id": "712398192038190",
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john@mail.com",
+    "picture": "https://google.com/picture.png",
+    "locale": "id"
+  }
+}
+```
+
+- Error Response
+
+```json
+{
+  "code": 403,
+  "status": "UNAUTHORIZED",
+  "error": {
+    "message": "no access token"
+  },
+  "data": null
+}
+```
+
+## Products
 
 ---
 
@@ -284,6 +323,90 @@ docker-compose stop
   "status": "BAD_REQUEST",
   "error": {
     "message": "record not found"
+  },
+  "data": null
+}
+```
+
+## Cart
+
+---
+
+### --- Get User Cart ---
+
+- Method: `GET`
+- Endpoint: `/api/cart/`
+- Header:
+
+  - Content-Type: `application/json`
+  - Authorization: `Bearer <access_token>`
+
+- Response:
+
+```json
+{
+  "code": 200,
+  "status": "OK",
+  "error": null,
+  "data": [
+    {
+      "id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+      "product_name": "Kop Surat",
+      "product_category": {
+        "category_id": 1,
+        "category": "ATK",
+        "icon": "https://domain.com/image.png"
+      },
+      "price": 7500,
+      "available": true,
+      "images": [
+        {
+          "image_id": "jkl",
+          "url": "product_image"
+        },
+        {
+          "image_id": "ijkl",
+          "url": "image2"
+        }
+      ],
+      "description": "Menggunakan kertas  NCR, ukuran 1/8 Folio 1 blok 1 Ply isi 100 lbr, 1 blok 2-4 Ply isi 50 set, Urutan warna pertama selalu putih",
+      "min_order": 24
+    },
+    {
+      "id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+      "product_name": "Kop Surat",
+      "product_category": {
+        "category_id": 1,
+        "category": "ATK",
+        "icon": "https://domain.com/image.png"
+      },
+      "price": 7500,
+      "available": true,
+      "images": [
+        {
+          "image_id": "jkl",
+          "url": "product_image"
+        },
+        {
+          "image_id": "ijkl",
+          "url": "image2"
+        }
+      ],
+      "description": "Menggunakan kertas  NCR, ukuran 1/8 Folio 1 blok 1 Ply isi 100 lbr, 1 blok 2-4 Ply isi 50 set, Urutan warna pertama selalu putih",
+      "min_order": 24
+    }
+  ]
+}
+```
+
+- Error Response
+
+```json
+{
+  "code": 403,
+  "status": "UNAUTHORIZED",
+  "error": {
+    "message": "no access token"
   },
   "data": null
 }
