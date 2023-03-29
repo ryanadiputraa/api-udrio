@@ -15,6 +15,10 @@ import (
 	_userHandler "github.com/ryanadiputraa/api-udrio/app/user/handler"
 	_userRepository "github.com/ryanadiputraa/api-udrio/app/user/repository"
 
+	_cartDelivery "github.com/ryanadiputraa/api-udrio/app/cart/delivery"
+	_cartHandler "github.com/ryanadiputraa/api-udrio/app/cart/handler"
+	_cartRepository "github.com/ryanadiputraa/api-udrio/app/cart/repository"
+
 	_productDelivery "github.com/ryanadiputraa/api-udrio/app/product/delivery"
 	_productHandler "github.com/ryanadiputraa/api-udrio/app/product/handler"
 	_productRepository "github.com/ryanadiputraa/api-udrio/app/product/repository"
@@ -41,6 +45,11 @@ func serveHTTP() {
 	// Oauth2
 	oAuthHandler := _oauthHandler.NewOAuthHandler()
 	_oauthDelivery.NewOAuthDelivery(oauth2, oAuthHandler, userHandler)
+
+	// cart
+	cartRepository := _cartRepository.NewCartRepository(database.DB)
+	cartHandler := _cartHandler.NewCartHandler(cartRepository)
+	_cartDelivery.NewCartDelivery(api, cartHandler)
 
 	// Products
 	productRepository := _productRepository.NewProductRepository(database.DB)
