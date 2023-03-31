@@ -17,8 +17,10 @@ func NewCartDelivery(rg *gin.RouterGroup, handler domain.ICartHandler) {
 	delivery := &cartDelivery{
 		handler: handler,
 	}
+	router := rg.Group("/cart")
 
-	rg.GET("/cart", delivery.GetUserCart)
+	router.GET("/", delivery.GetUserCart)
+	router.PUT("/", delivery.UpdateUserCart)
 }
 
 func (d *cartDelivery) GetUserCart(c *gin.Context) {
@@ -42,4 +44,36 @@ func (d *cartDelivery) GetUserCart(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, cart))
+}
+
+func (d *cartDelivery) UpdateUserCart(c *gin.Context) {
+	token, err := jwt.ExtractTokenFromAuthorizationHeader(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, utils.HttpResponseError(http.StatusUnauthorized, err.Error()))
+		return
+	}
+	claim, err := jwt.ParseJWTClaims(token, false)
+	userID := claim["sub"]
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
+		return
+	}
+
+	var payload domain.CartPayload
+	if c.ShouldBind(&payload) != nil || payload.ProductID == "" || payload.Quantity == 0 {
+		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, "invalid param"))
+		return
+	}
+
+	err = d.handler.UpdateUserCart(c, userID.(string), payload)
+	if err != nil {
+		if err.Error() == "cart not found" {
+			c.JSON(http.StatusNotFound, utils.HttpResponseError(http.StatusNotFound, err.Error()))
+		} else {
+			c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil))
 }

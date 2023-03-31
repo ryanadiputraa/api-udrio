@@ -9,11 +9,12 @@ import (
 )
 
 type userHandler struct {
-	repository domain.IUserRepository
+	repository     domain.IUserRepository
+	cartRepository domain.ICartRepository
 }
 
-func NewUserHandler(repository domain.IUserRepository) domain.IUserHandler {
-	return &userHandler{repository: repository}
+func NewUserHandler(repository domain.IUserRepository, cartRepository domain.ICartRepository) domain.IUserHandler {
+	return &userHandler{repository: repository, cartRepository: cartRepository}
 }
 
 func (h *userHandler) CreateOrUpdateIfExist(ctx context.Context, user domain.User) error {
@@ -22,7 +23,20 @@ func (h *userHandler) CreateOrUpdateIfExist(ctx context.Context, user domain.Use
 
 	err := h.repository.SaveOrUpdate(ctx, user)
 	if err != nil {
-		log.Error("failed to save or update user: ", err.Error())
+		log.Error("fail to save or update user: ", err.Error())
+		return err
+	}
+
+	cart := domain.Cart{
+		UserID:    user.ID,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	err = h.cartRepository.CreateOrUpdate(ctx, cart)
+	log.Error(err)
+	if err != nil {
+		log.Error("fail create user cart: ", err.Error())
 		return err
 	}
 

@@ -383,3 +383,45 @@ docker-compose stop
   "data": null
 }
 ```
+
+### --- Put User Cart ---
+
+- Method: `PUT`
+- Endpoint: `/api/cart/`
+- Header:
+
+  - Content-Type: `application/json`
+  - Authorization: `Bearer <access_token>`
+
+- Body:
+
+```json
+{
+  "product_id": "askdjaskd",
+  "quantity": 2
+}
+```
+
+- Response:
+
+```json
+{
+  "code": 201,
+  "status": "OK",
+  "error": null,
+  "data": null
+}
+```
+
+- Error Response
+
+```json
+{
+  "code": 403,
+  "status": "UNAUTHORIZED",
+  "error": {
+    "message": "no access token"
+  },
+  "data": null
+}
+```

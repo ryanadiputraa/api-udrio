@@ -37,19 +37,19 @@ func serveHTTP() {
 	oauth2 := r.Group("/oauth")
 	api := r.Group("/api")
 
+	// cart
+	cartRepository := _cartRepository.NewCartRepository(database.DB)
+	cartHandler := _cartHandler.NewCartHandler(cartRepository)
+	_cartDelivery.NewCartDelivery(api, cartHandler)
+
 	// user
 	userRepository := _userRepository.NewUserRepository(database.DB)
-	userHandler := _userHandler.NewUserHandler(userRepository)
+	userHandler := _userHandler.NewUserHandler(userRepository, cartRepository)
 	_userDelivery.NewUserDelivery(api, AuthMiddleware(), userHandler)
 
 	// Oauth2
 	oAuthHandler := _oauthHandler.NewOAuthHandler()
 	_oauthDelivery.NewOAuthDelivery(oauth2, oAuthHandler, userHandler)
-
-	// cart
-	cartRepository := _cartRepository.NewCartRepository(database.DB)
-	cartHandler := _cartHandler.NewCartHandler(cartRepository)
-	_cartDelivery.NewCartDelivery(api, cartHandler)
 
 	// Products
 	productRepository := _productRepository.NewProductRepository(database.DB)

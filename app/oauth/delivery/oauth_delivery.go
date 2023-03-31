@@ -59,6 +59,7 @@ func (d *oAuthDevlivery) Callback(c *gin.Context) {
 		Picture:   user.Picture,
 		Locale:    user.Locale,
 	}
+
 	err = d.userHandler.CreateOrUpdateIfExist(c, userData)
 	if err != nil {
 		oauth.RedirectWithError(c, err.Error())
