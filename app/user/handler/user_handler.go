@@ -34,7 +34,6 @@ func (h *userHandler) CreateOrUpdateIfExist(ctx context.Context, user domain.Use
 	}
 
 	err = h.cartRepository.CreateOrUpdate(ctx, cart)
-	log.Error(err)
 	if err != nil {
 		log.Error("fail create user cart: ", err.Error())
 		return err

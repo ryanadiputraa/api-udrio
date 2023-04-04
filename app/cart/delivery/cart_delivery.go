@@ -21,6 +21,7 @@ func NewCartDelivery(rg *gin.RouterGroup, handler domain.ICartHandler) {
 
 	router.GET("/", delivery.GetUserCart)
 	router.PUT("/", delivery.UpdateUserCart)
+	router.DELETE("/:product_id", delivery.DeleteCartItem)
 }
 
 func (d *cartDelivery) GetUserCart(c *gin.Context) {
@@ -72,6 +73,29 @@ func (d *cartDelivery) UpdateUserCart(c *gin.Context) {
 		} else {
 			c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		}
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, nil))
+}
+
+func (d *cartDelivery) DeleteCartItem(c *gin.Context) {
+	token, err := jwt.ExtractTokenFromAuthorizationHeader(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, utils.HttpResponseError(http.StatusUnauthorized, err.Error()))
+		return
+	}
+	claim, err := jwt.ParseJWTClaims(token, false)
+	userID := claim["sub"]
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
+		return
+	}
+
+	productID := c.Param("product_id")
+	err = d.handler.DeleteCartItem(c, userID.(string), productID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
 	}
 

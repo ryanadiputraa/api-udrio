@@ -10,11 +10,13 @@ type ICartRepository interface {
 	FetchCartByUserID(ctx context.Context, userID string) ([]CartDTO, error)
 	FindUserCartID(ctx context.Context, userID string) (int, error)
 	PatchUserCart(ctx context.Context, cartItem CartItem) error
+	DeleteCartItemByProductID(ctx context.Context, cartID int, productID string) (cartItem CartItem, err error)
 }
 
 type ICartHandler interface {
 	GetUserCart(ctx context.Context, userID string) ([]CartDTO, error)
 	UpdateUserCart(ctx context.Context, userID string, payload CartPayload) error
+	DeleteCartItem(ctx context.Context, userID string, productID string) error
 }
 
 type Cart struct {

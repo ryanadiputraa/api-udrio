@@ -76,3 +76,8 @@ func (r *cartRepository) PatchUserCart(ctx context.Context, cartItem domain.Cart
 
 	return nil
 }
+
+func (r *cartRepository) DeleteCartItemByProductID(ctx context.Context, cartID int, productID string) (cartItem domain.CartItem, err error) {
+	err = r.db.Clauses(clause.Returning{Columns: []clause.Column{{Name: "cart_id"}}}).Where(&domain.CartItem{CartID: cartID, ProductID: productID}).Delete(&cartItem).Error
+	return
+}

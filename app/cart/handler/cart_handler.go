@@ -57,3 +57,23 @@ func (h *cartHandler) UpdateUserCart(ctx context.Context, userID string, payload
 
 	return nil
 }
+
+func (h *cartHandler) DeleteCartItem(ctx context.Context, userID string, productID string) (err error) {
+	cartID, err := h.repository.FindUserCartID(ctx, userID)
+	if err != nil {
+		log.Error(err.Error())
+		return
+	}
+
+	cartItem, err := h.repository.DeleteCartItemByProductID(ctx, cartID, productID)
+	if err != nil {
+		log.Error(err.Error())
+		return
+	}
+	if cartItem.CartID == 0 {
+		log.Error("invalid param: product_id")
+		return errors.New("invalid param: product_id")
+	}
+
+	return
+}
