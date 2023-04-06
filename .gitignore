@@ -3,3 +3,6 @@
   
 # build
 main
+
+# cache, etc...
+.DS_Store
