@@ -38,6 +38,12 @@ func (r *cartRepository) FetchCartByUserID(ctx context.Context, userID string) (
 	}
 
 	for i, c := range cart {
+		// handle 0 cart items
+		if i == 0 && c.ProductID == "" {
+			cart = []domain.CartDTO{}
+			return
+		}
+
 		type ProductImg struct {
 			Image string
 		}
