@@ -31,7 +31,7 @@ func (r *cartRepository) CreateOrUpdate(ctx context.Context, cart domain.Cart) e
 }
 
 func (r *cartRepository) FetchCartByUserID(ctx context.Context, userID string) (cart []domain.CartDTO, err error) {
-	err = r.db.Model(&domain.Cart{}).Select("cart_items.quantity, products.id AS product_id, products.product_name, products.price, products.is_available, products.description, products.min_order, product_categories.category, product_categories.icon").Joins("LEFT JOIN cart_items ON carts.id = cart_items.cart_id LEFT JOIN products ON cart_items.product_id = products.id LEFT JOIN product_categories ON products.product_category_id = product_categories.id").Where(&domain.Cart{UserID: userID}).Scan(&cart).Error
+	err = r.db.Model(&domain.Cart{}).Select("cart_items.quantity, cart_items.created_at, products.id AS product_id, products.product_name, products.price, products.is_available, products.description, products.min_order, product_categories.category, product_categories.icon").Joins("LEFT JOIN cart_items ON carts.id = cart_items.cart_id LEFT JOIN products ON cart_items.product_id = products.id LEFT JOIN product_categories ON products.product_category_id = product_categories.id").Order("created_at desc").Where(&domain.Cart{UserID: userID}).Scan(&cart).Error
 
 	if err != nil {
 		return cart, err
@@ -49,11 +49,7 @@ func (r *cartRepository) FetchCartByUserID(ctx context.Context, userID string) (
 		}
 		var img ProductImg
 
-		err = r.db.Model(&domain.ProductImage{}).Select("image").Where(&domain.ProductImage{ProductID: c.ProductID}).First(&img).Error
-		if err != nil {
-			return cart, err
-		}
-
+		r.db.Model(&domain.ProductImage{}).Select("image").Where(&domain.ProductImage{ProductID: c.ProductID}).First(&img)
 		cart[i].Image = img.Image
 	}
 

@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/ryanadiputraa/api-udrio/domain"
@@ -48,6 +49,7 @@ func (h *cartHandler) UpdateUserCart(ctx context.Context, userID string, payload
 		CartID:    cartID,
 		ProductID: payload.ProductID,
 		Quantity:  payload.Quantity,
+		CreatedAt: time.Now(),
 	}
 	err = h.repository.PatchUserCart(ctx, cartItem)
 	if err != nil {

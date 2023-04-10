@@ -35,16 +35,18 @@ type CartItem struct {
 	Cart      Cart
 	ProductID string `gorm:"index;not null;unique"`
 	Product   Product
+	CreatedAt time.Time `gorm:"not null"`
 }
 
 type CartDTO struct {
-	Quantity    int    `json:"quantity"`
-	ProductID   string `json:"product_id"`
-	ProductName string `json:"product_name"`
-	Price       int    `json:"price"`
-	IsAvailable bool   `json:"is_available"`
-	Image       string `json:"image"`
-	MinOrder    int    `json:"min_order"`
+	Quantity    int       `json:"quantity"`
+	ProductID   string    `json:"product_id"`
+	ProductName string    `json:"product_name"`
+	Price       int       `json:"price"`
+	IsAvailable bool      `json:"is_available"`
+	Image       string    `json:"image"`
+	MinOrder    int       `json:"min_order"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type CartPayload struct {
