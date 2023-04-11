@@ -35,7 +35,7 @@ func (d *userDelivery) GetUserInfo(c *gin.Context) {
 
 	user, err := d.handler.GetUserInfo(c, claims["sub"])
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, utils.HttpResponseError(http.StatusInternalServerError, err.Error()))
+		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
 	}
 

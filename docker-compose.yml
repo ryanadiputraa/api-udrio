@@ -12,7 +12,7 @@ services:
       - "${PORT}:${PORT}"
     restart: always
     volumes:
-      - .:/web/udrio
+      - .:/app
   postgres:
     container_name: udrio_postgres
     image: postgres:15.1-alpine

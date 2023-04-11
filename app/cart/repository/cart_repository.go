@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
-	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -61,7 +60,6 @@ func (r *cartRepository) FindUserCartID(ctx context.Context, userID string) (car
 	if err != nil {
 		return cartID, err
 	}
-	logrus.Error(cartID)
 	return cartID, nil
 }
 

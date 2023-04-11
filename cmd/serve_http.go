@@ -25,7 +25,6 @@ import (
 )
 
 func serveHTTP() {
-
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
 
@@ -43,7 +42,7 @@ func serveHTTP() {
 	_cartDelivery.NewCartDelivery(api, cartHandler)
 
 	// user
-	userRepository := _userRepository.NewUserRepository(database.DB)
+	userRepository := _userRepository.NewUserRepository(database.DB, RedisClient)
 	userHandler := _userHandler.NewUserHandler(userRepository, cartRepository)
 	_userDelivery.NewUserDelivery(api, AuthMiddleware(), userHandler)
 

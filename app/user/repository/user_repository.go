@@ -2,18 +2,21 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/pkg/cache"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 type userRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
+	redis cache.Redis
 }
 
-func NewUserRepository(conn *gorm.DB) domain.IUserRepository {
-	return &userRepository{db: conn}
+func NewUserRepository(conn *gorm.DB, redis cache.Redis) domain.IUserRepository {
+	return &userRepository{db: conn, redis: redis}
 }
 
 func (r *userRepository) SaveOrUpdate(ctx context.Context, user domain.User) error {
@@ -28,6 +31,17 @@ func (r *userRepository) SaveOrUpdate(ctx context.Context, user domain.User) err
 }
 
 func (r *userRepository) FindByID(ctx context.Context, userID interface{}) (user domain.User, err error) {
-	err = r.db.First(&user, "id = ?", userID).Error
+	val, err := r.redis.Get(ctx, userID.(string))
+	if err != nil {
+		err = r.db.First(&user, "id = ?", userID).Error
+		if err != nil {
+			return
+		}
+
+		err = r.redis.Set(ctx, user.ID, user)
+		return
+	}
+
+	err = json.Unmarshal([]byte(val), &user)
 	return
 }
