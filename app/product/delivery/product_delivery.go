@@ -26,9 +26,10 @@ func (h *roductDelivery) GetProductList(c *gin.Context) {
 	size, _ := strconv.Atoi(c.Query("size"))
 	page, _ := strconv.Atoi(c.Query("page"))
 	category, _ := strconv.Atoi(c.Query("category_id"))
+	query := c.Query("query")
 
 	// Get list of products
-	products, meta, err := h.productHandler.GetProductList(c, size, page, category)
+	products, meta, err := h.productHandler.GetProductList(c, size, page, category, query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.HttpResponseError(http.StatusInternalServerError, err.Error()))
 		return

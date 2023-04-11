@@ -8,20 +8,20 @@ import (
 )
 
 type IProductRepository interface {
-	Fetch(ctx context.Context, limit int, offset int, categoryID int) (products []Product, count int64, err error)
+	Fetch(ctx context.Context, limit int, offset int, categoryID int, query string) (products []Product, count int64, err error)
 	FindByID(ctx context.Context, productID string) (Product, error)
 	FetchCategory(ctx context.Context) ([]ProductCategory, error)
 }
 
 type IProductHandler interface {
-	GetProductList(ctx context.Context, size int, page int, categoryID int) (products []Product, meta pagination.Page, err error)
+	GetProductList(ctx context.Context, size int, page int, categoryID int, query string) (products []Product, meta pagination.Page, err error)
 	GetProductDetail(ctx context.Context, productID string) (Product, error)
 	GetProductCategoryList(ctx context.Context) ([]ProductCategory, error)
 }
 
 type Product struct {
 	ID                string          `gorm:"primaryKey" json:"id"`
-	ProductName       string          `gorm:"unique;not null;type:varchar(256)" json:"product_name"`
+	ProductName       string          `gorm:"unique;index;not null;type:varchar(256)" json:"product_name"`
 	ProductCategoryID int             `gorm:"index" json:"-"`
 	ProductCategory   ProductCategory `json:"product_category"`
 	Price             int             `gorm:"not null" json:"price"`

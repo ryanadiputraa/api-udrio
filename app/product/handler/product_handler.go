@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"net/url"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
@@ -16,7 +17,7 @@ func NewProductHandler(repository domain.IProductRepository) domain.IProductHand
 	return &productHandler{productRepository: repository}
 }
 
-func (h *productHandler) GetProductList(ctx context.Context, size int, page int, category int) (products []domain.Product, meta pagination.Page, err error) {
+func (h *productHandler) GetProductList(ctx context.Context, size int, page int, category int, query string) (products []domain.Product, meta pagination.Page, err error) {
 	if size <= 0 {
 		size = 20
 	}
@@ -24,8 +25,13 @@ func (h *productHandler) GetProductList(ctx context.Context, size int, page int,
 		page = 1
 	}
 
+	decodedQuery, err := url.QueryUnescape(query)
+	if err != nil {
+		return nil, pagination.Page{}, err
+	}
+
 	offset := pagination.Offset(size, page)
-	products, count, err := h.productRepository.Fetch(ctx, size, offset, category)
+	products, count, err := h.productRepository.Fetch(ctx, size, offset, category, decodedQuery)
 	if err != nil {
 		log.Error("failed to fetch products: ", err.Error())
 		return nil, pagination.Page{}, err

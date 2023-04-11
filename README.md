@@ -182,9 +182,10 @@ docker-compose stop
 - Method: `GET`
 - Endpoint: `/api/products/`
 - Params:
-  - size: `20`
-  - page: `1`
+  - size: `20` (default/optional)
+  - page: `1` (default/optional)
   - category_id: `1` (optional)
+  - query: `Kertas%20HVS` (optional)
 - Header:
 
   - Content-Type: `application/json`
@@ -399,6 +400,124 @@ docker-compose stop
 {
   "product_id": "askdjaskd",
   "quantity": 2
+}
+```
+
+- Response:
+
+```json
+{
+  "code": 201,
+  "status": "OK",
+  "error": null,
+  "data": null
+}
+```
+
+- Error Response
+
+```json
+{
+  "code": 403,
+  "status": "UNAUTHORIZED",
+  "error": {
+    "message": "no access token"
+  },
+  "data": null
+}
+```
+
+## Order
+
+---
+
+### --- Get User Orders ---
+
+- Method: `GET`
+- Endpoint: `/api/orders/`
+- Header:
+
+  - Content-Type: `application/json`
+  - Authorization: `Bearer <access_token>`
+
+- Response:
+
+```json
+{
+  "code": 200,
+  "status": "OK",
+  "error": null,
+  "data": [
+    {
+      "id": "ajksdjaklsdjqipowdj",
+      "product": {
+        "quantity": 2,
+        "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+        "product_name": "Kop Surat",
+        "price": 7500,
+        "is_available": true,
+        "image": "http://product_image.png"
+      },
+      "quantity": 2,
+      "total_price": 30000,
+      "created_at": "2023-01-18T12:03:56.595459Z",
+      "updated_at": "2023-01-18T12:03:56.595459Z"
+    },
+    {
+      "id": "ajksdjaklsdjqipowdj",
+      "product": {
+        "quantity": 2,
+        "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+        "product_name": "Kop Surat",
+        "price": 7500,
+        "is_available": true,
+        "image": "http://product_image.png"
+      },
+      "quantity": 2,
+      "total_price": 30000,
+      "created_at": "2023-01-18T12:03:56.595459Z",
+      "updated_at": "2023-01-18T12:03:56.595459Z"
+    }
+  ]
+}
+```
+
+- Error Response
+
+```json
+{
+  "code": 403,
+  "status": "UNAUTHORIZED",
+  "error": {
+    "message": "no access token"
+  },
+  "data": null
+}
+```
+
+### --- Post Order ---
+
+- Method: `POST`
+- Endpoint: `/api/orders/`
+- Header:
+
+  - Content-Type: `application/json`
+  - Authorization: `Bearer <access_token>`
+
+- Body:
+
+```json
+{
+  "orders": [
+    {
+      "product_id": "A001ABC",
+      "quantity": 2
+    },
+    {
+      "product_id": "A001ABC",
+      "quantity": 2
+    }
+  ]
 }
 ```
 

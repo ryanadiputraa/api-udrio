@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"strings"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"gorm.io/gorm"
@@ -15,12 +16,17 @@ func NewProductRepository(conn *gorm.DB) domain.IProductRepository {
 	return &productRepository{db: conn}
 }
 
-func (r *productRepository) Fetch(ctx context.Context, size int, offset int, category int) (products []domain.Product, count int64, err error) {
+func (r *productRepository) Fetch(ctx context.Context, size int, offset int, category int, query string) (products []domain.Product, count int64, err error) {
 	r.db.Model(&domain.Product{}).Count(&count)
 
 	modelQuery := r.db.Model(&domain.Product{}).Joins("ProductCategory", r.db.Where(&domain.ProductCategory{ID: category}))
 	if category == 0 {
 		modelQuery = r.db.Model(&domain.Product{}).Joins("ProductCategory")
+		if len(query) != 0 {
+			// using :* for half queries and & for multiple words
+			query = strings.Replace(query, " ", ":*&", -1) + ":*"
+			modelQuery = modelQuery.Where("to_tsvector(product_name) @@ to_tsquery(?)", query)
+		}
 	}
 
 	err = modelQuery.Preload("ProductImages").Limit(size).Offset(offset).Order("is_available desc, updated_at desc, created_at desc").Find(&products).Error
