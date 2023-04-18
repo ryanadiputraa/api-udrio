@@ -35,12 +35,6 @@ func (h *roductDelivery) GetProductList(c *gin.Context) {
 		return
 	}
 
-	// Handle empty product
-	if len(products) == 0 {
-		c.JSON(http.StatusNotFound, utils.HttpResponseError(http.StatusNotFound, "no product found"))
-		return
-	}
-
 	c.JSON(http.StatusOK, utils.HttpResponseWithMetaData(http.StatusOK, products, meta))
 }
 
@@ -60,12 +54,6 @@ func (h *roductDelivery) GetProductCategoryList(c *gin.Context) {
 	categories, err := h.productHandler.GetProductCategoryList(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.HttpResponseError(http.StatusInternalServerError, err.Error()))
-		return
-	}
-
-	// Handle empty categories
-	if len(categories) == 0 {
-		c.JSON(http.StatusNotFound, utils.HttpResponseError(http.StatusNotFound, "no product categories found"))
 		return
 	}
 

@@ -336,7 +336,7 @@ docker-compose stop
 ### --- Get User Cart ---
 
 - Method: `GET`
-- Endpoint: `/api/cart/`
+- Endpoint: `/api/carts/`
 - Header:
 
   - Content-Type: `application/json`
@@ -388,7 +388,7 @@ docker-compose stop
 ### --- Put User Cart ---
 
 - Method: `PUT`
-- Endpoint: `/api/cart/`
+- Endpoint: `/api/carts/`
 - Header:
 
   - Content-Type: `application/json`

@@ -17,7 +17,7 @@ func NewCartDelivery(rg *gin.RouterGroup, handler domain.ICartHandler) {
 	delivery := &cartDelivery{
 		handler: handler,
 	}
-	router := rg.Group("/cart")
+	router := rg.Group("/carts")
 
 	router.GET("/", delivery.GetUserCart)
 	router.PUT("/", delivery.UpdateUserCart)
@@ -69,7 +69,7 @@ func (d *cartDelivery) UpdateUserCart(c *gin.Context) {
 	err = d.handler.UpdateUserCart(c, userID.(string), payload)
 	if err != nil {
 		if err.Error() == "cart not found" {
-			c.JSON(http.StatusNotFound, utils.HttpResponseError(http.StatusNotFound, err.Error()))
+			c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		} else {
 			c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		}

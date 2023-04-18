@@ -51,7 +51,7 @@ func serveHTTP() {
 	_oauthDelivery.NewOAuthDelivery(oauth2, oAuthHandler, userHandler)
 
 	// Products
-	productRepository := _productRepository.NewProductRepository(database.DB)
+	productRepository := _productRepository.NewProductRepository(database.DB, RedisClient)
 	productHandler := _productHandler.NewProductHandler(productRepository)
 	_productDelivery.NewProductDelivery(api, productHandler)
 

@@ -2,18 +2,21 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"strings"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/pkg/cache"
 	"gorm.io/gorm"
 )
 
 type productRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
+	redis cache.Redis
 }
 
-func NewProductRepository(conn *gorm.DB) domain.IProductRepository {
-	return &productRepository{db: conn}
+func NewProductRepository(conn *gorm.DB, redis cache.Redis) domain.IProductRepository {
+	return &productRepository{db: conn, redis: redis}
 }
 
 func (r *productRepository) Fetch(ctx context.Context, size int, offset int, category int, query string) (products []domain.Product, count int64, err error) {
@@ -50,11 +53,18 @@ func (r *productRepository) FindByID(ctx context.Context, productID string) (dom
 
 func (r *productRepository) FetchCategory(ctx context.Context) ([]domain.ProductCategory, error) {
 	var categories []domain.ProductCategory
-
-	err := r.db.Model(&domain.ProductCategory{}).Find(&categories).Error
+	cache, err := r.redis.Get(ctx, "products:category")
 	if err != nil {
-		return nil, err
+		err := r.db.Model(&domain.ProductCategory{}).Find(&categories).Error
+		if err != nil {
+			return nil, err
+		}
+
+		r.redis.Set(ctx, "products:category", categories)
+		return categories, nil
 	}
 
-	return categories, nil
+	err = json.Unmarshal([]byte(cache), &categories)
+
+	return categories, err
 }
