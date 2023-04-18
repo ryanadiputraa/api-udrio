@@ -7,12 +7,12 @@ import (
 
 type IUserRepository interface {
 	SaveOrUpdate(ctx context.Context, user User) error
-	FindByID(ctx context.Context, userID interface{}) (User, error)
+	FindByID(ctx context.Context, userID string) (User, error)
 }
 
 type IUserHandler interface {
 	CreateOrUpdateIfExist(ctx context.Context, user User) error
-	GetUserInfo(ctx context.Context, userID interface{}) (User, error)
+	GetUserInfo(ctx context.Context, userID string) (User, error)
 }
 
 type User struct {

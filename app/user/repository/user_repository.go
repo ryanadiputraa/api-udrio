@@ -27,7 +27,7 @@ func (r *userRepository) SaveOrUpdate(ctx context.Context, user domain.User) err
 	return nil
 }
 
-func (r *userRepository) FindByID(ctx context.Context, userID interface{}) (user domain.User, err error) {
+func (r *userRepository) FindByID(ctx context.Context, userID string) (user domain.User, err error) {
 	err = r.db.First(&user, "id = ?", userID).Error
 	return
 }
