@@ -42,7 +42,7 @@ func serveHTTP() {
 	_cartDelivery.NewCartDelivery(api, cartHandler)
 
 	// user
-	userRepository := _userRepository.NewUserRepository(database.DB, RedisClient)
+	userRepository := _userRepository.NewUserRepository(database.DB)
 	userHandler := _userHandler.NewUserHandler(userRepository, cartRepository)
 	_userDelivery.NewUserDelivery(api, AuthMiddleware(), userHandler)
 
