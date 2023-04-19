@@ -115,9 +115,10 @@ func getProductSedeers() []Sedeer {
 func GetOrdersSeeder() []Sedeer {
 	return []Sedeer{
 		{Sedeer: &domain.Order{
-			ID:     "order-1",
-			UserID: "114169873760739514656",
-			Products: []domain.OrderItem{
+			ID:       "order-1",
+			UserID:   "114169873760739514656",
+			SubTotal: 20000,
+			Items: []domain.OrderItem{
 				{ID: 1,
 					OrderID:    "order-1",
 					ProductID:  "uuidp1",
@@ -129,6 +130,21 @@ func GetOrdersSeeder() []Sedeer {
 					ProductID:  "uuidp2",
 					Quantity:   2,
 					TotalPrice: 15000,
+				},
+			},
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		}},
+		{Sedeer: &domain.Order{
+			ID:       "order-2",
+			UserID:   "114169873760739514656",
+			SubTotal: 20000,
+			Items: []domain.OrderItem{
+				{ID: 3,
+					OrderID:    "order-2",
+					ProductID:  "uuidp2",
+					Quantity:   4,
+					TotalPrice: 30000,
 				},
 			},
 			CreatedAt: time.Now(),

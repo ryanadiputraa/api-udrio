@@ -15,10 +15,10 @@ func NewOrderHandler(repository domain.IOrderRepository) domain.IOrderHandler {
 	return &orderHandler{repository: repository}
 }
 
-func (h *orderHandler) GetUserOrders(ctx context.Context, userID string) (orders []domain.OrderDTO, err error) {
-	orders, err = h.repository.FetchOrdersByUserID(ctx, userID)
-	if orders == nil {
-		orders = []domain.OrderDTO{}
+func (h *orderHandler) GetUserOrders(ctx context.Context, userID string) (order []domain.OrderDTO, err error) {
+	order, err = h.repository.FetchOrdersByUserID(ctx, userID)
+	if order == nil {
+		order = []domain.OrderDTO{}
 	}
 	if err != nil {
 		if err.Error() == "record not found" {

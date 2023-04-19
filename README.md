@@ -449,18 +449,24 @@ docker-compose stop
   "error": null,
   "data": [
     {
-      "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
-      "product_name": "Kop Surat",
-      "quantity": 2,
-      "price": 7500,
-      "image": "http://product_image.png"
-    },
-    {
-      "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
-      "product_name": "Kop Surat",
-      "quantity": 2,
-      "price": 7500,
-      "image": "http://product_image.png"
+      "order_id": "asbdjkashdkalsd",
+      "sub_total": 15000,
+      "items": [
+        {
+          "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+          "product_name": "Kop Surat",
+          "quantity": 2,
+          "total_price": 7500,
+          "image": "http://product_image.png"
+        },
+        {
+          "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+          "product_name": "Kop Surat",
+          "quantity": 2,
+          "total_price": 7500,
+          "image": "http://product_image.png"
+        }
+      ]
     }
   ]
 }

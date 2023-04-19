@@ -19,7 +19,8 @@ type Order struct {
 	ID        string `gorm:"primaryKey"`
 	UserID    string `gorm:"index"`
 	User      User
-	Products  []OrderItem
+	Items     []OrderItem
+	SubTotal  int       `gorm:"not null"`
 	CreatedAt time.Time `gorm:"not null"`
 	UpdatedAt time.Time `gorm:"not null"`
 }
@@ -34,11 +35,19 @@ type OrderItem struct {
 	TotalPrice int `gorm:"not null"`
 }
 type OrderDTO struct {
-	ProductID   string `json:"product_id"`
-	ProductName string `json:"product_name"`
-	Quantity    int    `json:"quantity"`
-	TotalPrice  int    `json:"total_price"`
-	Image       string `json:"image"`
+	ID       string         `json:"order_id"`
+	SubTotal int            `json:"sub_total"`
+	Items    []OrderItemDTO `json:"items"`
+}
+
+type OrderItemDTO struct {
+	ProductID   string   `json:"product_id"`
+	ProductName string   `json:"product_name"`
+	Quantity    int      `json:"quantity"`
+	TotalPrice  int      `json:"total_price"`
+	Image       string   `json:"image"`
+	OrderDTOID  string   `json:"-"`
+	OrderDTO    OrderDTO `json:"-"`
 }
 
 type OrderPayload struct {

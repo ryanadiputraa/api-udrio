@@ -16,34 +16,50 @@ func NewOrderRepository(conn *gorm.DB) domain.IOrderRepository {
 }
 
 func (r *orderRepository) FetchOrdersByUserID(ctx context.Context, userID string) (orders []domain.OrderDTO, err error) {
-	var order domain.Order
-	if err = r.db.First(&order, "user_id = ?", userID).Error; err != nil {
-		return
-	}
-
-	rows, err := r.db.Model(&[]domain.OrderItem{}).Where(&domain.OrderItem{OrderID: order.ID}).Rows()
+	rows, err := r.db.Model(&[]domain.Order{}).Where(&domain.Order{UserID: userID}).Rows()
 	if err != nil {
 		return
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var orderItem domain.OrderDTO
-		r.db.ScanRows(rows, &orderItem)
+		var order domain.OrderDTO
+		r.db.ScanRows(rows, &order)
 
-		var product domain.Product
-		err = r.db.Model(&domain.Product{}).Where(&domain.Product{ID: orderItem.ProductID}).Preload("ProductImages").First(&product).Error
-		if err != nil {
+		// fetch order items
+		itemRows, itemErr := r.db.Model(&[]domain.OrderItem{}).Where(&domain.OrderItem{OrderID: order.ID}).Rows()
+		if itemErr != nil {
 			return
 		}
+		defer itemRows.Close()
 
-		orderItem.ProductName = product.ProductName
-		if len(product.ProductImages) > 0 {
-			orderItem.Image = product.ProductImages[0].Image
+		var items []domain.OrderItemDTO
+		for itemRows.Next() {
+			var item domain.OrderItemDTO
+			r.db.ScanRows(itemRows, &item)
+
+			var product domain.Product
+			err = r.db.Model(&domain.Product{}).Where(&domain.Product{ID: item.ProductID}).Preload("ProductImages").First(&product).Error
+			if err != nil {
+				return
+			}
+
+			item.ProductName = product.ProductName
+			if len(product.ProductImages) > 0 {
+				item.Image = product.ProductImages[0].Image
+			}
+
+			items = append(items, item)
 		}
 
-		orders = append(orders, orderItem)
+		if items == nil {
+			order.Items = []domain.OrderItemDTO{}
+		} else {
+			order.Items = items
+		}
+		orders = append(orders, order)
 	}
+
 	return
 }
 
