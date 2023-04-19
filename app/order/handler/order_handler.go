@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
+	log "github.com/sirupsen/logrus"
 )
 
 type orderHandler struct {
@@ -19,6 +20,13 @@ func (h *orderHandler) GetUserOrders(ctx context.Context, userID string) (orders
 	if orders == nil {
 		orders = []domain.OrderDTO{}
 	}
+	if err != nil {
+		if err.Error() == "record not found" {
+			return []domain.OrderDTO{}, nil
+		}
+		log.Error("fail to fetch user orders: ", err.Error())
+	}
+
 	return
 }
 
