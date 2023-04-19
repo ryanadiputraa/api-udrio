@@ -449,34 +449,18 @@ docker-compose stop
   "error": null,
   "data": [
     {
-      "id": "ajksdjaklsdjqipowdj",
-      "product": {
-        "quantity": 2,
-        "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
-        "product_name": "Kop Surat",
-        "price": 7500,
-        "is_available": true,
-        "image": "http://product_image.png"
-      },
+      "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+      "product_name": "Kop Surat",
       "quantity": 2,
-      "total_price": 30000,
-      "created_at": "2023-01-18T12:03:56.595459Z",
-      "updated_at": "2023-01-18T12:03:56.595459Z"
+      "price": 7500,
+      "image": "http://product_image.png"
     },
     {
-      "id": "ajksdjaklsdjqipowdj",
-      "product": {
-        "quantity": 2,
-        "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
-        "product_name": "Kop Surat",
-        "price": 7500,
-        "is_available": true,
-        "image": "http://product_image.png"
-      },
+      "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+      "product_name": "Kop Surat",
       "quantity": 2,
-      "total_price": 30000,
-      "created_at": "2023-01-18T12:03:56.595459Z",
-      "updated_at": "2023-01-18T12:03:56.595459Z"
+      "price": 7500,
+      "image": "http://product_image.png"
     }
   ]
 }

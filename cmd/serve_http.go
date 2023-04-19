@@ -22,6 +22,10 @@ import (
 	_productDelivery "github.com/ryanadiputraa/api-udrio/app/product/delivery"
 	_productHandler "github.com/ryanadiputraa/api-udrio/app/product/handler"
 	_productRepository "github.com/ryanadiputraa/api-udrio/app/product/repository"
+
+	_orderDelivery "github.com/ryanadiputraa/api-udrio/app/order/delivery"
+	_orderHandler "github.com/ryanadiputraa/api-udrio/app/order/handler"
+	_orderRepository "github.com/ryanadiputraa/api-udrio/app/order/repository"
 )
 
 func serveHTTP() {
@@ -54,6 +58,11 @@ func serveHTTP() {
 	productRepository := _productRepository.NewProductRepository(database.DB, RedisClient)
 	productHandler := _productHandler.NewProductHandler(productRepository)
 	_productDelivery.NewProductDelivery(api, productHandler)
+
+	// Orders
+	orderRepository := _orderRepository.NewOrderRepository(database.DB)
+	orderHandler := _orderHandler.NewOrderHandler(orderRepository)
+	_orderDelivery.NewOrderDelivery(api, orderHandler)
 
 	// Setup server port & handler
 	port := viper.GetString("PORT")

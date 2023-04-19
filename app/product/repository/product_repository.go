@@ -55,7 +55,7 @@ func (r *productRepository) FetchCategory(ctx context.Context) ([]domain.Product
 	var categories []domain.ProductCategory
 	cache, err := r.redis.Get(ctx, "products:category")
 	if err != nil {
-		err := r.db.Model(&domain.ProductCategory{}).Find(&categories).Error
+		err := r.db.Find(&categories).Error
 		if err != nil {
 			return nil, err
 		}

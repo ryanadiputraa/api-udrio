@@ -34,7 +34,7 @@ func (d *cartDelivery) GetUserCart(c *gin.Context) {
 	claim, err := jwt.ParseJWTClaims(token, false)
 	userID := claim["sub"]
 	if err != nil || userID == nil {
-		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
+		c.JSON(http.StatusForbidden, utils.HttpResponseError(http.StatusForbidden, err.Error()))
 		return
 	}
 
