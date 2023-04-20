@@ -2,6 +2,8 @@ package handler
 
 import (
 	"context"
+	"errors"
+	"time"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
 	log "github.com/sirupsen/logrus"
@@ -31,5 +33,32 @@ func (h *orderHandler) GetUserOrders(ctx context.Context, userID string) (order 
 }
 
 func (h *orderHandler) CreateOrder(ctx context.Context, userID string, payload domain.OrderPayload) (err error) {
+	var productIDs []string
+
+	for _, v := range payload.Orders {
+		if len(v.ProductID) == 0 {
+			log.Error("invalid param: missing product id")
+			return errors.New("invalid param: missing product id")
+		}
+		if v.Quantity < 1 {
+			log.Error("invalid param: missing quantity or must be greater than 0 ")
+			return errors.New("invalid param: missing quantity or must be greater than 0 ")
+		}
+		productIDs = append(productIDs, v.ProductID)
+	}
+
+	order := domain.Order{
+		UserID:    userID,
+		SubTotal:  0,
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+	}
+
+	err = h.repository.SaveOrder(ctx, order, payload.Orders, productIDs)
+	if err != nil {
+		log.Error("fail to create order: ", err.Error())
+		return
+	}
+
 	return
 }

@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"gorm.io/gorm"
 )
@@ -63,7 +64,34 @@ func (r *orderRepository) FetchOrdersByUserID(ctx context.Context, userID string
 	return
 }
 
-func (r *orderRepository) SaveOrder(ctx context.Context, userID string, order domain.Order) (err error) {
-	err = r.db.Create(&order).Error
+func (r *orderRepository) SaveOrder(ctx context.Context, order domain.Order, items []domain.OrderPayloadItem, productIDs []string) (err error) {
+	rows, err := r.db.Model(&domain.Product{}).Where("id IN ?", productIDs).Rows()
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+
+	idx := 0
+	for rows.Next() {
+		var product domain.Product
+		r.db.ScanRows(rows, &product)
+		totalPrice := product.Price * items[idx].Quantity
+
+		orderItem := domain.OrderItem{
+			ID:         uuid.NewString(),
+			ProductID:  product.ID,
+			Quantity:   items[idx].Quantity,
+			TotalPrice: totalPrice,
+		}
+		order.SubTotal += totalPrice
+		order.Items = append(order.Items, orderItem)
+
+		idx++
+	}
+
+	if err = r.db.Create(&order).Error; err != nil {
+		return err
+	}
+
 	return
 }

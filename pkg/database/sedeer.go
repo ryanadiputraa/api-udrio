@@ -13,7 +13,6 @@ type Sedeer struct {
 
 func registerSedeers(db *gorm.DB) []Sedeer {
 	sedeers := append(getCategorySedeers(), getProductSedeers()...)
-	sedeers = append(sedeers, GetOrdersSeeder()...)
 	return sedeers
 }
 
@@ -108,47 +107,6 @@ func getProductSedeers() []Sedeer {
 			ID:        "img1p3",
 			Image:     "https://www.riodigitalprint.com/liteprint/application/liteprint/rio/assets/product_image/1584692482173-xbanner-kosongan.jpg",
 			ProductID: productIDs[2],
-		}},
-	}
-}
-
-func GetOrdersSeeder() []Sedeer {
-	return []Sedeer{
-		{Sedeer: &domain.Order{
-			ID:       "order-1",
-			UserID:   "114169873760739514656",
-			SubTotal: 20000,
-			Items: []domain.OrderItem{
-				{ID: 1,
-					OrderID:    "order-1",
-					ProductID:  "uuidp1",
-					Quantity:   1,
-					TotalPrice: 5000,
-				},
-				{ID: 2,
-					OrderID:    "order-1",
-					ProductID:  "uuidp2",
-					Quantity:   2,
-					TotalPrice: 15000,
-				},
-			},
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-		}},
-		{Sedeer: &domain.Order{
-			ID:       "order-2",
-			UserID:   "114169873760739514656",
-			SubTotal: 20000,
-			Items: []domain.OrderItem{
-				{ID: 3,
-					OrderID:    "order-2",
-					ProductID:  "uuidp2",
-					Quantity:   4,
-					TotalPrice: 30000,
-				},
-			},
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
 		}},
 	}
 }

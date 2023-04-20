@@ -7,7 +7,7 @@ import (
 
 type IOrderRepository interface {
 	FetchOrdersByUserID(ctx context.Context, userID string) ([]OrderDTO, error)
-	SaveOrder(ctx context.Context, userID string, order Order) error
+	SaveOrder(ctx context.Context, order Order, items []OrderPayloadItem, productIDs []string) error
 }
 
 type IOrderHandler interface {
@@ -16,8 +16,8 @@ type IOrderHandler interface {
 }
 
 type Order struct {
-	ID        string `gorm:"primaryKey"`
-	UserID    string `gorm:"index"`
+	ID        int64  `gorm:"primaryKey;type:bigserial"`
+	UserID    string `gorm:"index;not null"`
 	User      User
 	Items     []OrderItem
 	SubTotal  int       `gorm:"not null"`
@@ -26,8 +26,8 @@ type Order struct {
 }
 
 type OrderItem struct {
-	ID         int64  `gorm:"primaryKey;type:bigserial"`
-	OrderID    string `gorm:"index"`
+	ID         string `gorm:"primaryKey"`
+	OrderID    int64  `gorm:"index"`
 	Order      Order
 	ProductID  string
 	Product    Product
@@ -35,7 +35,7 @@ type OrderItem struct {
 	TotalPrice int `gorm:"not null"`
 }
 type OrderDTO struct {
-	ID       string         `json:"order_id"`
+	ID       int64          `json:"order_id"`
 	SubTotal int            `json:"sub_total"`
 	Items    []OrderItemDTO `json:"items"`
 }
