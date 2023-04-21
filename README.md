@@ -456,14 +456,15 @@ docker-compose stop
           "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
           "product_name": "Kop Surat",
           "quantity": 2,
-          "total_price": 7500,
+          "price": 4000,
+          "total_price": 8000,
           "image": "http://product_image.png"
         },
         {
           "product_id": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
           "product_name": "Kop Surat",
-          "quantity": 2,
-          "total_price": 7500,
+          "price": 4000,
+          "total_price": 8000,
           "image": "http://product_image.png"
         }
       ]

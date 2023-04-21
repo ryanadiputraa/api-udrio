@@ -17,7 +17,7 @@ func NewOrderRepository(conn *gorm.DB) domain.IOrderRepository {
 }
 
 func (r *orderRepository) FetchOrdersByUserID(ctx context.Context, userID string) (orders []domain.OrderDTO, err error) {
-	rows, err := r.db.Model(&[]domain.Order{}).Where(&domain.Order{UserID: userID}).Rows()
+	rows, err := r.db.Model(&[]domain.Order{}).Where(&domain.Order{UserID: userID}).Order("created_at DESC").Rows()
 	if err != nil {
 		return
 	}
@@ -81,6 +81,7 @@ func (r *orderRepository) SaveOrder(ctx context.Context, order domain.Order, ite
 			ID:         uuid.NewString(),
 			ProductID:  product.ID,
 			Quantity:   items[idx].Quantity,
+			Price:      product.Price,
 			TotalPrice: totalPrice,
 		}
 		order.SubTotal += totalPrice
