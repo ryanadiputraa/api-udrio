@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -17,16 +18,31 @@ func NewOrderHandler(repository domain.IOrderRepository) domain.IOrderHandler {
 	return &orderHandler{repository: repository}
 }
 
-func (h *orderHandler) GetUserOrders(ctx context.Context, userID string) (order []domain.OrderDTO, err error) {
-	order, err = h.repository.FetchOrdersByUserID(ctx, userID)
+func (h *orderHandler) GetUserOrders(ctx context.Context, userID string, size int, page int) (order []domain.OrderDTO, meta pagination.Page, err error) {
+	if size <= 0 {
+		size = 20
+	}
+	if page <= 0 {
+		page = 1
+	}
+
+	order, count, err := h.repository.FetchOrdersByUserID(ctx, userID, size, page)
 	if order == nil {
 		order = []domain.OrderDTO{}
 	}
 	if err != nil {
 		if err.Error() == "record not found" {
-			return []domain.OrderDTO{}, nil
+			return []domain.OrderDTO{}, pagination.Page{}, nil
 		}
 		log.Error("fail to fetch user orders: ", err.Error())
+	}
+	pages := *pagination.NewPagination(size, page, int(count))
+	meta = pagination.Page{
+		CurrentPage:  pages.Page,
+		TotalPage:    pages.TotalPage,
+		TotalData:    pages.TotalData,
+		NextPage:     pages.NextPage(),
+		PreviousPage: pages.PreviousPage(),
 	}
 
 	return

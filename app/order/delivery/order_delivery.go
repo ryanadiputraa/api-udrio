@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ryanadiputraa/api-udrio/domain"
@@ -35,13 +36,15 @@ func (d *orderDelivery) GetUserOrders(c *gin.Context) {
 		return
 	}
 
-	orders, err := d.handler.GetUserOrders(c, userID.(string))
+	size, _ := strconv.Atoi(c.Query("size"))
+	page, _ := strconv.Atoi(c.Query("page"))
+	orders, meta, err := d.handler.GetUserOrders(c, userID.(string), size, page)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.HttpResponse(http.StatusOK, orders))
+	c.JSON(http.StatusOK, utils.HttpResponseWithMetaData(http.StatusOK, orders, meta))
 }
 
 func (d *orderDelivery) CreateOrder(c *gin.Context) {

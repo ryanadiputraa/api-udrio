@@ -16,8 +16,10 @@ func NewOrderRepository(conn *gorm.DB) domain.IOrderRepository {
 	return &orderRepository{db: conn}
 }
 
-func (r *orderRepository) FetchOrdersByUserID(ctx context.Context, userID string) (orders []domain.OrderDTO, err error) {
-	rows, err := r.db.Model(&[]domain.Order{}).Where(&domain.Order{UserID: userID}).Order("created_at DESC").Rows()
+func (r *orderRepository) FetchOrdersByUserID(ctx context.Context, userID string, size int, offset int) (orders []domain.OrderDTO, count int64, err error) {
+	r.db.Model(&domain.Order{}).Where(&domain.Order{UserID: userID}).Count(&count)
+
+	rows, err := r.db.Model(&[]domain.Order{}).Limit(size).Offset(offset).Where(&domain.Order{UserID: userID}).Order("created_at DESC").Rows()
 	if err != nil {
 		return
 	}
