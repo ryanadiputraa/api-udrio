@@ -83,3 +83,14 @@ func ParseJWTClaims(tokenString string, isRefresh bool) (jwt.MapClaims, error) {
 
 	return claims, nil
 }
+
+func ExtractUserID(c *gin.Context) (userID string, err error) {
+	token, err := ExtractTokenFromAuthorizationHeader(c)
+	if err != nil {
+		return
+	}
+
+	claim, err := ParseJWTClaims(token, false)
+	userID = claim["sub"].(string)
+	return
+}

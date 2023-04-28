@@ -25,20 +25,13 @@ func NewCartDelivery(rg *gin.RouterGroup, handler domain.ICartHandler) {
 }
 
 func (d *cartDelivery) GetUserCart(c *gin.Context) {
-	token, err := jwt.ExtractTokenFromAuthorizationHeader(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
-		return
-	}
-
-	claim, err := jwt.ParseJWTClaims(token, false)
-	userID := claim["sub"]
-	if err != nil || userID == nil {
+	userID, err := jwt.ExtractUserID(c)
+	if err != nil || userID == "" {
 		c.JSON(http.StatusForbidden, utils.HttpResponseError(http.StatusForbidden, err.Error()))
 		return
 	}
 
-	cart, err := d.handler.GetUserCart(c, userID.(string))
+	cart, err := d.handler.GetUserCart(c, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
@@ -48,14 +41,8 @@ func (d *cartDelivery) GetUserCart(c *gin.Context) {
 }
 
 func (d *cartDelivery) UpdateUserCart(c *gin.Context) {
-	token, err := jwt.ExtractTokenFromAuthorizationHeader(c)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, utils.HttpResponseError(http.StatusUnauthorized, err.Error()))
-		return
-	}
-	claim, err := jwt.ParseJWTClaims(token, false)
-	userID := claim["sub"]
-	if err != nil {
+	userID, err := jwt.ExtractUserID(c)
+	if err != nil || userID == "" {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
 	}
@@ -66,7 +53,7 @@ func (d *cartDelivery) UpdateUserCart(c *gin.Context) {
 		return
 	}
 
-	err = d.handler.UpdateUserCart(c, userID.(string), payload)
+	err = d.handler.UpdateUserCart(c, userID, payload)
 	if err != nil {
 		if err.Error() == "cart not found" {
 			c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
@@ -80,20 +67,14 @@ func (d *cartDelivery) UpdateUserCart(c *gin.Context) {
 }
 
 func (d *cartDelivery) DeleteCartItem(c *gin.Context) {
-	token, err := jwt.ExtractTokenFromAuthorizationHeader(c)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, utils.HttpResponseError(http.StatusUnauthorized, err.Error()))
-		return
-	}
-	claim, err := jwt.ParseJWTClaims(token, false)
-	userID := claim["sub"]
-	if err != nil {
+	userID, err := jwt.ExtractUserID(c)
+	if err != nil || userID == "" {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
 	}
 
 	productID := c.Param("product_id")
-	err = d.handler.DeleteCartItem(c, userID.(string), productID)
+	err = d.handler.DeleteCartItem(c, userID, productID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return

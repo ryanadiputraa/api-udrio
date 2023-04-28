@@ -23,22 +23,15 @@ func NewOrderDelivery(rg *gin.RouterGroup, handler domain.IOrderHandler) {
 }
 
 func (d *orderDelivery) GetUserOrders(c *gin.Context) {
-	token, err := jwt.ExtractTokenFromAuthorizationHeader(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
-		return
-	}
-
-	claim, err := jwt.ParseJWTClaims(token, false)
-	userID := claim["sub"]
-	if err != nil || userID == nil {
+	userID, err := jwt.ExtractUserID(c)
+	if err != nil || userID == "" {
 		c.JSON(http.StatusForbidden, utils.HttpResponseError(http.StatusForbidden, err.Error()))
 		return
 	}
 
 	size, _ := strconv.Atoi(c.Query("size"))
 	page, _ := strconv.Atoi(c.Query("page"))
-	orders, meta, err := d.handler.GetUserOrders(c, userID.(string), size, page)
+	orders, meta, err := d.handler.GetUserOrders(c, userID, size, page)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
@@ -48,15 +41,8 @@ func (d *orderDelivery) GetUserOrders(c *gin.Context) {
 }
 
 func (d *orderDelivery) CreateOrder(c *gin.Context) {
-	token, err := jwt.ExtractTokenFromAuthorizationHeader(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
-		return
-	}
-
-	claim, err := jwt.ParseJWTClaims(token, false)
-	userID := claim["sub"]
-	if err != nil || userID == nil {
+	userID, err := jwt.ExtractUserID(c)
+	if err != nil || userID == "" {
 		c.JSON(http.StatusForbidden, utils.HttpResponseError(http.StatusForbidden, err.Error()))
 		return
 	}
@@ -67,7 +53,7 @@ func (d *orderDelivery) CreateOrder(c *gin.Context) {
 		return
 	}
 
-	err = d.handler.CreateOrder(c, userID.(string), payload)
+	err = d.handler.CreateOrder(c, userID, payload)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
