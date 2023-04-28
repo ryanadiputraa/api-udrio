@@ -28,7 +28,8 @@ func (h *orderHandler) GetUserOrders(ctx context.Context, userID string, size in
 		page = 1
 	}
 
-	order, count, err := h.repository.FetchOrdersByUserID(ctx, userID, size, page)
+	offset := pagination.Offset(size, page)
+	order, count, err := h.repository.FetchOrdersByUserID(ctx, userID, size, offset)
 	if order == nil {
 		order = []domain.OrderDTO{}
 	}
