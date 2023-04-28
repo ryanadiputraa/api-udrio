@@ -66,7 +66,7 @@ func (r *orderRepository) FetchOrdersByUserID(ctx context.Context, userID string
 	return
 }
 
-func (r *orderRepository) SaveOrder(ctx context.Context, order domain.Order, items []domain.OrderPayloadItem, productIDs []string) (err error) {
+func (r *orderRepository) SaveOrder(ctx context.Context, order domain.Order, items []domain.OrderPayloadItem, productIDs []string) (user domain.User, err error) {
 	rows, err := r.db.Model(&domain.Product{}).Where("id IN ?", productIDs).Rows()
 	if err != nil {
 		return
@@ -93,8 +93,9 @@ func (r *orderRepository) SaveOrder(ctx context.Context, order domain.Order, ite
 	}
 
 	if err = r.db.Create(&order).Error; err != nil {
-		return err
+		return domain.User{}, err
 	}
 
-	return
+	r.db.Find(&user, "id = ?", order.UserID)
+	return user, nil
 }

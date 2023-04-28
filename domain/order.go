@@ -9,7 +9,7 @@ import (
 
 type IOrderRepository interface {
 	FetchOrdersByUserID(ctx context.Context, userID string, size int, offset int) (orders []OrderDTO, count int64, err error)
-	SaveOrder(ctx context.Context, order Order, items []OrderPayloadItem, productIDs []string) error
+	SaveOrder(ctx context.Context, order Order, items []OrderPayloadItem, productIDs []string) (user User, err error)
 }
 
 type IOrderHandler interface {

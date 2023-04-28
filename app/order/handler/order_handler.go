@@ -3,9 +3,11 @@ package handler
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/pkg/mail"
 	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
 	log "github.com/sirupsen/logrus"
 )
@@ -70,10 +72,21 @@ func (h *orderHandler) CreateOrder(ctx context.Context, userID string, payload d
 		UpdatedAt: time.Now().UTC(),
 	}
 
-	err = h.repository.SaveOrder(ctx, order, payload.Orders, productIDs)
+	user, err := h.repository.SaveOrder(ctx, order, payload.Orders, productIDs)
 	if err != nil {
 		log.Error("fail to create order: ", err.Error())
 		return
+	}
+
+	// send notification mail
+	mailBody := fmt.Sprintf(
+		"Hi, %s!\nTerima kasih telah membuat pesanan, namun mohon maaf website ini masih dalam status prototype.",
+		user.FirstName,
+	)
+	err = mail.SendMail("Pesanan UD Rio Digital Printing", mailBody, []string{user.Email})
+	// mail error can be ignored
+	if err != nil {
+		log.Error("fail to send notification mail: ", err.Error())
 	}
 
 	return
