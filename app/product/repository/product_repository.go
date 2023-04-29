@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
@@ -32,7 +34,26 @@ func (r *productRepository) Fetch(ctx context.Context, size int, offset int, cat
 		}
 	}
 
-	err = modelQuery.Preload("ProductImages").Limit(size).Offset(offset).Order("is_available desc, updated_at desc, created_at desc").Find(&products).Error
+	categoryStr := strconv.Itoa(category)
+	sizeStr := strconv.Itoa(size)
+	offsetStr := strconv.Itoa(offset)
+	redisKey := fmt.Sprintf("products#%s#%s#%s#%s", categoryStr, sizeStr, offsetStr, query)
+
+	cache, err := r.redis.Get(ctx, redisKey)
+	if err != nil {
+		err = modelQuery.Preload("ProductImages").Limit(size).Offset(offset).Order("is_available desc, updated_at desc, created_at desc").Find(&products).Error
+		if err != nil {
+			return nil, 0, err
+		}
+
+		err = r.redis.Set(ctx, redisKey, products)
+		if err != nil {
+			return nil, 0, err
+		}
+		return products, count, nil
+	}
+
+	err = json.Unmarshal([]byte(cache), &products)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -60,7 +81,10 @@ func (r *productRepository) FetchCategory(ctx context.Context) ([]domain.Product
 			return nil, err
 		}
 
-		r.redis.Set(ctx, "products:category", categories)
+		err = r.redis.Set(ctx, "products:category", categories)
+		if err != nil {
+			return nil, err
+		}
 		return categories, nil
 	}
 
