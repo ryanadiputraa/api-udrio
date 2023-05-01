@@ -8,6 +8,8 @@ import (
 	"github.com/ryanadiputraa/api-udrio/pkg/database"
 	"github.com/spf13/viper"
 
+	_adminDelivery "github.com/ryanadiputraa/api-udrio/app/admin/delivery"
+
 	_oauthDelivery "github.com/ryanadiputraa/api-udrio/app/oauth/delivery"
 	_oauthHandler "github.com/ryanadiputraa/api-udrio/app/oauth/handler"
 
@@ -30,6 +32,7 @@ import (
 
 func serveHTTP() {
 	r := gin.Default()
+	r.LoadHTMLGlob("templates/**/*")
 	r.SetTrustedProxies(nil)
 
 	// Middlewares
@@ -39,6 +42,10 @@ func serveHTTP() {
 
 	oauth2 := r.Group("/oauth")
 	api := r.Group("/api")
+	admin := r.Group("/admin")
+
+	// admin
+	_adminDelivery.NewAdminDelivery(admin)
 
 	// cart
 	cartRepository := _cartRepository.NewCartRepository(database.DB)
