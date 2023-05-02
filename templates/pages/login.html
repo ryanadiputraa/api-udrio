@@ -1,2 +1,7 @@
 {{ template "layout" }}
 <p>{{ .title }}</p>
+<form action="/admin/signin" method="POST">
+  <input type="text" name="username" placeholder="username" />
+  <input type="password" name="password" placeholder="password" />
+  <button type="submit">Login</button>
+</form>

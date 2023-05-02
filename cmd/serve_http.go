@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/viper"
 
 	_adminDelivery "github.com/ryanadiputraa/api-udrio/app/admin/delivery"
+	_adminHandler "github.com/ryanadiputraa/api-udrio/app/admin/handler"
+	_adminRepository "github.com/ryanadiputraa/api-udrio/app/admin/repository"
 
 	_oauthDelivery "github.com/ryanadiputraa/api-udrio/app/oauth/delivery"
 	_oauthHandler "github.com/ryanadiputraa/api-udrio/app/oauth/handler"
@@ -45,7 +47,9 @@ func serveHTTP() {
 	admin := r.Group("/admin")
 
 	// admin
-	_adminDelivery.NewAdminDelivery(admin)
+	adminRepository := _adminRepository.NewAdminRepository(database.DB, RedisClient)
+	adminHandler := _adminHandler.NewAdminHandler(adminRepository)
+	_adminDelivery.NewAdminDelivery(admin, adminHandler)
 
 	// cart
 	cartRepository := _cartRepository.NewCartRepository(database.DB)
