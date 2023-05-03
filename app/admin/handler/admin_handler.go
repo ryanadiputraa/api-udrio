@@ -22,6 +22,9 @@ func NewAdminHandler(repository domain.IAdminRepository) domain.IAdminHandler {
 func (h *adminHandler) SignIn(ctx context.Context, username string, password string) (sessionToken string, expiresAt time.Time, err error) {
 	admin, err := h.repository.GetAdminByUsername(ctx, username)
 	if err != nil {
+		if err.Error() == "record not found" {
+			err = errors.New("username didn't exists")
+		}
 		log.Error("fail to signin: ", err.Error())
 		return
 	}

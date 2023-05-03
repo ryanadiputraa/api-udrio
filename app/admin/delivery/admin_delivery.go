@@ -34,7 +34,9 @@ func (d *adminDelivery) SignIn(c *gin.Context) {
 	c.Request.ParseForm()
 	sessionToken, expiresAt, err := d.handler.SignIn(c, c.PostForm("username"), c.PostForm("password"))
 	if err != nil {
-		c.Redirect(http.StatusFound, "/admin/login")
+		c.HTML(http.StatusOK, "login.html", gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 	http.SetCookie(c.Writer, &http.Cookie{
