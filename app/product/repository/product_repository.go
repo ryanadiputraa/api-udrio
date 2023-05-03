@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/cache"
@@ -46,7 +47,7 @@ func (r *productRepository) Fetch(ctx context.Context, size int, offset int, cat
 			return nil, 0, err
 		}
 
-		err = r.redis.Set(ctx, redisKey, products)
+		err = r.redis.Set(ctx, redisKey, products, time.Minute*10)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -81,7 +82,7 @@ func (r *productRepository) FetchCategory(ctx context.Context) ([]domain.Product
 			return nil, err
 		}
 
-		err = r.redis.Set(ctx, "products:category", categories)
+		err = r.redis.Set(ctx, "products:category", categories, time.Minute*10)
 		if err != nil {
 			return nil, err
 		}

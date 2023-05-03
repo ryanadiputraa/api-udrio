@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"encoding/json"
+	"time"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/cache"
@@ -29,7 +30,7 @@ func (r *adminRepository) GetAdminByID(ctx context.Context, ID int) (admin domai
 }
 
 func (r *adminRepository) SaveSession(ctx context.Context, session domain.Session) (err error) {
-	err = r.redis.Set(ctx, session.SessionToken, session)
+	err = r.redis.Set(ctx, session.SessionToken, session, time.Hour)
 	return
 }
 

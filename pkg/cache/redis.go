@@ -15,7 +15,7 @@ type RedisClient struct {
 }
 
 type Redis interface {
-	Set(ctx context.Context, key string, value interface{}) error
+	Set(ctx context.Context, key string, value interface{}, expiresTime time.Duration) error
 	Get(ctx context.Context, key string) (string, error)
 }
 
@@ -29,13 +29,13 @@ func InitRedis() Redis {
 	return &RedisClient{rdb: rdb}
 }
 
-func (r *RedisClient) Set(ctx context.Context, key string, value interface{}) error {
+func (r *RedisClient) Set(ctx context.Context, key string, value interface{}, expiresTime time.Duration) error {
 	jsonData, err := json.Marshal(value)
 	if err != nil {
 		return err
 	}
 
-	err = r.rdb.Set(ctx, key, jsonData, 10*time.Minute).Err()
+	err = r.rdb.Set(ctx, key, jsonData, expiresTime).Err()
 	return err
 }
 
