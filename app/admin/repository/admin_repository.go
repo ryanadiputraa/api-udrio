@@ -8,6 +8,7 @@ import (
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/cache"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type adminRepository struct {
@@ -41,5 +42,18 @@ func (r *adminRepository) GetSession(ctx context.Context, sessionToken string) (
 	}
 
 	err = json.Unmarshal([]byte(value), &session)
+	return
+}
+
+func (r *adminRepository) SaveFilePath(ctx context.Context, assetsPath domain.AssetsPath) (err error) {
+	err = r.db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "key"}},
+		DoUpdates: clause.AssignmentColumns([]string{"file_path"}),
+	}).Create(&assetsPath).Error
+	return
+}
+
+func (r *adminRepository) GetFilePath(ctx context.Context, key string) (assetsPath domain.AssetsPath, err error) {
+	err = r.db.First(&assetsPath, "key = ?", key).Error
 	return
 }

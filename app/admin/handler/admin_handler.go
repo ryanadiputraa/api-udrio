@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"os"
 	"time"
 
 	"github.com/google/uuid"
@@ -23,7 +24,7 @@ func (h *adminHandler) SignIn(ctx context.Context, username string, password str
 	admin, err := h.repository.GetAdminByUsername(ctx, username)
 	if err != nil {
 		if err.Error() == "record not found" {
-			err = errors.New("username didn't exists")
+			err = errors.New("username tidak ditemukan")
 		}
 		log.Error("fail to signin: ", err.Error())
 		return
@@ -31,7 +32,7 @@ func (h *adminHandler) SignIn(ctx context.Context, username string, password str
 
 	if !utils.CheckPasswordWithHash(password, admin.Password) {
 		log.Error("fail to signin: password didn't match")
-		return "", time.Now(), errors.New("fail to signin: password didn't match")
+		return "", time.Now(), errors.New("gagal login: password tidak sesuai")
 	}
 
 	sessionToken = uuid.NewString()
@@ -48,5 +49,29 @@ func (h *adminHandler) SignIn(ctx context.Context, username string, password str
 
 func (h *adminHandler) GetSession(ctx context.Context, sessionToken string) (session domain.Session, err error) {
 	session, err = h.repository.GetSession(ctx, sessionToken)
+	return
+}
+
+func (h *adminHandler) SaveFilePath(ctx context.Context, assetsPath domain.AssetsPath) (err error) {
+	oldPath, err := h.repository.GetFilePath(ctx, assetsPath.Key)
+	if err != nil && err.Error() != "record not found" {
+		log.Error("fail to get file path: ", err.Error())
+		return
+	}
+	if oldPath.FilePath != "" {
+		if err = os.Remove(oldPath.FilePath); err != nil {
+			log.Error("fail to remove old path: ", err.Error())
+			return
+		}
+	}
+
+	if err = h.repository.SaveFilePath(ctx, assetsPath); err != nil {
+		log.Error("fail to save file path: ", err.Error())
+	}
+	return
+}
+
+func (h *adminHandler) GetFilePath(ctx context.Context, key string) (assetsPath domain.AssetsPath, err error) {
+	assetsPath, err = h.repository.GetFilePath(ctx, key)
 	return
 }

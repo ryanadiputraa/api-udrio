@@ -35,6 +35,8 @@ import (
 func serveHTTP() {
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/**/*")
+	r.Static("/assets", "./assets")
+	r.MaxMultipartMemory = 8 << 20 // max 8 MiB
 	r.SetTrustedProxies(nil)
 
 	// Middlewares

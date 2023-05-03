@@ -1,0 +1,13 @@
+{{ template "layout" }} {{ if .href }}
+<a href="/{{ .filepath }}" download>Export</a>
+
+{{ end }}
+<form action="/admin/products" method="POST" enctype="multipart/form-data">
+  <input type="file" name="file" placeholder="csv file" />
+  <button type="submit">Import</button>
+</form>
+{{ if .error }}
+<span>{{ .error }}</span>
+{{ end }} {{ if .message }}
+<span>{{ .message }}</span>
+{{ end }}
