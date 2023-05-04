@@ -12,7 +12,8 @@ type Sedeer struct {
 }
 
 func registerSedeers(db *gorm.DB) []Sedeer {
-	sedeers := append(getCategorySedeers(), getProductSedeers()...)
+	// sedeers := append(getCategorySedeers(), getProductSedeers()...)
+	sedeers := []Sedeer{}
 	return sedeers
 }
 

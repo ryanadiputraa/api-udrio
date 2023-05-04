@@ -86,6 +86,13 @@ func (d *adminDelivery) UploadProducts(c *gin.Context) {
 		return
 	}
 
+	if err = d.handler.BulkInsertProducts(c); err != nil {
+		c.HTML(http.StatusOK, "products.html", gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	c.HTML(http.StatusOK, "products.html", gin.H{
 		"message":  "Data berhasil diperbarui",
 		"filepath": filePath,

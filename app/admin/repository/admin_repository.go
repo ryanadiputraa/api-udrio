@@ -2,7 +2,11 @@ package repository
 
 import (
 	"context"
+	"encoding/csv"
 	"encoding/json"
+	"errors"
+	"io"
+	"strconv"
 	"time"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
@@ -55,5 +59,48 @@ func (r *adminRepository) SaveFilePath(ctx context.Context, assetsPath domain.As
 
 func (r *adminRepository) GetFilePath(ctx context.Context, key string) (assetsPath domain.AssetsPath, err error) {
 	err = r.db.First(&assetsPath, "key = ?", key).Error
+	return
+}
+
+func (r *adminRepository) BulkInsertProducts(ctx context.Context, cr *csv.Reader) (err error) {
+	var products []domain.Product
+	header := true
+
+	for {
+		record, err := cr.Read()
+		if errors.Is(err, io.EOF) {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		if !header {
+			categoryID, _ := strconv.Atoi(record[2])
+			price, _ := strconv.Atoi(record[3])
+			isAvailable, _ := strconv.ParseBool(record[4])
+			minOrder, _ := strconv.Atoi(record[6])
+			product := domain.Product{
+				ID:                record[0],
+				ProductName:       record[1],
+				ProductCategoryID: categoryID,
+				Price:             price,
+				IsAvailable:       isAvailable,
+				Description:       record[5],
+				MinOrder:          minOrder,
+				CreatedAt:         time.Now(),
+				UpdatedAt:         time.Now(),
+			}
+
+			products = append(products, product)
+		}
+		header = false
+	}
+
+	err = r.db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"product_name", "product_category_id", "price", "is_available", "description", "min_order", "updated_at"}),
+	}).Create(&products).Error
+
 	return
 }

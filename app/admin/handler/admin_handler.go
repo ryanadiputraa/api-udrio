@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"encoding/csv"
 	"errors"
 	"os"
 	"time"
@@ -73,5 +74,26 @@ func (h *adminHandler) SaveFilePath(ctx context.Context, assetsPath domain.Asset
 
 func (h *adminHandler) GetFilePath(ctx context.Context, key string) (assetsPath domain.AssetsPath, err error) {
 	assetsPath, err = h.repository.GetFilePath(ctx, key)
+	return
+}
+
+func (h *adminHandler) BulkInsertProducts(ctx context.Context) (err error) {
+	path, err := h.GetFilePath(ctx, "products")
+	if err != nil {
+		log.Error("fail to get file path: ", err.Error())
+		return
+	}
+
+	f, err := os.Open(path.FilePath)
+	if err != nil {
+		log.Error("fail to open csv: ", err.Error())
+		return
+	}
+
+	cr := csv.NewReader(f)
+	if err = h.repository.BulkInsertProducts(ctx, cr); err != nil {
+		log.Error("fail to insert data: ", err.Error())
+		return
+	}
 	return
 }

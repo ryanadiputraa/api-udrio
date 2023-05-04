@@ -2,6 +2,7 @@ package domain
 
 import (
 	"context"
+	"encoding/csv"
 	"time"
 )
 
@@ -10,6 +11,7 @@ type IAdminHandler interface {
 	GetSession(ctx context.Context, sessionToken string) (Session, error)
 	SaveFilePath(ctx context.Context, assetsPath AssetsPath) error
 	GetFilePath(ctx context.Context, key string) (AssetsPath, error)
+	BulkInsertProducts(ctx context.Context) error
 }
 
 type IAdminRepository interface {
@@ -19,6 +21,7 @@ type IAdminRepository interface {
 	GetSession(ctx context.Context, sessionToken string) (Session, error)
 	SaveFilePath(ctx context.Context, assetsPath AssetsPath) error
 	GetFilePath(ctx context.Context, key string) (AssetsPath, error)
+	BulkInsertProducts(ctx context.Context, csvReader *csv.Reader) error
 }
 
 type Admin struct {
