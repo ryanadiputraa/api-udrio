@@ -34,7 +34,7 @@ func GetConnection() {
 
 func makeMigration() {
 	DB.AutoMigrate(
-		&domain.AssetsPath{},
+		&domain.Admin{},
 		&domain.Cart{},
 		&domain.CartItem{},
 		&domain.User{},
@@ -43,6 +43,6 @@ func makeMigration() {
 		&domain.ProductCategory{},
 		&domain.Order{},
 		&domain.OrderItem{},
-		&domain.Admin{},
+		&domain.AssetsPath{},
 	)
 }

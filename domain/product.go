@@ -27,7 +27,7 @@ type Product struct {
 	Price             int             `gorm:"not null" json:"price"`
 	IsAvailable       bool            `gorm:"not null" json:"is_available"`
 	Description       string          `json:"description"`
-	ProcessingTime    string          `gorm:"not null" json:"processing_time"`
+	ProcessingTime    string          `json:"processing_time"`
 	MinOrder          int             `gorm:"not null" json:"min_order"`
 	ProductImages     []ProductImage  `json:"images"`
 	CreatedAt         time.Time       `gorm:"not null" json:"created_at"`
