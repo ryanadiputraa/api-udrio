@@ -13,17 +13,10 @@ type adminDelivery struct {
 
 func NewAdminDelivery(rg *gin.RouterGroup, handler domain.IAdminHandler) {
 	delivery := adminDelivery{handler: handler}
-	rg.GET("/", delivery.parseSessionToken(), delivery.MainPanel)
 	rg.GET("/login", delivery.Login)
 	rg.POST("/signin", delivery.SignIn)
 	rg.GET("/products", delivery.parseSessionToken(), delivery.Products)
 	rg.POST("/products", delivery.parseSessionToken(), delivery.UploadProducts)
-}
-
-func (d *adminDelivery) MainPanel(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", gin.H{
-		"title": "Admin Panel",
-	})
 }
 
 func (d *adminDelivery) Login(c *gin.Context) {
@@ -46,7 +39,7 @@ func (d *adminDelivery) SignIn(c *gin.Context) {
 		Value:   sessionToken,
 		Expires: expiresAt,
 	})
-	c.Redirect(http.StatusFound, "/admin/")
+	c.Redirect(http.StatusFound, "/admin/products")
 }
 
 func (d *adminDelivery) Products(c *gin.Context) {

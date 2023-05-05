@@ -34,8 +34,8 @@ func (r *adminRepository) GetAdminByID(ctx context.Context, ID int) (admin domai
 	return
 }
 
-func (r *adminRepository) SaveSession(ctx context.Context, session domain.Session) (err error) {
-	err = r.redis.Set(ctx, session.SessionToken, session, time.Hour)
+func (r *adminRepository) SaveSession(ctx context.Context, session domain.Session, expiresDuration time.Duration) (err error) {
+	err = r.redis.Set(ctx, session.SessionToken, session, expiresDuration)
 	return
 }
 

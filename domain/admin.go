@@ -17,7 +17,7 @@ type IAdminHandler interface {
 type IAdminRepository interface {
 	GetAdminByUsername(ctx context.Context, username string) (Admin, error)
 	GetAdminByID(ctx context.Context, id int) (Admin, error)
-	SaveSession(ctx context.Context, session Session) error
+	SaveSession(ctx context.Context, session Session, expiresDuration time.Duration) error
 	GetSession(ctx context.Context, sessionToken string) (Session, error)
 	SaveFilePath(ctx context.Context, assetsPath AssetsPath) error
 	GetFilePath(ctx context.Context, key string) (AssetsPath, error)

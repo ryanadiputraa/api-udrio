@@ -37,13 +37,14 @@ func (h *adminHandler) SignIn(ctx context.Context, username string, password str
 	}
 
 	sessionToken = uuid.NewString()
-	expiresAt = time.Now().Add(time.Minute * 10)
+	expiresAt = time.Now().Add(time.Hour)
+	expiresDuration := time.Hour
 	session := domain.Session{
 		SessionToken: sessionToken,
 		ID:           admin.ID,
 		Username:     admin.Username,
 	}
-	err = h.repository.SaveSession(ctx, session)
+	err = h.repository.SaveSession(ctx, session, expiresDuration)
 
 	return
 }
