@@ -1,10 +1,32 @@
 {{ template "layout" }}
-<p>{{ .title }}</p>
-<form action="/admin/signin" method="POST">
-  <input type="text" name="username" placeholder="username" />
-  <input type="password" name="password" placeholder="password" />
-  <button type="submit">Login</button>
-</form>
-{{ if .error }}
-<span>{{ .error }}</span>
-{{ end }}
+<div class="min-h-[100vh] w-full grid place-items-center">
+  <div
+    class="bg-white w-[85%] min-h-[22rem] max-w-screen-sm shadow-xl rounded-xl flex flex-col items-center p-8"
+  >
+    <h4 class="text-xl mb-8">Admin Panel</h4>
+    <form
+      class="w-3/4 flex flex-col items-center gap-6"
+      action="/admin/signin"
+      method="POST"
+    >
+      <input
+        class="w-3/4 border-[0.1rem] border-solid border-gray-400 py-2 px-4 rounded-xl"
+        type="text"
+        name="username"
+        placeholder="username"
+      />
+      <input
+        class="w-3/4 border-[0.1rem] border-solid border-gray-400 py-2 px-4 rounded-xl"
+        type="password"
+        name="password"
+        placeholder="password"
+      />
+      <button class="bg-blue-700 text-white py-2 px-8 rounded-xl" type="submit">
+        Login
+      </button>
+      {{ if .error }}
+      <span class="text-red-400 font-bold">{{ .error }}</span>
+      {{ end }}
+    </form>
+  </div>
+</div>
