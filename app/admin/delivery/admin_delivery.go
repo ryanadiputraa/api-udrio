@@ -13,6 +13,7 @@ type adminDelivery struct {
 
 func NewAdminDelivery(rg *gin.RouterGroup, handler domain.IAdminHandler) {
 	delivery := adminDelivery{handler: handler}
+	rg.GET("/", delivery.parseSessionToken(), delivery.MainPanel)
 	rg.GET("/login", delivery.Login)
 	rg.POST("/signin", delivery.SignIn)
 	rg.GET("/products", delivery.parseSessionToken(), delivery.Products)
@@ -47,6 +48,10 @@ func (d *adminDelivery) Products(c *gin.Context) {
 	c.HTML(http.StatusOK, "products.html", gin.H{
 		"filepath": path.FilePath,
 	})
+}
+
+func (d *adminDelivery) MainPanel(c *gin.Context) {
+	c.Redirect(http.StatusFound, "/admin/products")
 }
 
 func (d *adminDelivery) UploadProducts(c *gin.Context) {
