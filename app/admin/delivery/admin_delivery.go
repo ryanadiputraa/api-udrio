@@ -50,10 +50,13 @@ func (d *adminDelivery) Products(c *gin.Context) {
 }
 
 func (d *adminDelivery) UploadProducts(c *gin.Context) {
+	path, _ := d.handler.GetFilePath(c, "products")
+
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.HTML(http.StatusOK, "products.html", gin.H{
-			"error": err.Error(),
+			"error":    err.Error(),
+			"filepath": path.FilePath,
 		})
 		return
 	}
@@ -65,7 +68,8 @@ func (d *adminDelivery) UploadProducts(c *gin.Context) {
 	}
 	if err = d.handler.SaveFilePath(c, assetsPath); err != nil {
 		c.HTML(http.StatusOK, "products.html", gin.H{
-			"error": err.Error(),
+			"error":    err.Error(),
+			"filepath": path.FilePath,
 		})
 		return
 	}
@@ -74,14 +78,16 @@ func (d *adminDelivery) UploadProducts(c *gin.Context) {
 		assetsPath.FilePath = ""
 		d.handler.SaveFilePath(c, assetsPath)
 		c.HTML(http.StatusOK, "products.html", gin.H{
-			"error": err.Error(),
+			"error":    err.Error(),
+			"filepath": path.FilePath,
 		})
 		return
 	}
 
 	if err = d.handler.BulkInsertProducts(c); err != nil {
 		c.HTML(http.StatusOK, "products.html", gin.H{
-			"error": err.Error(),
+			"error":    err.Error(),
+			"filepath": path.FilePath,
 		})
 		return
 	}
