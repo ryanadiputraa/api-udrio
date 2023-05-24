@@ -1,11 +1,10 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/gin-gonic/gin"
 	"github.com/ryanadiputraa/api-udrio/pkg/cache"
 	"github.com/ryanadiputraa/api-udrio/pkg/database"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -15,6 +14,7 @@ func init() {
 	loadConfig()
 	database.GetConnection()
 	RedisClient = cache.InitRedis()
+	database.SetupFirebaseStorage()
 
 	if viper.GetString("ENV") == "production" {
 		gin.SetMode(gin.ReleaseMode)
