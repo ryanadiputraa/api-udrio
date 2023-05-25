@@ -10,17 +10,17 @@ import (
 	"time"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
-	"github.com/ryanadiputraa/api-udrio/pkg/cache"
+	"github.com/ryanadiputraa/api-udrio/pkg/database"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 type adminRepository struct {
 	db    *gorm.DB
-	redis cache.Redis
+	redis database.Redis
 }
 
-func NewAdminRepository(db *gorm.DB, redis cache.Redis) domain.IAdminRepository {
+func NewAdminRepository(db *gorm.DB, redis database.Redis) domain.IAdminRepository {
 	return &adminRepository{db: db, redis: redis}
 }
 

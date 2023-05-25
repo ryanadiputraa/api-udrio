@@ -9,16 +9,16 @@ import (
 	"time"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
-	"github.com/ryanadiputraa/api-udrio/pkg/cache"
+	"github.com/ryanadiputraa/api-udrio/pkg/database"
 	"gorm.io/gorm"
 )
 
 type productRepository struct {
 	db    *gorm.DB
-	redis cache.Redis
+	redis database.Redis
 }
 
-func NewProductRepository(conn *gorm.DB, redis cache.Redis) domain.IProductRepository {
+func NewProductRepository(conn *gorm.DB, redis database.Redis) domain.IProductRepository {
 	return &productRepository{db: conn, redis: redis}
 }
 

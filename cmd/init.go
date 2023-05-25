@@ -2,18 +2,17 @@ package cmd
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ryanadiputraa/api-udrio/pkg/cache"
 	"github.com/ryanadiputraa/api-udrio/pkg/database"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
-var RedisClient cache.Redis
+var RedisClient database.Redis
 
 func init() {
 	loadConfig()
 	database.GetConnection()
-	RedisClient = cache.InitRedis()
+	RedisClient = database.InitRedis()
 	database.SetupFirebaseStorage()
 
 	if viper.GetString("ENV") == "production" {
