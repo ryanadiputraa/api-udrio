@@ -1,5 +1,5 @@
 {{ template "main" }} {{ if .filepath }}
-<div class="flex items-center gap-2 mb-40">
+<div class="flex items-center gap-2 mb-12">
   <a
     class="border-[0.1rem] border-solid border-blue-700 py-2 px-6 rounded-lg"
     href="/{{ .filepath }}"
@@ -16,7 +16,7 @@
     >*Gunakan format yang sesuai (gunakan tombol "Export" diatas)</span
   >
   <form
-    class="mt-12"
+    class="mt-8"
     action="/admin/products"
     method="POST"
     enctype="multipart/form-data"
@@ -32,3 +32,191 @@
   <span class="mt-4 text-blue-700 font-bold">{{ .message }}</span>
   {{ end }}
 </div>
+
+<!-- products table -->
+<div class="relative overflow-x-auto mt-12">
+  <table id="product-table" class="w-auto text-sm text-left text-white">
+    <thead class="text-xs text-white uppercase bg-gray-900">
+      <tr>
+        <th scope="col" class="px-4 py-2">ID</th>
+        <th scope="col" class="px-4 py-2">Nama Produk</th>
+        <th scope="col" class="px-4 py-2">ID Category</th>
+        <th scope="col" class="px-4 py-2">Stok</th>
+        <th scope="col" class="px-4 py-2">Deskripsi Produk</th>
+        <th scope="col" class="px-4 py-2">Minimal Pesanan</th>
+        <th scope="col" class="px-4 py-2">Created At</th>
+        <th scope="col" class="px-4 py-2">Updated At</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<nav class="flex justify-center mt-2" aria-label="Page navigation example">
+  <ul class="inline-flex items-center -space-x-px">
+    <li>
+      <button
+        id="prev-page"
+        class="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        <span class="sr-only">Previous</span>
+        <svg
+          aria-hidden="true"
+          class="w-5 h-5"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </button>
+    </li>
+    <li>
+      <button
+        id="first-page"
+        class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        1
+      </button>
+    </li>
+    <li>
+      <button
+        id="back-one-page"
+        class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        2
+      </button>
+    </li>
+    <li>
+      <button
+        id="current-page"
+        aria-current="page"
+        class="z-10 px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+      >
+        3
+      </button>
+    </li>
+    <li>
+      <button
+        id="next-one-page"
+        class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        4
+      </button>
+    </li>
+    <li>
+      <button
+        id="last-page"
+        class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        5
+      </button>
+    </li>
+    <li>
+      <button
+        id="next-page"
+        class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        <span class="sr-only">Next</span>
+        <svg
+          aria-hidden="true"
+          class="w-5 h-5"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </button>
+    </li>
+  </ul>
+</nav>
+
+<script>
+  // pagination
+  const prevPageBtn = document.getElementById("prev-page")
+  const firstPageBtn = document.getElementById("first-page")
+  const backOnePageBtn = document.getElementById("back-one-page")
+  const currentPageBtn = document.getElementById("current-page")
+  const nextOnePageBtn = document.getElementById("next-one-page")
+  const lastPageBtn = document.getElementById("last-page")
+  const nextPageBtn = document.getElementById("next-page")
+
+  const fetchProducts = (page, query) => {
+    fetch(
+      `http://localhost:8080/api/products?page=${page}&size=20${
+        query ? `query=${encodeURIComponent(query)}` : ""
+      }`
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        clearProductTable()
+        json.data?.forEach((product) => renderProduct(product))
+        setPagination(json.meta)
+      })
+      .catch((err) => console.error(err))
+  }
+
+  const setPagination = (meta) => {
+    prevPageBtn.disabled = meta.previous_page === meta.current_page
+    nextPageBtn.disabled = meta.next_page === meta.total_page
+
+    prevPageBtn.onclick = () => fetchProducts(meta.previous_page)
+    nextPageBtn.onclick = () => fetchProducts(meta.next_page)
+    firstPageBtn.onclick = () => fetchProducts(1)
+    backOnePageBtn.onclick = () => fetchProducts(meta.current_page - 1)
+    currentPageBtn.onclick = () => fetchProducts(meta.current_page)
+    nextOnePageBtn.onclick = () => fetchProducts(meta.current_page + 1)
+    lastPageBtn.onclick = () => fetchProducts(meta.total_page)
+
+    firstPageBtn.innerHTML = 1
+    backOnePageBtn.innerHTML = meta.current_page - 1
+    currentPageBtn.innerHTML = meta.current_page
+    nextOnePageBtn.innerHTML = meta.current_page + 1
+    lastPageBtn.innerHTML = meta.total_page
+
+    firstPageBtn.style.display =
+      meta.current_page <= 2 ? "none" : "inline-block"
+    backOnePageBtn.style.display =
+      meta.current_page === 1 ? "none" : "inline-block"
+    nextOnePageBtn.style.display =
+      meta.current_page === meta.total_page ? "none" : "inline-block"
+    lastPageBtn.style.display =
+      meta.current_page >= meta.total_page - 1 ? "none" : "inline-block"
+  }
+
+  const clearProductTable = () => {
+    const tableBody = document.querySelector("#product-table tbody")
+    tableBody.innerHTML = null
+  }
+
+  const renderProduct = (product) => {
+    const tableBody = document.querySelector("#product-table tbody")
+    const bodyData = `<tr class="border-b bg-gray-700 border-gray-900 hover:bg-gray-500 cursor-pointer">
+        <td class="px-6 py-4">${product?.id}</td>
+        <th
+          scope="row"
+          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+        >
+        ${product?.product_name}
+        </th>
+        <td class="px-4 py-2">${product?.product_category?.category_id} (${product?.product_category?.category})</td>
+        <td class="px-4 py-2">${product?.is_available}</td>
+        <td class="px-4 py-2">${product?.description}</td>
+        <td class="px-4 py-2">${product?.min_order}</td>
+        <td class="px-4 py-2">${product?.created_at}</td>
+        <td class="px-4 py-2">${product?.updated_at}</td>
+      </tr>`
+    tableBody.innerHTML += bodyData
+  }
+
+  fetchProducts(1)
+</script>
