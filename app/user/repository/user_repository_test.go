@@ -55,15 +55,14 @@ func TestSaveOrUpdate(t *testing.T) {
 func TestFindByID(t *testing.T) {
 	db, sqlDB, mock := test.NewMockDB(t)
 	defer sqlDB.Close()
-	r := NewUserRepository(db)
 
 	cases := []struct {
 		description       string
-		mockRepoBehaviour func(mock sqlmock.Sqlmock)
+		mockRepoBehaviour func(mock sqlmock.Sqlmock, r domain.IUserRepository)
 	}{
 		{
 			description: "should return user data with id = '1'",
-			mockRepoBehaviour: func(mock sqlmock.Sqlmock) {
+			mockRepoBehaviour: func(mock sqlmock.Sqlmock, r domain.IUserRepository) {
 				currTime := time.Now()
 				rows := sqlmock.NewRows([]string{
 					"id",
@@ -94,7 +93,7 @@ func TestFindByID(t *testing.T) {
 		},
 		{
 			description: "should return error for no record user data",
-			mockRepoBehaviour: func(mock sqlmock.Sqlmock) {
+			mockRepoBehaviour: func(mock sqlmock.Sqlmock, r domain.IUserRepository) {
 				rows := sqlmock.NewRows([]string{
 					"id",
 					"first_name",
@@ -117,7 +116,8 @@ func TestFindByID(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.description, func(t *testing.T) {
-			c.mockRepoBehaviour(mock)
+			r := NewUserRepository(db)
+			c.mockRepoBehaviour(mock, r)
 		})
 	}
 }
