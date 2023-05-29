@@ -208,8 +208,10 @@
         >
         ${product?.product_name}
         </th>
-        <td class="px-4 py-2">${product?.product_category?.category_id} (${product?.product_category?.category})</td>
-        <td class="px-4 py-2">${product?.is_available}</td>
+        <td class="px-4 py-2">${product?.product_category?.category_id} (${
+      product?.product_category?.category
+    })</td>
+        <td class="px-4 py-2">${product?.is_available ? "Ada" : "Kosong"}</td>
         <td class="px-4 py-2">${product?.description}</td>
         <td class="px-4 py-2">${product?.min_order}</td>
         <td class="px-4 py-2">${product?.created_at}</td>
