@@ -17,15 +17,18 @@ func SetupFirebaseStorage() {
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		log.Error("fail to initialize firabase app: ", err)
+		return
 	}
 
 	client, err := app.Storage(context.Background())
 	if err != nil {
 		log.Error("fail to initialize firebase storage client: ", err)
+		return
 	}
 
 	FirebaseBucket, err = client.DefaultBucket()
 	if err != nil {
 		log.Error("fail to initialize firebase storage bucket: ", err)
+		return
 	}
 }
