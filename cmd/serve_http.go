@@ -48,11 +48,6 @@ func serveHTTP() {
 	api := r.Group("/api")
 	admin := r.Group("/admin")
 
-	// admin
-	adminRepository := _adminRepository.NewAdminRepository(database.DB, RedisClient)
-	adminHandler := _adminHandler.NewAdminHandler(adminRepository)
-	_adminDelivery.NewAdminDelivery(admin, adminHandler)
-
 	// cart
 	cartRepository := _cartRepository.NewCartRepository(database.DB)
 	cartHandler := _cartHandler.NewCartHandler(cartRepository)
@@ -76,6 +71,11 @@ func serveHTTP() {
 	orderRepository := _orderRepository.NewOrderRepository(database.DB)
 	orderHandler := _orderHandler.NewOrderHandler(orderRepository)
 	_orderDelivery.NewOrderDelivery(api, orderHandler)
+
+	// admin
+	adminRepository := _adminRepository.NewAdminRepository(database.DB, RedisClient)
+	adminHandler := _adminHandler.NewAdminHandler(adminRepository)
+	_adminDelivery.NewAdminDelivery(admin, adminHandler, productHandler)
 
 	// Setup server port & handler
 	port := viper.GetString("PORT")

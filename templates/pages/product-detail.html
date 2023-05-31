@@ -1,0 +1,130 @@
+{{ template "main" }}
+
+<form class="w-3/4 mx-auto flex flex-col gap-4">
+  <div class="flex flex-col gap-1">
+    <label class="block text-sm font-medium text-black">ID</label>
+    <input
+      type="text"
+      class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="Product Name"
+      value="{{ .id }}"
+      required
+      readonly
+    />
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="block text-sm font-medium text-black">Nama Produk</label>
+    <input
+      type="text"
+      class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="Product Name"
+      value="{{ .product_name }}"
+      required
+      readonly
+    />
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="block text-sm font-medium text-black">Kategori ID</label>
+    <input
+      type="text"
+      class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="Product Name"
+      value="{{ .category_id }}"
+      required
+      readonly
+    />
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="block text-sm font-medium text-black">Harga</label>
+    <input
+      type="text"
+      class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="Product Name"
+      value="{{ .price }}"
+      required
+      readonly
+    />
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="block text-sm font-medium text-black">Stok</label>
+    <input
+      type="text"
+      class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="Product Name"
+      value="{{ .stock }}"
+      required
+      readonly
+    />
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="block text-sm font-medium text-black">Deskripsi</label>
+    <input
+      type="text"
+      class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="Product Name"
+      value="{{ .description }}"
+      required
+      readonly
+    />
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="block text-sm font-medium text-black">Minimal Pesanan</label>
+    <input
+      type="text"
+      class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="Product Name"
+      value="{{ .min_order }}"
+      required
+      readonly
+    />
+  </div>
+  <div class="flex flex-wrap gap-4">
+    <div class="flex items-center justify-center w-40 h-48">
+      <label
+        for="dropzone-file"
+        class="flex flex-col items-center justify-center w-full h-full border-2 border-dashed rounded-lg cursor-pointer bg-gray-700 border-gray-600 hover:bg-gray-600"
+      >
+        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+          <svg
+            aria-hidden="true"
+            class="w-10 h-10 mb-3 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            ></path>
+          </svg>
+          <p class="mb-2 text-sm text-center text-gray-400">
+            <span class="font-semibold">Click to upload</span>
+          </p>
+          <p class="text-xs text-center text-gray-400">
+            SVG, PNG, JPG or GIF (MAX 5 MB)
+          </p>
+        </div>
+        <input id="image" type="file" class="hidden" />
+      </label>
+    </div>
+
+    {{ range $_, $v := .images }}
+    <a href="{{ $v.Image }}" target="_blank" rel="noreferrer">
+      <img
+        class="w-40 h-48 object-cover border-gray-500 border-solid border-2 rounded-md cursor-pointer"
+        src="{{ $v.Image }}"
+        alt=""
+      />
+    </a>
+    {{ end }}
+  </div>
+  <!-- <button
+    type="submit"
+    class="self-end text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+  >
+    Simpan
+  </button> -->
+</form>

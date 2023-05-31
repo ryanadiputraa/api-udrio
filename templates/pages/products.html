@@ -76,7 +76,7 @@
       <tr>
         <th scope="col" class="px-4 py-2">ID</th>
         <th scope="col" class="px-4 py-2">Nama Produk</th>
-        <th scope="col" class="px-4 py-2">ID Category</th>
+        <th scope="col" class="px-4 py-2">Kategori ID</th>
         <th scope="col" class="px-4 py-2">Stok</th>
         <th scope="col" class="px-4 py-2">Deskripsi Produk</th>
         <th scope="col" class="px-4 py-2">Minimal Pesanan</th>
@@ -236,7 +236,11 @@
 
   const renderProduct = (product) => {
     const tableBody = document.querySelector("#product-table tbody")
-    const bodyData = `<tr class="border-b bg-gray-700 border-gray-900 hover:bg-gray-500 cursor-pointer">
+    const bodyData = `<tr onclick="location.href='/admin/products/${
+      product?.id
+    }'"
+      class="border-b bg-gray-700 border-gray-900 hover:bg-gray-500 cursor-pointer"
+      >
         <td class="px-6 py-4">${product?.id}</td>
         <th
           scope="row"
