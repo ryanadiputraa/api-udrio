@@ -42,7 +42,9 @@ func (r *productRepository) Fetch(ctx context.Context, size int, offset int, cat
 
 	cache, err := r.redis.Get(ctx, redisKey)
 	if err != nil {
-		err = modelQuery.Preload("ProductImages").Limit(size).Offset(offset).Order("is_available desc, updated_at desc, created_at desc").Find(&products).Error
+		err = modelQuery.Preload("ProductCategory").Preload("ProductImages").
+			Limit(size).Offset(offset).Order("is_available desc, updated_at desc, created_at desc").
+			Find(&products).Error
 		if err != nil {
 			return nil, 0, err
 		}
@@ -65,7 +67,9 @@ func (r *productRepository) Fetch(ctx context.Context, size int, offset int, cat
 func (r *productRepository) FindByID(ctx context.Context, productID string) (domain.Product, error) {
 	var product domain.Product
 
-	err := r.db.Model(&domain.Product{}).Joins("ProductCategory").Where(&domain.Product{ID: productID}).Preload("ProductImages").First(&product).Error
+	err := r.db.Model(&domain.Product{}).Joins("ProductCategory").
+		Where(&domain.Product{ID: productID}).Preload("ProductImages").
+		First(&product).Error
 	if err != nil {
 		return product, err
 	}
