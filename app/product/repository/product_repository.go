@@ -23,8 +23,6 @@ func NewProductRepository(conn *gorm.DB, redis database.Redis) domain.IProductRe
 }
 
 func (r *productRepository) Fetch(ctx context.Context, size int, offset int, category int, query string) (products []domain.Product, count int64, err error) {
-	r.db.Model(&domain.Product{}).Count(&count)
-
 	modelQuery := r.db.Model(&domain.Product{}).Joins("ProductCategory", r.db.Where(&domain.ProductCategory{ID: category}))
 	if category == 0 {
 		modelQuery = r.db.Model(&domain.Product{}).Joins("ProductCategory")
@@ -34,6 +32,8 @@ func (r *productRepository) Fetch(ctx context.Context, size int, offset int, cat
 			modelQuery = modelQuery.Where("to_tsvector(product_name) @@ to_tsquery(?)", query)
 		}
 	}
+
+	modelQuery.Count(&count)
 
 	categoryStr := strconv.Itoa(category)
 	sizeStr := strconv.Itoa(size)
