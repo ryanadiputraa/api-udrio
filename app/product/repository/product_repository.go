@@ -1,15 +1,18 @@
 package repository
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/database"
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
 
@@ -96,4 +99,24 @@ func (r *productRepository) FetchCategory(ctx context.Context) ([]domain.Product
 	err = json.Unmarshal([]byte(cache), &categories)
 
 	return categories, err
+}
+
+func (r *productRepository) UploadImage(ctx context.Context, file []byte, filename string) (url string, err error) {
+	sw := database.FirebaseBucket.Object(filename).NewWriter(ctx)
+	defer func() {
+		err = sw.Close()
+		if err != nil {
+			return
+		}
+	}()
+
+	if _, err = io.Copy(sw, bytes.NewReader(file)); err != nil {
+		return
+	}
+
+	bucketName := viper.GetString("FIREBASE_BUCKET")
+	storageToken := viper.GetString("FIREBASE_STORAGE_TOKEN")
+	url = "https://firebasestorage.googleapis.com/v0/b/" + bucketName + "/o/" + filename + "?alt=media&token=" + storageToken
+
+	return
 }

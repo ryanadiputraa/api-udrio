@@ -1,7 +1,10 @@
 package handler
 
 import (
+	"bytes"
 	"context"
+	"io"
+	"mime/multipart"
 	"net/url"
 
 	"github.com/ryanadiputraa/api-udrio/domain"
@@ -33,7 +36,7 @@ func (h *productHandler) GetProductList(ctx context.Context, size int, page int,
 	offset := pagination.Offset(size, page)
 	products, count, err := h.productRepository.Fetch(ctx, size, offset, category, decodedQuery)
 	if err != nil {
-		log.Error("failed to fetch products: ", err.Error())
+		log.Error("fail to fetch products: ", err.Error())
 		return nil, pagination.Page{}, err
 	}
 
@@ -52,7 +55,7 @@ func (h *productHandler) GetProductList(ctx context.Context, size int, page int,
 func (h *productHandler) GetProductDetail(ctx context.Context, productID string) (domain.Product, error) {
 	product, err := h.productRepository.FindByID(ctx, productID)
 	if err != nil {
-		log.Error("failed to find product: ", err.Error())
+		log.Error("fail to find product: ", err.Error())
 		return product, err
 	}
 	return product, nil
@@ -61,8 +64,23 @@ func (h *productHandler) GetProductDetail(ctx context.Context, productID string)
 func (h *productHandler) GetProductCategoryList(ctx context.Context) ([]domain.ProductCategory, error) {
 	categories, err := h.productRepository.FetchCategory(ctx)
 	if err != nil {
-		log.Error("failed to fetch categories: ", err.Error())
+		log.Error("fail to fetch categories: ", err.Error())
 		return nil, err
 	}
 	return categories, nil
+}
+
+func (h *productHandler) UploadProductImage(ctx context.Context, file multipart.File, fileHeader *multipart.FileHeader) (err error) {
+	buf := bytes.NewBuffer(nil)
+	if _, err = io.Copy(buf, file); err != nil {
+		log.Error("fail to copy image buffer:", err.Error())
+		return
+	}
+
+	url, err := h.productRepository.UploadImage(ctx, buf.Bytes(), fileHeader.Filename)
+	if err != nil {
+		log.Error("fail to save image to firebase: ", err.Error())
+	}
+	log.Error(url)
+	return
 }

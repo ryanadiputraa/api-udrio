@@ -21,7 +21,7 @@ func GenerateAccessToken(userID interface{}) (tokens domain.Tokens, err error) {
 	})
 	tokenString, err := token.SignedString([]byte(viper.GetString("JWT_SECRET")))
 	if err != nil {
-		log.Error("failed to generate access token:", err.Error())
+		log.Error("fail to generate access token:", err.Error())
 		return tokens, err
 	}
 
@@ -32,7 +32,7 @@ func GenerateAccessToken(userID interface{}) (tokens domain.Tokens, err error) {
 	})
 	refreshTokenString, err := refreshToken.SignedString([]byte(viper.GetString("JWT_REFRESH_SECRET")))
 	if err != nil {
-		log.Error("failed to generate refresh token:", err.Error())
+		log.Error("fail to generate refresh token:", err.Error())
 		return tokens, err
 	}
 

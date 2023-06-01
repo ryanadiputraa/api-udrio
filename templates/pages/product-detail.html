@@ -1,6 +1,11 @@
 {{ template "main" }}
-
-<form class="w-3/4 mx-auto flex flex-col gap-4">
+<form
+  id="product-form"
+  class="w-3/4 mx-auto flex flex-col gap-4"
+  action="/admin/products/{{ .id }}"
+  method="POST"
+  enctype="multipart/form-data"
+>
   <div class="flex flex-col gap-1">
     <label class="block text-sm font-medium text-black">ID</label>
     <input
@@ -79,7 +84,7 @@
     />
   </div>
   <div class="flex flex-wrap gap-4">
-    <div class="flex items-center justify-center w-40 h-48">
+    <div class="relative flex items-center justify-center w-40 h-48">
       <label
         for="dropzone-file"
         class="flex flex-col items-center justify-center w-full h-full border-2 border-dashed rounded-lg cursor-pointer bg-gray-700 border-gray-600 hover:bg-gray-600"
@@ -107,7 +112,13 @@
             SVG, PNG, JPG or GIF (MAX 5 MB)
           </p>
         </div>
-        <input id="image" type="file" class="hidden" />
+        <input
+          id="image"
+          name="image"
+          type="file"
+          class="absolute w-full h-full"
+          style="opacity: 0"
+        />
       </label>
     </div>
 
@@ -128,3 +139,11 @@
     Simpan
   </button> -->
 </form>
+
+<script>
+  const imageInput = document.querySelector("#image")
+  const form = document.querySelector("#product-form")
+  imageInput.addEventListener("change", () => {
+    form.submit()
+  })
+</script>

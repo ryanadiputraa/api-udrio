@@ -20,6 +20,7 @@ func NewAdminDelivery(rg *gin.RouterGroup, handler domain.IAdminHandler, product
 	rg.GET("/products", delivery.parseSessionToken(), delivery.Products)
 	rg.POST("/products", delivery.parseSessionToken(), delivery.UploadProducts)
 	rg.GET("/products/:id", delivery.parseSessionToken(), delivery.ProductDetail)
+	rg.POST("/products/:id", delivery.parseSessionToken(), delivery.UpdateProduct)
 }
 
 func (d *adminDelivery) Login(c *gin.Context) {
@@ -122,6 +123,18 @@ func (d *adminDelivery) UploadProducts(c *gin.Context) {
 		"message":  "Data berhasil diperbarui",
 		"filepath": filePath,
 	})
+}
+
+func (d *adminDelivery) UpdateProduct(c *gin.Context) {
+	file, fileHeader, err := c.Request.FormFile("image")
+	if err != nil {
+		d.ProductDetail(c)
+		return
+	}
+	defer file.Close()
+
+	d.productHandler.UploadProductImage(c, file, fileHeader)
+	d.ProductDetail(c)
 }
 
 func (d *adminDelivery) parseSessionToken() gin.HandlerFunc {

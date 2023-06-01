@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"cloud.google.com/go/storage"
-	firebase "firebase.google.com/go"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 
 	"google.golang.org/api/option"
 )
@@ -14,21 +14,11 @@ var FirebaseBucket *storage.BucketHandle
 
 func SetupFirebaseStorage() {
 	opt := option.WithCredentialsFile("udrio-firebasesdk.json")
-	app, err := firebase.NewApp(context.Background(), nil, opt)
+	client, err := storage.NewClient(context.Background(), opt)
 	if err != nil {
-		log.Error("fail to initialize firabase app: ", err)
-		return
+		log.Error("fail to initialize storage client: ", err.Error())
+		panic(err.Error())
 	}
 
-	client, err := app.Storage(context.Background())
-	if err != nil {
-		log.Error("fail to initialize firebase storage client: ", err)
-		return
-	}
-
-	FirebaseBucket, err = client.DefaultBucket()
-	if err != nil {
-		log.Error("fail to initialize firebase storage bucket: ", err)
-		return
-	}
+	FirebaseBucket = client.Bucket(viper.GetString("FIREBASE_BUCKET"))
 }
