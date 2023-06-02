@@ -188,7 +188,9 @@
 
   const fetchProducts = (page, query) => {
     fetch(
-      `http://localhost:8080/api/products?page=${page}&size=20${
+      `${location.protocol}//${
+        window.location.host
+      }/api/products?page=${page}&size=20${
         query ? `&query=${encodeURIComponent(query)}` : ""
       }`
     )
