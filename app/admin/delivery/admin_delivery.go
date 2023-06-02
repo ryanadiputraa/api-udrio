@@ -126,14 +126,15 @@ func (d *adminDelivery) UploadProducts(c *gin.Context) {
 }
 
 func (d *adminDelivery) UpdateProduct(c *gin.Context) {
-	file, fileHeader, err := c.Request.FormFile("image")
+	file, _, err := c.Request.FormFile("image")
 	if err != nil {
 		d.ProductDetail(c)
 		return
 	}
 	defer file.Close()
 
-	d.productHandler.UploadProductImage(c, file, fileHeader)
+	productID := c.Request.FormValue("product-id")
+	d.productHandler.UploadProductImage(c, productID, file)
 	d.ProductDetail(c)
 }
 

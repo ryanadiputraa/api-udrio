@@ -7,9 +7,11 @@ import (
 	"mime/multipart"
 	"net/url"
 
+	"github.com/google/uuid"
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 type productHandler struct {
@@ -70,17 +72,27 @@ func (h *productHandler) GetProductCategoryList(ctx context.Context) ([]domain.P
 	return categories, nil
 }
 
-func (h *productHandler) UploadProductImage(ctx context.Context, file multipart.File, fileHeader *multipart.FileHeader) (err error) {
+func (h *productHandler) UploadProductImage(ctx context.Context, productID string, file multipart.File) (err error) {
 	buf := bytes.NewBuffer(nil)
 	if _, err = io.Copy(buf, file); err != nil {
 		log.Error("fail to copy image buffer:", err.Error())
 		return
 	}
 
-	url, err := h.productRepository.UploadImage(ctx, buf.Bytes(), fileHeader.Filename)
+	imageID := uuid.NewString()
+	bucketName := viper.GetString("FIREBASE_BUCKET")
+	storageToken := viper.GetString("FIREBASE_STORAGE_TOKEN")
+	url := "https://firebasestorage.googleapis.com/v0/b/" + bucketName + "/o/" + imageID + "?alt=media&token=" + storageToken
+
+	image := domain.ProductImage{
+		ID:        imageID,
+		Image:     url,
+		ProductID: productID,
+	}
+
+	err = h.productRepository.SaveImage(ctx, buf.Bytes(), image)
 	if err != nil {
 		log.Error("fail to save image to firebase: ", err.Error())
 	}
-	log.Error(url)
 	return
 }

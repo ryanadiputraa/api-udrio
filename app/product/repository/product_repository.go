@@ -12,7 +12,6 @@ import (
 
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/database"
-	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
 
@@ -101,22 +100,25 @@ func (r *productRepository) FetchCategory(ctx context.Context) ([]domain.Product
 	return categories, err
 }
 
-func (r *productRepository) UploadImage(ctx context.Context, file []byte, filename string) (url string, err error) {
-	sw := database.FirebaseBucket.Object(filename).NewWriter(ctx)
-	defer func() {
-		err = sw.Close()
-		if err != nil {
-			return
+func (r *productRepository) SaveImage(ctx context.Context, file []byte, image domain.ProductImage) (err error) {
+	err = r.db.Transaction(func(tx *gorm.DB) error {
+		if err = r.db.Create(&image).Error; err != nil {
+			return err
 		}
-	}()
 
-	if _, err = io.Copy(sw, bytes.NewReader(file)); err != nil {
-		return
-	}
+		sw := database.FirebaseBucket.Object(image.ID).NewWriter(ctx)
+		defer func() {
+			if err = sw.Close(); err != nil {
+				return
+			}
+		}()
 
-	bucketName := viper.GetString("FIREBASE_BUCKET")
-	storageToken := viper.GetString("FIREBASE_STORAGE_TOKEN")
-	url = "https://firebasestorage.googleapis.com/v0/b/" + bucketName + "/o/" + filename + "?alt=media&token=" + storageToken
+		if _, err = io.Copy(sw, bytes.NewReader(file)); err != nil {
+			return err
+		}
+
+		return nil
+	})
 
 	return
 }
