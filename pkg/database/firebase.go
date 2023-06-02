@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"os"
 
 	"cloud.google.com/go/storage"
 	log "github.com/sirupsen/logrus"
@@ -12,7 +13,15 @@ import (
 
 var FirebaseBucket *storage.BucketHandle
 
+func CreateConfig() {
+	conf := []byte(viper.GetString("FIREBASE_CONFIG"))
+	if err := os.WriteFile("udrio-firebasesdk.json", conf, os.ModePerm); err != nil {
+		panic(err)
+	}
+}
+
 func SetupFirebaseStorage() {
+	CreateConfig()
 	opt := option.WithCredentialsFile("udrio-firebasesdk.json")
 	client, err := storage.NewClient(context.Background(), opt)
 	if err != nil {
