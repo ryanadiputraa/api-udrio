@@ -6,7 +6,7 @@ Backend service for UD Rio (prototype) website.
 
 ---
 
-You need to have `docker-compose` to simplify development, config your `.env` and edit `Dockerfile` if you wish to use `hot reload` file and run the following command to setup your local db & run dev server
+You need to have `docker-compose` to simplify development, config your `.env` and edit `Dockerfile` if you wish to use `hot reload` and run the following command to setup your local db & run dev server
 
 ```bash
 docker-compose up -d
