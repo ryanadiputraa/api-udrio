@@ -2,6 +2,8 @@
 
 Backend service for UD Rio (prototype) website.
 
+- ERD: https://dbdiagram.io/d/6269412a95e7f23c6182e685
+
 ## Get Started
 
 ---
