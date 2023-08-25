@@ -4,9 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
-	"strconv"
 	"strings"
 	"time"
 
@@ -15,16 +13,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type productRepository struct {
+type repository struct {
 	db    *gorm.DB
 	redis database.Redis
 }
 
-func NewProductRepository(conn *gorm.DB, redis database.Redis) domain.IProductRepository {
-	return &productRepository{db: conn, redis: redis}
+func NewProductRepository(conn *gorm.DB, redis database.Redis) domain.ProductRepository {
+	return &repository{db: conn, redis: redis}
 }
 
-func (r *productRepository) Fetch(ctx context.Context, size int, offset int, category int, query string) (products []domain.Product, count int64, err error) {
+func (r *repository) Fetch(ctx context.Context, size int, offset int, category int, query string) (products []domain.Product, count int64, err error) {
 	modelQuery := r.db.Model(&domain.Product{}).Joins("ProductCategory", r.db.Where(&domain.ProductCategory{ID: category}))
 	if category == 0 {
 		modelQuery = r.db.Model(&domain.Product{}).Joins("ProductCategory")
@@ -37,28 +35,9 @@ func (r *productRepository) Fetch(ctx context.Context, size int, offset int, cat
 
 	modelQuery.Count(&count)
 
-	categoryStr := strconv.Itoa(category)
-	sizeStr := strconv.Itoa(size)
-	offsetStr := strconv.Itoa(offset)
-	redisKey := fmt.Sprintf("products#%s#%s#%s#%s", categoryStr, sizeStr, offsetStr, query)
-
-	cache, err := r.redis.Get(ctx, redisKey)
-	if err != nil {
-		err = modelQuery.Preload("ProductCategory").Preload("ProductImages").
-			Limit(size).Offset(offset).Order("is_available desc, updated_at desc, created_at desc").
-			Find(&products).Error
-		if err != nil {
-			return nil, 0, err
-		}
-
-		err = r.redis.Set(ctx, redisKey, products, time.Minute*10)
-		if err != nil {
-			return nil, 0, err
-		}
-		return products, count, nil
-	}
-
-	err = json.Unmarshal([]byte(cache), &products)
+	err = modelQuery.Preload("ProductCategory").Preload("ProductImages").
+		Limit(size).Offset(offset).Order("is_available desc, updated_at desc, created_at desc").
+		Find(&products).Error
 	if err != nil {
 		return nil, 0, err
 	}
@@ -66,7 +45,7 @@ func (r *productRepository) Fetch(ctx context.Context, size int, offset int, cat
 	return products, count, nil
 }
 
-func (r *productRepository) FindByID(ctx context.Context, productID string) (domain.Product, error) {
+func (r *repository) FindByID(ctx context.Context, productID string) (domain.Product, error) {
 	var product domain.Product
 
 	err := r.db.Model(&domain.Product{}).Joins("ProductCategory").
@@ -79,7 +58,7 @@ func (r *productRepository) FindByID(ctx context.Context, productID string) (dom
 	return product, nil
 }
 
-func (r *productRepository) FetchCategory(ctx context.Context) ([]domain.ProductCategory, error) {
+func (r *repository) FetchCategory(ctx context.Context) ([]domain.ProductCategory, error) {
 	var categories []domain.ProductCategory
 	cache, err := r.redis.Get(ctx, "products:category")
 	if err != nil {
@@ -100,7 +79,7 @@ func (r *productRepository) FetchCategory(ctx context.Context) ([]domain.Product
 	return categories, err
 }
 
-func (r *productRepository) SaveImage(ctx context.Context, file []byte, image domain.ProductImage) (err error) {
+func (r *repository) SaveImage(ctx context.Context, file []byte, image domain.ProductImage) (err error) {
 	err = r.db.Transaction(func(tx *gorm.DB) error {
 		if err = r.db.Create(&image).Error; err != nil {
 			return err

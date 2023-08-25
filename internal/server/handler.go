@@ -17,9 +17,9 @@ import (
 	_cartHandler "github.com/ryanadiputraa/api-udrio/app/cart/handler"
 	_cartRepository "github.com/ryanadiputraa/api-udrio/app/cart/repository"
 
-	_productDelivery "github.com/ryanadiputraa/api-udrio/app/product/delivery"
-	_productHandler "github.com/ryanadiputraa/api-udrio/app/product/handler"
-	_productRepository "github.com/ryanadiputraa/api-udrio/app/product/repository"
+	_productDelivery "github.com/ryanadiputraa/api-udrio/internal/product/delivery"
+	_productRepository "github.com/ryanadiputraa/api-udrio/internal/product/repository"
+	_productUsecase "github.com/ryanadiputraa/api-udrio/internal/product/usecase"
 
 	_orderDelivery "github.com/ryanadiputraa/api-udrio/app/order/delivery"
 	_orderHandler "github.com/ryanadiputraa/api-udrio/app/order/handler"
@@ -47,8 +47,8 @@ func (s *Server) MapHandlers() {
 
 	// Products
 	productRepository := _productRepository.NewProductRepository(s.db, s.redis)
-	productHandler := _productHandler.NewProductHandler(productRepository)
-	_productDelivery.NewProductDelivery(api, productHandler)
+	productUsecase := _productUsecase.NewProductUsecase(productRepository)
+	_productDelivery.NewProductDelivery(api, productUsecase)
 
 	// Orders
 	orderRepository := _orderRepository.NewOrderRepository(s.db)
@@ -58,5 +58,5 @@ func (s *Server) MapHandlers() {
 	// admin
 	adminRepository := _adminRepository.NewAdminRepository(s.db, s.redis)
 	adminHandler := _adminHandler.NewAdminHandler(adminRepository)
-	_adminDelivery.NewAdminDelivery(admin, adminHandler, productHandler)
+	_adminDelivery.NewAdminDelivery(admin, adminHandler, productUsecase)
 }

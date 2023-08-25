@@ -8,14 +8,14 @@ import (
 	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
 )
 
-type IProductRepository interface {
+type ProductRepository interface {
 	Fetch(ctx context.Context, limit int, offset int, categoryID int, query string) (products []Product, count int64, err error)
 	FindByID(ctx context.Context, productID string) (Product, error)
 	FetchCategory(ctx context.Context) ([]ProductCategory, error)
 	SaveImage(ctx context.Context, file []byte, image ProductImage) error
 }
 
-type IProductHandler interface {
+type ProductUsecase interface {
 	GetProductList(ctx context.Context, size int, page int, categoryID int, query string) (products []Product, meta pagination.Page, err error)
 	GetProductDetail(ctx context.Context, productID string) (Product, error)
 	GetProductCategoryList(ctx context.Context) ([]ProductCategory, error)

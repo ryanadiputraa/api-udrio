@@ -12,6 +12,7 @@ type Config struct {
 	Redis    Redis
 	Ouath    Oauth
 	JWT      JWT
+	Firebase Firebase
 	Mail     Mail
 }
 

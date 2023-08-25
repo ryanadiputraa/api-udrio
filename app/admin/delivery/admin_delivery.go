@@ -9,11 +9,11 @@ import (
 
 type adminDelivery struct {
 	handler        domain.IAdminHandler
-	productHandler domain.IProductHandler
+	productUsecase domain.ProductUsecase
 }
 
-func NewAdminDelivery(rg *gin.RouterGroup, handler domain.IAdminHandler, productHandler domain.IProductHandler) {
-	delivery := adminDelivery{handler: handler, productHandler: productHandler}
+func NewAdminDelivery(rg *gin.RouterGroup, handler domain.IAdminHandler, productUsecase domain.ProductUsecase) {
+	delivery := adminDelivery{handler: handler, productUsecase: productUsecase}
 	rg.GET("/", delivery.parseSessionToken(), delivery.MainPanel)
 	rg.GET("/login", delivery.Login)
 	rg.POST("/signin", delivery.SignIn)
@@ -54,7 +54,7 @@ func (d *adminDelivery) Products(c *gin.Context) {
 }
 
 func (d *adminDelivery) ProductDetail(c *gin.Context) {
-	product, _ := d.productHandler.GetProductDetail(c, c.Param("id"))
+	product, _ := d.productUsecase.GetProductDetail(c, c.Param("id"))
 	stock := "Ada"
 	if !product.IsAvailable {
 		stock = "Kosong"
@@ -134,7 +134,7 @@ func (d *adminDelivery) UpdateProduct(c *gin.Context) {
 	defer file.Close()
 
 	productID := c.Request.FormValue("product-id")
-	d.productHandler.UploadProductImage(c, productID, file)
+	d.productUsecase.UploadProductImage(c, productID, file)
 	d.ProductDetail(c)
 }
 
