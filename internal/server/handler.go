@@ -1,16 +1,10 @@
-package main
+package server
 
 import (
-	"fmt"
-
-	"github.com/gin-gonic/gin"
-	"github.com/ryanadiputraa/api-udrio/pkg/cors"
-	"github.com/ryanadiputraa/api-udrio/pkg/database"
-	"github.com/spf13/viper"
-
 	_adminDelivery "github.com/ryanadiputraa/api-udrio/app/admin/delivery"
 	_adminHandler "github.com/ryanadiputraa/api-udrio/app/admin/handler"
 	_adminRepository "github.com/ryanadiputraa/api-udrio/app/admin/repository"
+	"github.com/ryanadiputraa/api-udrio/internal/middleware"
 
 	_oauthDelivery "github.com/ryanadiputraa/api-udrio/app/oauth/delivery"
 	_oauthHandler "github.com/ryanadiputraa/api-udrio/app/oauth/handler"
@@ -32,55 +26,37 @@ import (
 	_orderRepository "github.com/ryanadiputraa/api-udrio/app/order/repository"
 )
 
-func serveHTTP() {
-	r := gin.Default()
-	r.LoadHTMLGlob("templates/**/*")
-	r.Static("/assets", "./assets")
-	r.MaxMultipartMemory = 5 << 20 // max 8 MiB
-	r.SetTrustedProxies(nil)
-
-	// Middlewares
-	r.Use(gin.Recovery())
-	r.Use(gin.Logger())
-	r.Use(cors.CORSMiddleware())
-
-	oauth2 := r.Group("/oauth")
-	api := r.Group("/api")
-	admin := r.Group("/admin")
+func (s *Server) MapHandlers() {
+	oauth2 := s.gin.Group("/oauth")
+	api := s.gin.Group("/api")
+	admin := s.gin.Group("/admin")
 
 	// cart
-	cartRepository := _cartRepository.NewCartRepository(database.DB)
+	cartRepository := _cartRepository.NewCartRepository(s.db)
 	cartHandler := _cartHandler.NewCartHandler(cartRepository)
 	_cartDelivery.NewCartDelivery(api, cartHandler)
 
 	// user
-	userRepository := _userRepository.NewUserRepository(database.DB)
+	userRepository := _userRepository.NewUserRepository(s.db)
 	userHandler := _userHandler.NewUserHandler(userRepository, cartRepository)
-	_userDelivery.NewUserDelivery(api, AuthMiddleware(), userHandler)
+	_userDelivery.NewUserDelivery(api, middleware.AuthMiddleware(), userHandler)
 
 	// Oauth2
 	oAuthHandler := _oauthHandler.NewOAuthHandler()
 	_oauthDelivery.NewOAuthDelivery(oauth2, oAuthHandler, userHandler)
 
 	// Products
-	productRepository := _productRepository.NewProductRepository(database.DB, RedisClient)
+	productRepository := _productRepository.NewProductRepository(s.db, s.redis)
 	productHandler := _productHandler.NewProductHandler(productRepository)
 	_productDelivery.NewProductDelivery(api, productHandler)
 
 	// Orders
-	orderRepository := _orderRepository.NewOrderRepository(database.DB)
+	orderRepository := _orderRepository.NewOrderRepository(s.db)
 	orderHandler := _orderHandler.NewOrderHandler(orderRepository)
 	_orderDelivery.NewOrderDelivery(api, orderHandler)
 
 	// admin
-	adminRepository := _adminRepository.NewAdminRepository(database.DB, RedisClient)
+	adminRepository := _adminRepository.NewAdminRepository(s.db, s.redis)
 	adminHandler := _adminHandler.NewAdminHandler(adminRepository)
 	_adminDelivery.NewAdminDelivery(admin, adminHandler, productHandler)
-
-	// Setup server port & handler
-	port := viper.GetString("PORT")
-	if len(port) == 0 {
-		port = "8080"
-	}
-	r.Run(fmt.Sprintf(":%s", port))
 }

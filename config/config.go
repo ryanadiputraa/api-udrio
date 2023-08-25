@@ -1,6 +1,10 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"time"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct {
 	Server   Server
@@ -20,8 +24,8 @@ type Postgres struct {
 	DSN      string
 	MaxIdle  int
 	MaxConns int
-	IdleTime string
-	LifeTime string
+	IdleTime time.Duration
+	LifeTime time.Duration
 }
 
 type Redis struct {
@@ -39,9 +43,9 @@ type Oauth struct {
 
 type JWT struct {
 	Secret           string
-	ExpiresIn        string
+	ExpiresIn        time.Duration
 	RefreshSecret    string
-	RefreshExpiresIn string
+	RefreshExpiresIn time.Duration
 }
 
 type Firebase struct {

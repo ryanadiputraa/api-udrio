@@ -3,11 +3,9 @@ package database
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/spf13/viper"
 )
 
 type RedisClient struct {
@@ -19,14 +17,14 @@ type Redis interface {
 	Get(ctx context.Context, key string) (string, error)
 }
 
-func InitRedis() Redis {
-	opt, err := redis.ParseURL(viper.GetString("REDIS_URL"))
+func InitRedis(dsn string) (Redis, error) {
+	opt, err := redis.ParseURL(dsn)
 	if err != nil {
-		panic(fmt.Sprintf("fail to connect to redis: %s", err))
+		return nil, err
 	}
 
 	rdb := redis.NewClient(opt)
-	return &RedisClient{rdb: rdb}
+	return &RedisClient{rdb: rdb}, nil
 }
 
 func (r *RedisClient) Set(ctx context.Context, key string, value interface{}, expiresTime time.Duration) error {
