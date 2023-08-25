@@ -1,5 +1,5 @@
 # env & credentials
-.env.example
+.env
 udrio-firebasesdk.json
   
 # build
