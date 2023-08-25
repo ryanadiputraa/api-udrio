@@ -5,12 +5,12 @@ import (
 	"time"
 )
 
-type IUserRepository interface {
+type UserRepository interface {
 	SaveOrUpdate(ctx context.Context, user User) error
 	FindByID(ctx context.Context, userID string) (User, error)
 }
 
-type IUserHandler interface {
+type UserUsecase interface {
 	CreateOrUpdateIfExist(ctx context.Context, user User) error
 	GetUserInfo(ctx context.Context, userID string) (User, error)
 }

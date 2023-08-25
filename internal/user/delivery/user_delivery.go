@@ -9,25 +9,25 @@ import (
 	"github.com/ryanadiputraa/api-udrio/pkg/utils"
 )
 
-type userDelivery struct {
-	handler domain.IUserHandler
+type delivery struct {
+	usecase domain.UserUsecase
 }
 
-func NewUserDelivery(rg *gin.RouterGroup, authMiddleware gin.HandlerFunc, handler domain.IUserHandler) {
-	delivery := userDelivery{handler: handler}
+func NewUserDelivery(rg *gin.RouterGroup, authMiddleware gin.HandlerFunc, usecase domain.UserUsecase) {
+	delivery := delivery{usecase: usecase}
 	router := rg.Group("/users")
 
 	router.GET("/", authMiddleware, delivery.GetUserInfo)
 }
 
-func (d *userDelivery) GetUserInfo(c *gin.Context) {
+func (d *delivery) GetUserInfo(c *gin.Context) {
 	userID, err := jwt.ExtractUserID(c)
 	if err != nil || userID == "" {
 		c.JSON(http.StatusUnauthorized, utils.HttpResponseError(http.StatusUnauthorized, err.Error()))
 		return
 	}
 
-	user, err := d.handler.GetUserInfo(c, userID)
+	user, err := d.usecase.GetUserInfo(c, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return

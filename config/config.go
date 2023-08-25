@@ -10,7 +10,7 @@ type Config struct {
 	Server   Server
 	Postgres Postgres
 	Redis    Redis
-	Ouath    Oauth
+	Oauth    Oauth
 	JWT      JWT
 	Firebase Firebase
 	Mail     Mail

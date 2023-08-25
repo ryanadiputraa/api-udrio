@@ -6,29 +6,26 @@ import (
 	"errors"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
-
+	"github.com/ryanadiputraa/api-udrio/config"
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/jwt"
 	"github.com/ryanadiputraa/api-udrio/pkg/oauth"
 )
 
-type oAuthHandler struct{}
+type usecase struct{}
 
-func NewOAuthHandler() domain.IOAuthHandler {
-	return &oAuthHandler{}
+func NewOAuthUsecase() domain.OAuthUsecase {
+	return &usecase{}
 }
 
-func (h *oAuthHandler) HandleCallback(ctx context.Context, code string) (user domain.GoogleProfile, err error) {
-	token, err := oauth.GetGoogleOauthConfig().Exchange(context.Background(), code)
+func (u *usecase) HandleCallback(ctx context.Context, conf config.Oauth, code string) (user domain.GoogleProfile, err error) {
+	token, err := oauth.GetGoogleOauthConfig(conf).Exchange(context.Background(), code)
 	if err != nil {
-		log.Error("fail to retrieve token", err.Error())
 		return user, errors.New("fail to retrive token")
 	}
 
 	resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 	if err != nil {
-		log.Error("fail to retrive user info", err.Error())
 		return user, errors.New("fail to retrive user info")
 	}
 	defer resp.Body.Close()
@@ -40,7 +37,7 @@ func (h *oAuthHandler) HandleCallback(ctx context.Context, code string) (user do
 	return user, nil
 }
 
-func (h *oAuthHandler) GenerateAccessToken(ctx context.Context, userID interface{}) (domain.Tokens, error) {
+func (u *usecase) GenerateAccessToken(ctx context.Context, userID interface{}) (domain.Tokens, error) {
 	tokens, err := jwt.GenerateAccessToken(userID)
 	if err != nil {
 		return tokens, err
@@ -48,7 +45,7 @@ func (h *oAuthHandler) GenerateAccessToken(ctx context.Context, userID interface
 	return tokens, nil
 }
 
-func (h *oAuthHandler) RefreshAccessToken(ctx context.Context, refreshToken string) (tokens domain.Tokens, err error) {
+func (u *usecase) RefreshAccessToken(ctx context.Context, refreshToken string) (tokens domain.Tokens, err error) {
 	claims, err := jwt.ParseJWTClaims(refreshToken, true)
 	if err != nil {
 		return tokens, err
@@ -56,7 +53,6 @@ func (h *oAuthHandler) RefreshAccessToken(ctx context.Context, refreshToken stri
 
 	tokens, err = jwt.GenerateAccessToken(claims["sub"])
 	if err != nil {
-		log.Error("fail to generate access token: ", err.Error())
 		return tokens, err
 	}
 	return tokens, nil

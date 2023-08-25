@@ -1,17 +1,18 @@
 package server
 
 import (
+	"github.com/ryanadiputraa/api-udrio/internal/middleware"
+
 	_adminDelivery "github.com/ryanadiputraa/api-udrio/app/admin/delivery"
 	_adminHandler "github.com/ryanadiputraa/api-udrio/app/admin/handler"
 	_adminRepository "github.com/ryanadiputraa/api-udrio/app/admin/repository"
-	"github.com/ryanadiputraa/api-udrio/internal/middleware"
 
-	_oauthDelivery "github.com/ryanadiputraa/api-udrio/app/oauth/delivery"
-	_oauthHandler "github.com/ryanadiputraa/api-udrio/app/oauth/handler"
+	_oauthDelivery "github.com/ryanadiputraa/api-udrio/internal/oauth/delivery"
+	_oauthUsecase "github.com/ryanadiputraa/api-udrio/internal/oauth/usecase"
 
-	_userDelivery "github.com/ryanadiputraa/api-udrio/app/user/delivery"
-	_userHandler "github.com/ryanadiputraa/api-udrio/app/user/handler"
-	_userRepository "github.com/ryanadiputraa/api-udrio/app/user/repository"
+	_userDelivery "github.com/ryanadiputraa/api-udrio/internal/user/delivery"
+	_userRepository "github.com/ryanadiputraa/api-udrio/internal/user/repository"
+	_userUsecase "github.com/ryanadiputraa/api-udrio/internal/user/usecase"
 
 	_cartDelivery "github.com/ryanadiputraa/api-udrio/app/cart/delivery"
 	_cartHandler "github.com/ryanadiputraa/api-udrio/app/cart/handler"
@@ -38,12 +39,12 @@ func (s *Server) MapHandlers() {
 
 	// user
 	userRepository := _userRepository.NewUserRepository(s.db)
-	userHandler := _userHandler.NewUserHandler(userRepository, cartRepository)
-	_userDelivery.NewUserDelivery(api, middleware.AuthMiddleware(), userHandler)
+	userUsecase := _userUsecase.NewUserUsecase(userRepository, cartRepository)
+	_userDelivery.NewUserDelivery(api, middleware.AuthMiddleware(), userUsecase)
 
 	// Oauth2
-	oAuthHandler := _oauthHandler.NewOAuthHandler()
-	_oauthDelivery.NewOAuthDelivery(oauth2, oAuthHandler, userHandler)
+	oauthUsecase := _oauthUsecase.NewOAuthUsecase()
+	_oauthDelivery.NewOAuthDelivery(oauth2, *s.conf, oauthUsecase, userUsecase)
 
 	// Products
 	productRepository := _productRepository.NewProductRepository(s.db, s.redis)

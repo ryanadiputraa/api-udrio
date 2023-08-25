@@ -58,11 +58,11 @@ func TestFindByID(t *testing.T) {
 
 	cases := []struct {
 		description       string
-		mockRepoBehaviour func(mock sqlmock.Sqlmock, r domain.IUserRepository)
+		mockRepoBehaviour func(mock sqlmock.Sqlmock, r domain.UserRepository)
 	}{
 		{
 			description: "should return user data with id = '1'",
-			mockRepoBehaviour: func(mock sqlmock.Sqlmock, r domain.IUserRepository) {
+			mockRepoBehaviour: func(mock sqlmock.Sqlmock, r domain.UserRepository) {
 				currTime := time.Now()
 				rows := sqlmock.NewRows([]string{
 					"id",
@@ -93,7 +93,7 @@ func TestFindByID(t *testing.T) {
 		},
 		{
 			description: "should return error for no record user data",
-			mockRepoBehaviour: func(mock sqlmock.Sqlmock, r domain.IUserRepository) {
+			mockRepoBehaviour: func(mock sqlmock.Sqlmock, r domain.UserRepository) {
 				rows := sqlmock.NewRows([]string{
 					"id",
 					"first_name",
