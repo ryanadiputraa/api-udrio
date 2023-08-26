@@ -53,7 +53,7 @@ func (s *Server) MapHandlers() {
 
 	// Orders
 	orderRepository := _orderRepository.NewOrderRepository(s.db)
-	orderUsecase := _orderUsecase.NewOrderUsecase(orderRepository)
+	orderUsecase := _orderUsecase.NewOrderUsecase(*s.conf, orderRepository)
 	_orderDelivery.NewOrderDelivery(api, *s.conf, orderUsecase)
 
 	// admin

@@ -6,17 +6,19 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/ryanadiputraa/api-udrio/config"
 	"github.com/ryanadiputraa/api-udrio/internal/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/mail"
 	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
 )
 
 type orderUsecase struct {
+	conf       config.Config
 	repository domain.OrderRepository
 }
 
-func NewOrderUsecase(repository domain.OrderRepository) domain.OrderUsecase {
-	return &orderUsecase{repository: repository}
+func NewOrderUsecase(conf config.Config, repository domain.OrderRepository) domain.OrderUsecase {
+	return &orderUsecase{conf: conf, repository: repository}
 }
 
 func (u *orderUsecase) GetUserOrders(ctx context.Context, userID string, size int, page int) (order []domain.OrderDTO, meta pagination.Page, err error) {
@@ -76,13 +78,18 @@ func (u *orderUsecase) CreateOrder(ctx context.Context, userID string, payload d
 
 	// send notification mail
 	mailBody := fmt.Sprintf(
-		"Hi, %s!\nTerima kasih telah membuat pesanan, namun mohon maaf website ini masih dalam status prototype.",
+		`Hi, %s!\nTerima kasih telah membuat pesanan, namun mohon maaf website ini masih dalam status prototype.\n
+		Silahkan kunjungi https://www.riodigitalprint.com untuk melakukan transaksi.`,
 		user.FirstName,
 	)
-	err = mail.SendMail("Pesanan UD Rio Digital Printing", mailBody, []string{user.Email})
-	// mail error can be ignored
-	if err != nil {
-	}
+
+	go func() {
+		mail.SendMail(u.conf.Mail, mail.MailPayload{
+			Subject: "Pesanan UD Rio Digital Printing",
+			Body:    mailBody,
+			To:      []string{user.Email},
+		})
+	}()
 
 	return
 }
