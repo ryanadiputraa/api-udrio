@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/internal/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/utils"
 )
 

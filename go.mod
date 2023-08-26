@@ -61,7 +61,6 @@ require (
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/sirupsen/logrus v1.9.0
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/crypto v0.9.0
 	golang.org/x/net v0.10.0 // indirect

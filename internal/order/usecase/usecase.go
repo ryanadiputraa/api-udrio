@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/internal/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/mail"
 	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
 )

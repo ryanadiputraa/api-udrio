@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/ryanadiputraa/api-udrio/config"
-	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/internal/domain"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/internal/domain"
 )
 
 type usecase struct {

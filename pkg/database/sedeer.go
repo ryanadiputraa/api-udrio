@@ -3,7 +3,7 @@ package database
 import (
 	"time"
 
-	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/internal/domain"
 	"gorm.io/gorm"
 )
 

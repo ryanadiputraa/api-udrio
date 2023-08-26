@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ryanadiputraa/api-udrio/domain"
-	"github.com/ryanadiputraa/api-udrio/domain/mocks"
+	"github.com/ryanadiputraa/api-udrio/internal/domain"
+	"github.com/ryanadiputraa/api-udrio/internal/domain/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/ryanadiputraa/api-udrio/config"
-	"github.com/ryanadiputraa/api-udrio/domain"
+	"github.com/ryanadiputraa/api-udrio/internal/domain"
 )
 
 func GenerateAccessToken(conf config.JWT, userID interface{}) (tokens domain.Tokens, err error) {
