@@ -8,37 +8,34 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/ryanadiputraa/api-udrio/domain"
-	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
+	"github.com/ryanadiputraa/api-udrio/config"
+	"github.com/ryanadiputraa/api-udrio/internal/domain"
 )
 
-func GenerateAccessToken(userID interface{}) (tokens domain.Tokens, err error) {
+func GenerateAccessToken(conf config.JWT, userID interface{}) (tokens domain.Tokens, err error) {
 	// access token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": userID,
-		"exp": time.Now().Add(viper.GetDuration("JWT_EXPIRES_IN")).Unix(),
+		"exp": time.Now().Add(conf.ExpiresIn).Unix(),
 	})
-	tokenString, err := token.SignedString([]byte(viper.GetString("JWT_SECRET")))
+	tokenString, err := token.SignedString([]byte(conf.Secret))
 	if err != nil {
-		log.Error("fail to generate access token:", err.Error())
 		return tokens, err
 	}
 
 	// refresh token
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": userID,
-		"exp": time.Now().Add(viper.GetDuration("JWT_REFRESH_EXPIRES_IN")).Unix(),
+		"exp": time.Now().Add(conf.RefreshExpiresIn).Unix(),
 	})
-	refreshTokenString, err := refreshToken.SignedString([]byte(viper.GetString("JWT_REFRESH_SECRET")))
+	refreshTokenString, err := refreshToken.SignedString([]byte(conf.RefreshSecret))
 	if err != nil {
-		log.Error("fail to generate refresh token:", err.Error())
 		return tokens, err
 	}
 
 	tokens = domain.Tokens{
 		AccessToken:  tokenString,
-		ExpiresIn:    int(time.Now().Add(viper.GetDuration("JWT_EXPIRES_IN")).Unix()),
+		ExpiresIn:    int(time.Now().Add(conf.ExpiresIn).Unix()),
 		RefreshToken: refreshTokenString,
 	}
 
@@ -60,7 +57,7 @@ func ExtractTokenFromAuthorizationHeader(c *gin.Context) (token string, err erro
 	return token, nil
 }
 
-func ParseJWTClaims(tokenString string, isRefresh bool) (jwt.MapClaims, error) {
+func ParseJWTClaims(conf config.JWT, tokenString string, isRefresh bool) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -68,9 +65,9 @@ func ParseJWTClaims(tokenString string, isRefresh bool) (jwt.MapClaims, error) {
 
 		var secret string
 		if !isRefresh {
-			secret = viper.GetString("JWT_SECRET")
+			secret = conf.Secret
 		} else {
-			secret = viper.GetString("JWT_REFRESH_SECRET")
+			secret = conf.RefreshSecret
 		}
 
 		return []byte(secret), nil
@@ -84,13 +81,13 @@ func ParseJWTClaims(tokenString string, isRefresh bool) (jwt.MapClaims, error) {
 	return claims, nil
 }
 
-func ExtractUserID(c *gin.Context) (userID string, err error) {
+func ExtractUserID(c *gin.Context, conf config.JWT) (userID string, err error) {
 	token, err := ExtractTokenFromAuthorizationHeader(c)
 	if err != nil {
 		return
 	}
 
-	claim, err := ParseJWTClaims(token, false)
+	claim, err := ParseJWTClaims(conf, token, false)
 	userID = claim["sub"].(string)
 	return
 }

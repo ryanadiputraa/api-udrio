@@ -4,14 +4,20 @@ import (
 	"fmt"
 	"net/smtp"
 
-	"github.com/spf13/viper"
+	"github.com/ryanadiputraa/api-udrio/config"
 )
 
-func SendMail(subject string, body string, to []string) (err error) {
-	auth := smtp.PlainAuth("", viper.GetString("MAIL_SENDER"), viper.GetString("MAIL_SENDER_PASS"), "smtp.gmail.com")
+type MailPayload struct {
+	Subject string
+	Body    string
+	To      []string
+}
 
-	msg := fmt.Sprintf("Subject: %s\n%s", subject, body)
+func SendMail(conf config.Mail, payload MailPayload) (err error) {
+	auth := smtp.PlainAuth("", conf.Sender, conf.Pass, "smtp.gmail.com")
 
-	err = smtp.SendMail("smtp.gmail.com:587", auth, viper.GetString("MAIL_SENDER"), to, []byte(msg))
+	msg := fmt.Sprintf("Subject: %s\n%s", payload.Subject, payload.Body)
+
+	err = smtp.SendMail("smtp.gmail.com:587", auth, conf.Sender, payload.To, []byte(msg))
 	return
 }

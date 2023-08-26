@@ -1,0 +1,35 @@
+server:
+  port: 8080
+  env: 'dev'
+
+postgres:
+  dsn: 'host=localhost user=postgres password=postgres dbname=udrio port=5432 sslmode=disable TimeZone=GMT+0'
+  maxIdle: 4
+  maxConns: 100
+  idleTime: '5m'
+  lifeTime: '60m'
+
+redis:
+  dsn: 'redis://:@localhost:6379'
+  port: 6379
+
+oauth:
+  clientId: ''
+  clientSecret: ''
+  callbackUrl: 'http://localhost:8080/oauth/callback'
+  redirectUrl: 'http://localhost:3000/auth'
+
+jwt:
+  secret: ''
+  expiresIn: '1h0m0s'
+  refreshSecret: ''
+  refreshExpiresIn: '720h0m0s'
+
+firebase:
+  bucket: ''
+  storageToken: ''
+  configPath: 'config/firebase-sdk.json'
+
+mail:
+  sender: 'ryannadiputraa@gmail.com'
+  pass: ''

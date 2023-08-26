@@ -1,6 +1,6 @@
 # env & credentials
-.env.example
-udrio-firebasesdk.json
+config/config.yml
+config/udrio-firebasesdk.json
   
 # build
 main
