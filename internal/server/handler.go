@@ -3,9 +3,9 @@ package server
 import (
 	"github.com/ryanadiputraa/api-udrio/internal/middleware"
 
-	_adminDelivery "github.com/ryanadiputraa/api-udrio/app/admin/delivery"
-	_adminHandler "github.com/ryanadiputraa/api-udrio/app/admin/handler"
-	_adminRepository "github.com/ryanadiputraa/api-udrio/app/admin/repository"
+	_adminDelivery "github.com/ryanadiputraa/api-udrio/internal/admin/delivery"
+	_adminRepository "github.com/ryanadiputraa/api-udrio/internal/admin/repository"
+	_adminUsecase "github.com/ryanadiputraa/api-udrio/internal/admin/usecase"
 
 	_oauthDelivery "github.com/ryanadiputraa/api-udrio/internal/oauth/delivery"
 	_oauthUsecase "github.com/ryanadiputraa/api-udrio/internal/oauth/usecase"
@@ -53,11 +53,11 @@ func (s *Server) MapHandlers() {
 
 	// Orders
 	orderRepository := _orderRepository.NewOrderRepository(s.db)
-	orderHandler := _orderUsecase.NewOrderUsecase(orderRepository)
-	_orderDelivery.NewOrderDelivery(api, orderHandler)
+	orderUsecase := _orderUsecase.NewOrderUsecase(orderRepository)
+	_orderDelivery.NewOrderDelivery(api, orderUsecase)
 
 	// admin
 	adminRepository := _adminRepository.NewAdminRepository(s.db, s.redis)
-	adminHandler := _adminHandler.NewAdminHandler(adminRepository)
-	_adminDelivery.NewAdminDelivery(admin, adminHandler, productUsecase)
+	adminUsecase := _adminUsecase.NewAdminUsecase(adminRepository)
+	_adminDelivery.NewAdminDelivery(admin, adminUsecase, productUsecase)
 }

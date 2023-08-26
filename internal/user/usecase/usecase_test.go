@@ -1,4 +1,4 @@
-package handler
+package usecase
 
 import (
 	"context"
@@ -51,8 +51,8 @@ func TestCreateOrUpdateIfExist(t *testing.T) {
 			c.mockRepoBehaviour(userRepo, cartRepo)
 
 			currTime := time.Now()
-			handler := NewUserUsecase(userRepo, cartRepo)
-			err := handler.CreateOrUpdateIfExist(context.TODO(), domain.User{
+			usecase := NewUserUsecase(userRepo, cartRepo)
+			err := usecase.CreateOrUpdateIfExist(context.TODO(), domain.User{
 				ID:        "1",
 				FirstName: "John",
 				LastName:  "Doe",
@@ -137,8 +137,8 @@ func TestGetUserInfo(t *testing.T) {
 			cartRepo := new(mocks.ICartRepository)
 			c.mockRepoBehaviour(userRepo, cartRepo)
 
-			handler := NewUserUsecase(userRepo, cartRepo)
-			user, err := handler.GetUserInfo(context.TODO(), "1")
+			usecase := NewUserUsecase(userRepo, cartRepo)
+			user, err := usecase.GetUserInfo(context.TODO(), "1")
 			assert.Equal(t, c.expected, user)
 			assert.Equal(t, c.err, err)
 		})

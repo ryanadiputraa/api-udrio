@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type IAdminHandler interface {
+type AdminUsecase interface {
 	SignIn(ctx context.Context, username string, password string) (sessionToken string, expiresAt time.Time, err error)
 	GetSession(ctx context.Context, sessionToken string) (Session, error)
 	SaveFilePath(ctx context.Context, assetsPath AssetsPath) error
@@ -14,7 +14,7 @@ type IAdminHandler interface {
 	BulkInsertProducts(ctx context.Context) error
 }
 
-type IAdminRepository interface {
+type AdminRepository interface {
 	GetAdminByUsername(ctx context.Context, username string) (Admin, error)
 	GetAdminByID(ctx context.Context, id int) (Admin, error)
 	SaveSession(ctx context.Context, session Session, expiresDuration time.Duration) error

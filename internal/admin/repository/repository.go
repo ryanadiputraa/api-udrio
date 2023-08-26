@@ -15,31 +15,31 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type adminRepository struct {
+type repository struct {
 	db    *gorm.DB
 	redis database.Redis
 }
 
-func NewAdminRepository(db *gorm.DB, redis database.Redis) domain.IAdminRepository {
-	return &adminRepository{db: db, redis: redis}
+func NewAdminRepository(db *gorm.DB, redis database.Redis) domain.AdminRepository {
+	return &repository{db: db, redis: redis}
 }
 
-func (r *adminRepository) GetAdminByUsername(ctx context.Context, username string) (admin domain.Admin, err error) {
+func (r *repository) GetAdminByUsername(ctx context.Context, username string) (admin domain.Admin, err error) {
 	err = r.db.First(&admin, "username = ?", username).Error
 	return
 }
 
-func (r *adminRepository) GetAdminByID(ctx context.Context, ID int) (admin domain.Admin, err error) {
+func (r *repository) GetAdminByID(ctx context.Context, ID int) (admin domain.Admin, err error) {
 	err = r.db.First(&admin, "id = ?", ID).Error
 	return
 }
 
-func (r *adminRepository) SaveSession(ctx context.Context, session domain.Session, expiresDuration time.Duration) (err error) {
+func (r *repository) SaveSession(ctx context.Context, session domain.Session, expiresDuration time.Duration) (err error) {
 	err = r.redis.Set(ctx, session.SessionToken, session, expiresDuration)
 	return
 }
 
-func (r *adminRepository) GetSession(ctx context.Context, sessionToken string) (session domain.Session, err error) {
+func (r *repository) GetSession(ctx context.Context, sessionToken string) (session domain.Session, err error) {
 	value, err := r.redis.Get(ctx, sessionToken)
 	if err != nil {
 		return
@@ -49,7 +49,7 @@ func (r *adminRepository) GetSession(ctx context.Context, sessionToken string) (
 	return
 }
 
-func (r *adminRepository) SaveFilePath(ctx context.Context, assetsPath domain.AssetsPath) (err error) {
+func (r *repository) SaveFilePath(ctx context.Context, assetsPath domain.AssetsPath) (err error) {
 	err = r.db.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "key"}},
 		DoUpdates: clause.AssignmentColumns([]string{"file_path"}),
@@ -57,12 +57,12 @@ func (r *adminRepository) SaveFilePath(ctx context.Context, assetsPath domain.As
 	return
 }
 
-func (r *adminRepository) GetFilePath(ctx context.Context, key string) (assetsPath domain.AssetsPath, err error) {
+func (r *repository) GetFilePath(ctx context.Context, key string) (assetsPath domain.AssetsPath, err error) {
 	err = r.db.First(&assetsPath, "key = ?", key).Error
 	return
 }
 
-func (r *adminRepository) BulkInsertProducts(ctx context.Context, cr *csv.Reader) (err error) {
+func (r *repository) BulkInsertProducts(ctx context.Context, cr *csv.Reader) (err error) {
 	var products []domain.Product
 	header := true
 

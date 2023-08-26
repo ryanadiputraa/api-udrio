@@ -7,13 +7,13 @@ import (
 	"github.com/ryanadiputraa/api-udrio/domain"
 )
 
-type adminDelivery struct {
-	handler        domain.IAdminHandler
+type delivery struct {
+	usecase        domain.AdminUsecase
 	productUsecase domain.ProductUsecase
 }
 
-func NewAdminDelivery(rg *gin.RouterGroup, handler domain.IAdminHandler, productUsecase domain.ProductUsecase) {
-	delivery := adminDelivery{handler: handler, productUsecase: productUsecase}
+func NewAdminDelivery(rg *gin.RouterGroup, usecase domain.AdminUsecase, productUsecase domain.ProductUsecase) {
+	delivery := delivery{usecase: usecase, productUsecase: productUsecase}
 	rg.GET("/", delivery.parseSessionToken(), delivery.MainPanel)
 	rg.GET("/login", delivery.Login)
 	rg.POST("/signin", delivery.SignIn)
@@ -23,15 +23,15 @@ func NewAdminDelivery(rg *gin.RouterGroup, handler domain.IAdminHandler, product
 	rg.POST("/products/:id", delivery.parseSessionToken(), delivery.UpdateProduct)
 }
 
-func (d *adminDelivery) Login(c *gin.Context) {
+func (d *delivery) Login(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", gin.H{
 		"title": "Login",
 	})
 }
 
-func (d *adminDelivery) SignIn(c *gin.Context) {
+func (d *delivery) SignIn(c *gin.Context) {
 	c.Request.ParseForm()
-	sessionToken, expiresAt, err := d.handler.SignIn(c, c.PostForm("username"), c.PostForm("password"))
+	sessionToken, expiresAt, err := d.usecase.SignIn(c, c.PostForm("username"), c.PostForm("password"))
 	if err != nil {
 		c.HTML(http.StatusOK, "login.html", gin.H{
 			"error": err.Error(),
@@ -46,14 +46,14 @@ func (d *adminDelivery) SignIn(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/products")
 }
 
-func (d *adminDelivery) Products(c *gin.Context) {
-	path, _ := d.handler.GetFilePath(c, "products")
+func (d *delivery) Products(c *gin.Context) {
+	path, _ := d.usecase.GetFilePath(c, "products")
 	c.HTML(http.StatusOK, "products.html", gin.H{
 		"filepath": path.FilePath,
 	})
 }
 
-func (d *adminDelivery) ProductDetail(c *gin.Context) {
+func (d *delivery) ProductDetail(c *gin.Context) {
 	product, _ := d.productUsecase.GetProductDetail(c, c.Param("id"))
 	stock := "Ada"
 	if !product.IsAvailable {
@@ -72,12 +72,12 @@ func (d *adminDelivery) ProductDetail(c *gin.Context) {
 	})
 }
 
-func (d *adminDelivery) MainPanel(c *gin.Context) {
+func (d *delivery) MainPanel(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/products")
 }
 
-func (d *adminDelivery) UploadProducts(c *gin.Context) {
-	path, _ := d.handler.GetFilePath(c, "products")
+func (d *delivery) UploadProducts(c *gin.Context) {
+	path, _ := d.usecase.GetFilePath(c, "products")
 
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -93,7 +93,7 @@ func (d *adminDelivery) UploadProducts(c *gin.Context) {
 		Key:      "products",
 		FilePath: filePath,
 	}
-	if err = d.handler.SaveFilePath(c, assetsPath); err != nil {
+	if err = d.usecase.SaveFilePath(c, assetsPath); err != nil {
 		c.HTML(http.StatusOK, "products.html", gin.H{
 			"error":    err.Error(),
 			"filepath": path.FilePath,
@@ -103,7 +103,7 @@ func (d *adminDelivery) UploadProducts(c *gin.Context) {
 
 	if err = c.SaveUploadedFile(file, filePath); err != nil {
 		assetsPath.FilePath = ""
-		d.handler.SaveFilePath(c, assetsPath)
+		d.usecase.SaveFilePath(c, assetsPath)
 		c.HTML(http.StatusOK, "products.html", gin.H{
 			"error":    err.Error(),
 			"filepath": path.FilePath,
@@ -111,7 +111,7 @@ func (d *adminDelivery) UploadProducts(c *gin.Context) {
 		return
 	}
 
-	if err = d.handler.BulkInsertProducts(c); err != nil {
+	if err = d.usecase.BulkInsertProducts(c); err != nil {
 		c.HTML(http.StatusOK, "products.html", gin.H{
 			"error":    err.Error(),
 			"filepath": path.FilePath,
@@ -125,7 +125,7 @@ func (d *adminDelivery) UploadProducts(c *gin.Context) {
 	})
 }
 
-func (d *adminDelivery) UpdateProduct(c *gin.Context) {
+func (d *delivery) UpdateProduct(c *gin.Context) {
 	file, _, err := c.Request.FormFile("image")
 	if err != nil {
 		d.ProductDetail(c)
@@ -138,14 +138,14 @@ func (d *adminDelivery) UpdateProduct(c *gin.Context) {
 	d.ProductDetail(c)
 }
 
-func (d *adminDelivery) parseSessionToken() gin.HandlerFunc {
+func (d *delivery) parseSessionToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionToken, err := c.Cookie("session_token")
 		if err != nil {
 			c.Redirect(http.StatusTemporaryRedirect, "/admin/login")
 		}
 
-		_, err = d.handler.GetSession(c, sessionToken)
+		_, err = d.usecase.GetSession(c, sessionToken)
 		if err != nil {
 			c.Redirect(http.StatusTemporaryRedirect, "/admin/login")
 		}
