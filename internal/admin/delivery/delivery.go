@@ -4,16 +4,18 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ryanadiputraa/api-udrio/config"
 	"github.com/ryanadiputraa/api-udrio/domain"
 )
 
 type delivery struct {
+	config         config.Config
 	usecase        domain.AdminUsecase
 	productUsecase domain.ProductUsecase
 }
 
-func NewAdminDelivery(rg *gin.RouterGroup, usecase domain.AdminUsecase, productUsecase domain.ProductUsecase) {
-	delivery := delivery{usecase: usecase, productUsecase: productUsecase}
+func NewAdminDelivery(rg *gin.RouterGroup, config config.Config, usecase domain.AdminUsecase, productUsecase domain.ProductUsecase) {
+	delivery := delivery{config: config, usecase: usecase, productUsecase: productUsecase}
 	rg.GET("/", delivery.parseSessionToken(), delivery.MainPanel)
 	rg.GET("/login", delivery.Login)
 	rg.POST("/signin", delivery.SignIn)

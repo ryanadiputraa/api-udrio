@@ -14,6 +14,7 @@ import (
 )
 
 type delivery struct {
+	config      config.Config
 	conf        config.Config
 	usecase     domain.OAuthUsecase
 	userUsecase domain.UserUsecase

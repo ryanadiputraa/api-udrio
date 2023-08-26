@@ -5,25 +5,27 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ryanadiputraa/api-udrio/config"
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/jwt"
 	"github.com/ryanadiputraa/api-udrio/pkg/utils"
 )
 
-type orderDelivery struct {
+type delivery struct {
+	config  config.Config
 	usecase domain.OrderUsecase
 }
 
-func NewOrderDelivery(rg *gin.RouterGroup, usecase domain.OrderUsecase) {
-	delivery := orderDelivery{usecase: usecase}
+func NewOrderDelivery(rg *gin.RouterGroup, config config.Config, usecase domain.OrderUsecase) {
+	delivery := delivery{config: config, usecase: usecase}
 	router := rg.Group("/orders")
 
 	router.GET("/", delivery.GetUserOrders)
 	router.POST("/", delivery.CreateOrder)
 }
 
-func (d *orderDelivery) GetUserOrders(c *gin.Context) {
-	userID, err := jwt.ExtractUserID(c)
+func (d *delivery) GetUserOrders(c *gin.Context) {
+	userID, err := jwt.ExtractUserID(c, d.config.JWT)
 	if err != nil || userID == "" {
 		c.JSON(http.StatusForbidden, utils.HttpResponseError(http.StatusForbidden, err.Error()))
 		return
@@ -40,8 +42,8 @@ func (d *orderDelivery) GetUserOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.HttpResponseWithMetaData(http.StatusOK, orders, meta))
 }
 
-func (d *orderDelivery) CreateOrder(c *gin.Context) {
-	userID, err := jwt.ExtractUserID(c)
+func (d *delivery) CreateOrder(c *gin.Context) {
+	userID, err := jwt.ExtractUserID(c, d.config.JWT)
 	if err != nil || userID == "" {
 		c.JSON(http.StatusForbidden, utils.HttpResponseError(http.StatusForbidden, err.Error()))
 		return

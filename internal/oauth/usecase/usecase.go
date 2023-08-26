@@ -12,10 +12,12 @@ import (
 	"github.com/ryanadiputraa/api-udrio/pkg/oauth"
 )
 
-type usecase struct{}
+type usecase struct {
+	conf config.Config
+}
 
-func NewOAuthUsecase() domain.OAuthUsecase {
-	return &usecase{}
+func NewOAuthUsecase(conf config.Config) domain.OAuthUsecase {
+	return &usecase{conf: conf}
 }
 
 func (u *usecase) HandleCallback(ctx context.Context, conf config.Oauth, code string) (user domain.GoogleProfile, err error) {
@@ -38,7 +40,7 @@ func (u *usecase) HandleCallback(ctx context.Context, conf config.Oauth, code st
 }
 
 func (u *usecase) GenerateAccessToken(ctx context.Context, userID interface{}) (domain.Tokens, error) {
-	tokens, err := jwt.GenerateAccessToken(userID)
+	tokens, err := jwt.GenerateAccessToken(u.conf.JWT, userID)
 	if err != nil {
 		return tokens, err
 	}
@@ -46,12 +48,12 @@ func (u *usecase) GenerateAccessToken(ctx context.Context, userID interface{}) (
 }
 
 func (u *usecase) RefreshAccessToken(ctx context.Context, refreshToken string) (tokens domain.Tokens, err error) {
-	claims, err := jwt.ParseJWTClaims(refreshToken, true)
+	claims, err := jwt.ParseJWTClaims(u.conf.JWT, refreshToken, true)
 	if err != nil {
 		return tokens, err
 	}
 
-	tokens, err = jwt.GenerateAccessToken(claims["sub"])
+	tokens, err = jwt.GenerateAccessToken(u.conf.JWT, claims["sub"])
 	if err != nil {
 		return tokens, err
 	}

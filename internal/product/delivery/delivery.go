@@ -5,16 +5,18 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ryanadiputraa/api-udrio/config"
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/utils"
 )
 
 type delivery struct {
+	config  config.Config
 	usecase domain.ProductUsecase
 }
 
-func NewProductDelivery(rg *gin.RouterGroup, usecase domain.ProductUsecase) {
-	delivery := &delivery{usecase: usecase}
+func NewProductDelivery(rg *gin.RouterGroup, config config.Config, usecase domain.ProductUsecase) {
+	delivery := &delivery{config: config, usecase: usecase}
 	router := rg.Group("/products")
 
 	rg.GET("/categories", delivery.GetProductCategoryList)

@@ -4,17 +4,20 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ryanadiputraa/api-udrio/config"
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/jwt"
 	"github.com/ryanadiputraa/api-udrio/pkg/utils"
 )
 
 type delivery struct {
+	config  config.Config
 	usecase domain.CartUsecase
 }
 
-func NewCartDelivery(rg *gin.RouterGroup, usecase domain.CartUsecase) {
+func NewCartDelivery(rg *gin.RouterGroup, config config.Config, usecase domain.CartUsecase) {
 	delivery := &delivery{
+		config:  config,
 		usecase: usecase,
 	}
 	router := rg.Group("/carts")
@@ -25,7 +28,7 @@ func NewCartDelivery(rg *gin.RouterGroup, usecase domain.CartUsecase) {
 }
 
 func (d *delivery) GetUserCart(c *gin.Context) {
-	userID, err := jwt.ExtractUserID(c)
+	userID, err := jwt.ExtractUserID(c, d.config.JWT)
 	if err != nil || userID == "" {
 		c.JSON(http.StatusForbidden, utils.HttpResponseError(http.StatusForbidden, err.Error()))
 		return
@@ -41,7 +44,7 @@ func (d *delivery) GetUserCart(c *gin.Context) {
 }
 
 func (d *delivery) UpdateUserCart(c *gin.Context) {
-	userID, err := jwt.ExtractUserID(c)
+	userID, err := jwt.ExtractUserID(c, d.config.JWT)
 	if err != nil || userID == "" {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
@@ -67,7 +70,7 @@ func (d *delivery) UpdateUserCart(c *gin.Context) {
 }
 
 func (d *delivery) DeleteCartItem(c *gin.Context) {
-	userID, err := jwt.ExtractUserID(c)
+	userID, err := jwt.ExtractUserID(c, d.config.JWT)
 	if err != nil || userID == "" {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
