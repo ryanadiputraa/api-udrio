@@ -14,9 +14,9 @@ import (
 	_userRepository "github.com/ryanadiputraa/api-udrio/internal/user/repository"
 	_userUsecase "github.com/ryanadiputraa/api-udrio/internal/user/usecase"
 
-	_cartDelivery "github.com/ryanadiputraa/api-udrio/app/cart/delivery"
-	_cartHandler "github.com/ryanadiputraa/api-udrio/app/cart/handler"
-	_cartRepository "github.com/ryanadiputraa/api-udrio/app/cart/repository"
+	_cartDelivery "github.com/ryanadiputraa/api-udrio/internal/cart/delivery"
+	_cartRepository "github.com/ryanadiputraa/api-udrio/internal/cart/repository"
+	_cartUsecase "github.com/ryanadiputraa/api-udrio/internal/cart/usecase"
 
 	_productDelivery "github.com/ryanadiputraa/api-udrio/internal/product/delivery"
 	_productRepository "github.com/ryanadiputraa/api-udrio/internal/product/repository"
@@ -34,8 +34,8 @@ func (s *Server) MapHandlers() {
 
 	// cart
 	cartRepository := _cartRepository.NewCartRepository(s.db)
-	cartHandler := _cartHandler.NewCartHandler(cartRepository)
-	_cartDelivery.NewCartDelivery(api, cartHandler)
+	cartUsecase := _cartUsecase.NewCartHandler(cartRepository)
+	_cartDelivery.NewCartDelivery(api, cartUsecase)
 
 	// user
 	userRepository := _userRepository.NewUserRepository(s.db)

@@ -9,10 +9,10 @@ import (
 
 type usecase struct {
 	repository     domain.UserRepository
-	cartRepository domain.ICartRepository
+	cartRepository domain.CartRepository
 }
 
-func NewUserUsecase(repository domain.UserRepository, cartRepository domain.ICartRepository) domain.UserUsecase {
+func NewUserUsecase(repository domain.UserRepository, cartRepository domain.CartRepository) domain.UserUsecase {
 	return &usecase{repository: repository, cartRepository: cartRepository}
 }
 

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type ICartRepository interface {
+type CartRepository interface {
 	CreateOrUpdate(ctx context.Context, cart Cart) error
 	FetchCartByUserID(ctx context.Context, userID string) ([]CartDTO, error)
 	FindUserCartID(ctx context.Context, userID string) (int, error)
@@ -13,7 +13,7 @@ type ICartRepository interface {
 	DeleteCartItemByProductID(ctx context.Context, cartID int, productID string) (cartItem CartItem, err error)
 }
 
-type ICartHandler interface {
+type CartUsecase interface {
 	GetUserCart(ctx context.Context, userID string) ([]CartDTO, error)
 	UpdateUserCart(ctx context.Context, userID string, payload CartPayload) error
 	DeleteCartItem(ctx context.Context, userID string, productID string) error
