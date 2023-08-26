@@ -13,7 +13,7 @@ type usecase struct {
 	repository domain.CartRepository
 }
 
-func NewCartHandler(repository domain.CartRepository) domain.CartUsecase {
+func NewCartUsecase(repository domain.CartRepository) domain.CartUsecase {
 	return &usecase{
 		repository: repository,
 	}

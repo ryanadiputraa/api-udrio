@@ -11,11 +11,11 @@ import (
 )
 
 type orderDelivery struct {
-	handler domain.IOrderHandler
+	usecase domain.OrderUsecase
 }
 
-func NewOrderDelivery(rg *gin.RouterGroup, handler domain.IOrderHandler) {
-	delivery := orderDelivery{handler: handler}
+func NewOrderDelivery(rg *gin.RouterGroup, usecase domain.OrderUsecase) {
+	delivery := orderDelivery{usecase: usecase}
 	router := rg.Group("/orders")
 
 	router.GET("/", delivery.GetUserOrders)
@@ -31,7 +31,7 @@ func (d *orderDelivery) GetUserOrders(c *gin.Context) {
 
 	size, _ := strconv.Atoi(c.Query("size"))
 	page, _ := strconv.Atoi(c.Query("page"))
-	orders, meta, err := d.handler.GetUserOrders(c, userID, size, page)
+	orders, meta, err := d.usecase.GetUserOrders(c, userID, size, page)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return
@@ -53,7 +53,7 @@ func (d *orderDelivery) CreateOrder(c *gin.Context) {
 		return
 	}
 
-	err = d.handler.CreateOrder(c, userID, payload)
+	err = d.usecase.CreateOrder(c, userID, payload)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.HttpResponseError(http.StatusBadRequest, err.Error()))
 		return

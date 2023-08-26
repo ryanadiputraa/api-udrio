@@ -9,18 +9,17 @@ import (
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/mail"
 	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
-	log "github.com/sirupsen/logrus"
 )
 
-type orderHandler struct {
-	repository domain.IOrderRepository
+type orderUsecase struct {
+	repository domain.OrderRepository
 }
 
-func NewOrderHandler(repository domain.IOrderRepository) domain.IOrderHandler {
-	return &orderHandler{repository: repository}
+func NewOrderUsecase(repository domain.OrderRepository) domain.OrderUsecase {
+	return &orderUsecase{repository: repository}
 }
 
-func (h *orderHandler) GetUserOrders(ctx context.Context, userID string, size int, page int) (order []domain.OrderDTO, meta pagination.Page, err error) {
+func (u *orderUsecase) GetUserOrders(ctx context.Context, userID string, size int, page int) (order []domain.OrderDTO, meta pagination.Page, err error) {
 	if size <= 0 {
 		size = 20
 	}
@@ -29,7 +28,7 @@ func (h *orderHandler) GetUserOrders(ctx context.Context, userID string, size in
 	}
 
 	offset := pagination.Offset(size, page)
-	order, count, err := h.repository.FetchOrdersByUserID(ctx, userID, size, offset)
+	order, count, err := u.repository.FetchOrdersByUserID(ctx, userID, size, offset)
 	if order == nil {
 		order = []domain.OrderDTO{}
 	}
@@ -37,7 +36,6 @@ func (h *orderHandler) GetUserOrders(ctx context.Context, userID string, size in
 		if err.Error() == "record not found" {
 			return []domain.OrderDTO{}, pagination.Page{}, nil
 		}
-		log.Error("fail to fetch user orders: ", err.Error())
 	}
 	pages := *pagination.NewPagination(size, page, int(count))
 	meta = pagination.Page{
@@ -51,16 +49,14 @@ func (h *orderHandler) GetUserOrders(ctx context.Context, userID string, size in
 	return
 }
 
-func (h *orderHandler) CreateOrder(ctx context.Context, userID string, payload domain.OrderPayload) (err error) {
+func (u *orderUsecase) CreateOrder(ctx context.Context, userID string, payload domain.OrderPayload) (err error) {
 	var productIDs []string
 
 	for _, v := range payload.Orders {
 		if len(v.ProductID) == 0 {
-			log.Error("invalid param: missing product id")
 			return errors.New("invalid param: missing product id")
 		}
 		if v.Quantity < 1 {
-			log.Error("invalid param: missing quantity or must be greater than 0 ")
 			return errors.New("invalid param: missing quantity or must be greater than 0 ")
 		}
 		productIDs = append(productIDs, v.ProductID)
@@ -73,9 +69,8 @@ func (h *orderHandler) CreateOrder(ctx context.Context, userID string, payload d
 		UpdatedAt: time.Now().UTC(),
 	}
 
-	user, err := h.repository.SaveOrder(ctx, order, payload.Orders, productIDs)
+	user, err := u.repository.SaveOrder(ctx, order, payload.Orders, productIDs)
 	if err != nil {
-		log.Error("fail to create order: ", err.Error())
 		return
 	}
 
@@ -87,7 +82,6 @@ func (h *orderHandler) CreateOrder(ctx context.Context, userID string, payload d
 	err = mail.SendMail("Pesanan UD Rio Digital Printing", mailBody, []string{user.Email})
 	// mail error can be ignored
 	if err != nil {
-		log.Error("fail to send notification mail: ", err.Error())
 	}
 
 	return

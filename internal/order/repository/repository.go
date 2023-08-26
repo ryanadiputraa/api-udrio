@@ -8,15 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type orderRepository struct {
+type repository struct {
 	db *gorm.DB
 }
 
-func NewOrderRepository(conn *gorm.DB) domain.IOrderRepository {
-	return &orderRepository{db: conn}
+func NewOrderRepository(conn *gorm.DB) domain.OrderRepository {
+	return &repository{db: conn}
 }
 
-func (r *orderRepository) FetchOrdersByUserID(ctx context.Context, userID string, size int, offset int) (orders []domain.OrderDTO, count int64, err error) {
+func (r *repository) FetchOrdersByUserID(ctx context.Context, userID string, size int, offset int) (orders []domain.OrderDTO, count int64, err error) {
 	r.db.Model(&domain.Order{}).Where(&domain.Order{UserID: userID}).Count(&count)
 
 	rows, err := r.db.Model(&[]domain.Order{}).Limit(size).Offset(offset).Where(&domain.Order{UserID: userID}).Order("created_at DESC").Rows()
@@ -66,7 +66,7 @@ func (r *orderRepository) FetchOrdersByUserID(ctx context.Context, userID string
 	return
 }
 
-func (r *orderRepository) SaveOrder(ctx context.Context, order domain.Order, items []domain.OrderPayloadItem, productIDs []string) (user domain.User, err error) {
+func (r *repository) SaveOrder(ctx context.Context, order domain.Order, items []domain.OrderPayloadItem, productIDs []string) (user domain.User, err error) {
 	rows, err := r.db.Model(&domain.Product{}).Where("id IN ?", productIDs).Rows()
 	if err != nil {
 		return

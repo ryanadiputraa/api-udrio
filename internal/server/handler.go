@@ -22,9 +22,9 @@ import (
 	_productRepository "github.com/ryanadiputraa/api-udrio/internal/product/repository"
 	_productUsecase "github.com/ryanadiputraa/api-udrio/internal/product/usecase"
 
-	_orderDelivery "github.com/ryanadiputraa/api-udrio/app/order/delivery"
-	_orderHandler "github.com/ryanadiputraa/api-udrio/app/order/handler"
-	_orderRepository "github.com/ryanadiputraa/api-udrio/app/order/repository"
+	_orderDelivery "github.com/ryanadiputraa/api-udrio/internal/order/delivery"
+	_orderRepository "github.com/ryanadiputraa/api-udrio/internal/order/repository"
+	_orderUsecase "github.com/ryanadiputraa/api-udrio/internal/order/usecase"
 )
 
 func (s *Server) MapHandlers() {
@@ -34,7 +34,7 @@ func (s *Server) MapHandlers() {
 
 	// cart
 	cartRepository := _cartRepository.NewCartRepository(s.db)
-	cartUsecase := _cartUsecase.NewCartHandler(cartRepository)
+	cartUsecase := _cartUsecase.NewCartUsecase(cartRepository)
 	_cartDelivery.NewCartDelivery(api, cartUsecase)
 
 	// user
@@ -53,7 +53,7 @@ func (s *Server) MapHandlers() {
 
 	// Orders
 	orderRepository := _orderRepository.NewOrderRepository(s.db)
-	orderHandler := _orderHandler.NewOrderHandler(orderRepository)
+	orderHandler := _orderUsecase.NewOrderUsecase(orderRepository)
 	_orderDelivery.NewOrderDelivery(api, orderHandler)
 
 	// admin

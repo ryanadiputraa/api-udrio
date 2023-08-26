@@ -7,12 +7,12 @@ import (
 	"github.com/ryanadiputraa/api-udrio/pkg/pagination"
 )
 
-type IOrderRepository interface {
+type OrderRepository interface {
 	FetchOrdersByUserID(ctx context.Context, userID string, size int, offset int) (orders []OrderDTO, count int64, err error)
 	SaveOrder(ctx context.Context, order Order, items []OrderPayloadItem, productIDs []string) (user User, err error)
 }
 
-type IOrderHandler interface {
+type OrderUsecase interface {
 	GetUserOrders(ctx context.Context, userID string, size int, page int) (orders []OrderDTO, meta pagination.Page, err error)
 	CreateOrder(ctx context.Context, userID string, payload OrderPayload) error
 }
