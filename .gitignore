@@ -1,6 +1,8 @@
 # env & credentials
 config/config.yml
 config/udrio-firebasesdk.json
+assets/uploads/*
+!assets/uploads/.gitkeep
   
 # build
 main
