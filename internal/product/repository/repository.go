@@ -84,6 +84,7 @@ func (r *repository) FetchCategory(ctx context.Context) ([]domain.ProductCategor
 func (r *repository) SaveImage(ctx context.Context, file []byte, image domain.ProductImage) (err error) {
 	err = r.db.Transaction(func(tx *gorm.DB) error {
 		if err = r.db.Create(&image).Error; err != nil {
+			tx.Rollback()
 			return err
 		}
 
@@ -95,6 +96,7 @@ func (r *repository) SaveImage(ctx context.Context, file []byte, image domain.Pr
 		}()
 
 		if _, err = io.Copy(sw, bytes.NewReader(file)); err != nil {
+			tx.Rollback()
 			return err
 		}
 

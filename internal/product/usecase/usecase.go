@@ -18,8 +18,8 @@ type usecase struct {
 	repository domain.ProductRepository
 }
 
-func NewProductUsecase(repository domain.ProductRepository) domain.ProductUsecase {
-	return &usecase{repository: repository}
+func NewProductUsecase(conf config.Config, repository domain.ProductRepository) domain.ProductUsecase {
+	return &usecase{conf: conf, repository: repository}
 }
 
 func (u *usecase) GetProductList(ctx context.Context, size int, page int, category int, query string) (products []domain.Product, meta pagination.Page, err error) {

@@ -33,8 +33,8 @@ type Product struct {
 	ProcessingTime    string          `json:"processing_time"`
 	MinOrder          int             `gorm:"not null" json:"min_order"`
 	ProductImages     []ProductImage  `json:"images"`
-	CreatedAt         time.Time       `gorm:"not null" json:"created_at"`
-	UpdatedAt         time.Time       `gorm:"not null" json:"updated_at"`
+	CreatedAt         time.Time       `gorm:"not null;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt         time.Time       `gorm:"not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 type ProductCategory struct {

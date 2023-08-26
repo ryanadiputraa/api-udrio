@@ -48,7 +48,7 @@ func (s *Server) MapHandlers() {
 
 	// Products
 	productRepository := _productRepository.NewProductRepository(s.db, s.redis, s.storage)
-	productUsecase := _productUsecase.NewProductUsecase(productRepository)
+	productUsecase := _productUsecase.NewProductUsecase(*s.conf, productRepository)
 	_productDelivery.NewProductDelivery(api, *s.conf, productUsecase)
 
 	// Orders
