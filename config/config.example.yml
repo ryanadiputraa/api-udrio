@@ -28,7 +28,7 @@ jwt:
 firebase:
   bucket: ''
   storageToken: ''
-  configPath: './firebase-sdk.json'
+  configPath: 'config/firebase-sdk.json'
 
 mail:
   sender: 'ryannadiputraa@gmail.com'

@@ -5,6 +5,7 @@ import (
 	"runtime/debug"
 	"strconv"
 
+	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
 	"github.com/ryanadiputraa/api-udrio/config"
 	"github.com/ryanadiputraa/api-udrio/internal/middleware"
@@ -13,18 +14,20 @@ import (
 )
 
 type Server struct {
-	conf  *config.Config
-	gin   *gin.Engine
-	db    *gorm.DB
-	redis database.Redis
+	conf    *config.Config
+	gin     *gin.Engine
+	db      *gorm.DB
+	redis   database.Redis
+	storage *storage.BucketHandle
 }
 
-func NewServer(conf *config.Config, db *gorm.DB, redis database.Redis) *Server {
+func NewServer(conf *config.Config, db *gorm.DB, redis database.Redis, storage *storage.BucketHandle) *Server {
 	return &Server{
-		conf:  conf,
-		gin:   gin.Default(),
-		db:    db,
-		redis: redis,
+		conf:    conf,
+		gin:     gin.Default(),
+		db:      db,
+		redis:   redis,
+		storage: storage,
 	}
 }
 

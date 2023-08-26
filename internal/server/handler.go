@@ -47,7 +47,7 @@ func (s *Server) MapHandlers() {
 	_oauthDelivery.NewOAuthDelivery(oauth2, *s.conf, oauthUsecase, userUsecase)
 
 	// Products
-	productRepository := _productRepository.NewProductRepository(s.db, s.redis)
+	productRepository := _productRepository.NewProductRepository(s.db, s.redis, s.storage)
 	productUsecase := _productUsecase.NewProductUsecase(productRepository)
 	_productDelivery.NewProductDelivery(api, productUsecase)
 

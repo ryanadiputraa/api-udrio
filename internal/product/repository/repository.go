@@ -8,18 +8,20 @@ import (
 	"strings"
 	"time"
 
+	"cloud.google.com/go/storage"
 	"github.com/ryanadiputraa/api-udrio/domain"
 	"github.com/ryanadiputraa/api-udrio/pkg/database"
 	"gorm.io/gorm"
 )
 
 type repository struct {
-	db    *gorm.DB
-	redis database.Redis
+	db      *gorm.DB
+	redis   database.Redis
+	storage *storage.BucketHandle
 }
 
-func NewProductRepository(conn *gorm.DB, redis database.Redis) domain.ProductRepository {
-	return &repository{db: conn, redis: redis}
+func NewProductRepository(conn *gorm.DB, redis database.Redis, storage *storage.BucketHandle) domain.ProductRepository {
+	return &repository{db: conn, redis: redis, storage: storage}
 }
 
 func (r *repository) Fetch(ctx context.Context, size int, offset int, category int, query string) (products []domain.Product, count int64, err error) {
@@ -85,7 +87,7 @@ func (r *repository) SaveImage(ctx context.Context, file []byte, image domain.Pr
 			return err
 		}
 
-		sw := database.FirebaseBucket.Object(image.ID).NewWriter(ctx)
+		sw := r.storage.Object(image.ID).NewWriter(ctx)
 		defer func() {
 			if err = sw.Close(); err != nil {
 				return

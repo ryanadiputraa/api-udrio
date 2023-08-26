@@ -24,7 +24,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	s := server.NewServer(conf, db, redis)
+	storage, err := database.SetupFirebaseStorage(conf.Firebase.ConfigPath, conf.Firebase.Bucket)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	s := server.NewServer(conf, db, redis, storage)
 	if err := s.Run(); err != nil {
 		log.Fatal(err)
 	}
