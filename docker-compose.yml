@@ -1,5 +1,17 @@
 version: "3.9"
 services:
+  nginx:
+    image: nginx:alpine
+    container_name: udrio_nginx
+    tty: true
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./:/var/www
+      - ./config/nginx:/etc/nginx/conf.d
+    networks:
+      - app-network
   server:
     container_name: golang_server
     build:
@@ -9,10 +21,10 @@ services:
       - postgres
       - redis
     ports:
-      - "${PORT}:${PORT}"
+      - 8080:8080
     restart: always
-    volumes:
-      - .:/app
+    networks:
+      - app-network
   postgres:
     container_name: udrio_postgres
     image: postgres:15.1-alpine
@@ -21,18 +33,25 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=udrio
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
       - postgres-db:/data/udrio
+    networks:
+    - app-network
   redis:
     container_name: udrio_redis
     image: redis:7-alpine
     restart: always
     command: redis-server --save 20 1 --loglevel warning
     ports:
-      - "${REDIS_PORT}:${REDIS_PORT}"
+      - 6379:6379
     volumes:
       - cache:/data
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
 volumes:
   postgres-db:
     driver: local

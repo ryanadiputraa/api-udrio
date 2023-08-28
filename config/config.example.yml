@@ -3,14 +3,14 @@ server:
   env: 'dev'
 
 postgres:
-  dsn: 'postgresql://postgres:postgres@localhost:5432/udrio'
+  dsn: 'host=postgres user=postgres password=postgres dbname=udrio port=5432 sslmode=disable TimeZone=GMT+0'
   maxIdle: 4
   maxConns: 100
   idleTime: '5m'
   lifeTime: '60m'
 
 redis:
-  dsn: 'redis://:@localhost:6379'
+  dsn: 'redis://:@redis:6379'
   port: 6379
 
 oauth:
