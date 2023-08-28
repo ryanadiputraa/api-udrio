@@ -3,7 +3,7 @@ server:
   env: 'dev'
 
 postgres:
-  dsn: 'host=localhost user=postgres password=postgres dbname=udrio port=5432 sslmode=disable TimeZone=GMT+0'
+  dsn: 'postgresql://postgres:postgres@localhost:5432/udrio'
   maxIdle: 4
   maxConns: 100
   idleTime: '5m'
