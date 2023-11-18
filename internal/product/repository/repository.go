@@ -31,7 +31,7 @@ func (r *repository) Fetch(ctx context.Context, size int, offset int, category i
 		if len(query) != 0 {
 			// using :* for half queries and & for multiple words
 			query = strings.Replace(query, " ", ":*&", -1) + ":*"
-			modelQuery = modelQuery.Where("to_tsvector(product_name) @@ to_tsquery(?)", query)
+			modelQuery = modelQuery.Where("to_tsvector(product_name) @@ plainto_tsquery(?)", query)
 		}
 	}
 
