@@ -71,8 +71,7 @@ func (r *repository) FetchCategory(ctx context.Context) ([]domain.ProductCategor
 
 		err = r.redis.Set(ctx, "products:category", categories, time.Minute*10)
 		if err != nil {
-			// log redis err
-			// return nil, err
+			return nil, err
 		}
 		return categories, nil
 	}
